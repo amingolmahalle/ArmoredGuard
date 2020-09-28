@@ -10,7 +10,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d92b03-5972-4a76-a42c-13d6c4cc26d1" name="Default Changelist" comment="" />
+    <list default="true" id="61d92b03-5972-4a76-a42c-13d6c4cc26d1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Web/Controller/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Startup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Web.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Web.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +27,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4D9C3D06-967A-42C1-9E71-84DC45703DDA/24/ControllerBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A8DD6B54-36BE-4788-A95B-530214D7433F/C/Controller.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/97B940A0-8177-4587-87F5-127E5A9CD6A0/3/IdentityUser.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -47,13 +56,17 @@
         <option value="$PROJECT_DIR$/Data/Repositories/Repository.cs" />
         <option value="$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" />
         <option value="$PROJECT_DIR$/Common/Helpers/IdentityExtensions.cs" />
-        <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" />
         <option value="$PROJECT_DIR$/Web/Program.cs" />
         <option value="$PROJECT_DIR$/Common/SecuritySettings.cs" />
         <option value="$PROJECT_DIR$/Data/Repositories/UserRepository.cs" />
         <option value="$PROJECT_DIR$/Entities/User/User.cs" />
         <option value="$PROJECT_DIR$/Data/ApplicationDbContext.cs" />
         <option value="$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" />
+        <option value="$PROJECT_DIR$/Web/Models/TokenRequest.cs" />
+        <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" />
+        <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
+        <option value="$PROJECT_DIR$/Web/Models/UserDto.cs" />
+        <option value="$PROJECT_DIR$/Web/Startup.cs" />
       </list>
     </option>
   </component>
@@ -176,7 +189,8 @@
       <updated>1600333474963</updated>
       <workItem from="1600333484547" duration="4917000" />
       <workItem from="1600949272966" duration="2177000" />
-      <workItem from="1601149262691" duration="335000" />
+      <workItem from="1601149262691" duration="608000" />
+      <workItem from="1601318428483" duration="2628000" />
     </task>
     <servers />
   </component>
@@ -211,5 +225,13 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="791" y="235" width="399" height="643" key="RiderGenerateDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1600336966063" />
+    <state x="636" y="292" width="720" height="522" key="find.popup" timestamp="1601321610591">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="636" y="292" width="720" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601321610591" />
+    <state x="660" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1601320133580">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="660" y="196" width="670" height="676" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601320133580" />
   </component>
 </project>

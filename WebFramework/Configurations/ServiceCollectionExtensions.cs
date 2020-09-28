@@ -83,7 +83,7 @@ namespace WebFramework.Configurations
                         var securityStamp =
                             claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
                         if (!securityStamp.HasValue())
-                            context.Fail("This token has no secuirty stamp");
+                            context.Fail("This token has no security stamp");
 
                         //Find user and token from database and perform your custom validation
                         var userId = claimsIdentity.GetUserId<int>();
@@ -92,7 +92,7 @@ namespace WebFramework.Configurations
 
                         var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
                         if (validatedUser == null)
-                            context.Fail("Token secuirty stamp is not valid.");
+                            context.Fail("Token security stamp is not valid.");
 
                         if (!user.IsActive)
                             context.Fail("User is not active.");
