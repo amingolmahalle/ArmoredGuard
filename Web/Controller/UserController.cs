@@ -80,12 +80,10 @@ namespace Web.Controller
         /// This method generate JWT Token
         /// </summary>
         /// <param name="tokenRequest">The information of token request</param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public virtual async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest,
-            CancellationToken cancellationToken)
+        public virtual async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest)
         {
             if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
                 throw new Exception("OAuth flow is not password.");

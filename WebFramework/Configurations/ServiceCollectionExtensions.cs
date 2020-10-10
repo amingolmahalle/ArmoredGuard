@@ -5,13 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Helpers;
+using Data;
 using Data.Contracts;
+using Data.Repositories;
 using Entities.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Services.Services;
 
 namespace WebFramework.Configurations
 {
@@ -117,6 +120,31 @@ namespace WebFramework.Configurations
                     }
                 };
             });
+        }
+
+        public static void AddCustomIdentity(this IServiceCollection services, IdentitySettings settings)
+        {
+            services.AddIdentity<User, Role>(identityOptions =>
+                {
+                    //Password Settings
+                    identityOptions.Password.RequireDigit = settings.PasswordRequireDigit;
+                    identityOptions.Password.RequiredLength = settings.PasswordRequiredLength;
+                    identityOptions.Password.RequireNonAlphanumeric = settings.PasswordRequireNonAlphanumeric; //#@!
+                    identityOptions.Password.RequireUppercase = settings.PasswordRequireUppercase;
+                    identityOptions.Password.RequireLowercase = settings.PasswordRequireLowercase;
+
+                    //UserName Settings
+                    identityOptions.User.RequireUniqueEmail = settings.RequireUniqueEmail;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+        }
+
+        public static void AddCustomServices(this IServiceCollection services)
+        {
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

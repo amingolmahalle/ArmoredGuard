@@ -1,7 +1,7 @@
 using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,8 +24,11 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<SecuritySettings>(_configuration.GetSection(nameof(SecuritySettings)));
-
+            services.AddCustomIdentity(_securitySettings.IdentitySettings);
             services.AddJwtAuthentication(_securitySettings.JwtSettings);
+            services.AddAuthorization();
+            services.AddCustomServices();
+            services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,10 +43,7 @@ namespace Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
-            });
+            app.UseEndpoints(config => { config.MapControllers(); });
         }
     }
 }
