@@ -24,9 +24,9 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<SecuritySettings>(_configuration.GetSection(nameof(SecuritySettings)));
+            services.AddDbContext(_configuration);
             services.AddCustomIdentity(_securitySettings.IdentitySettings);
             services.AddJwtAuthentication(_securitySettings.JwtSettings);
-            services.AddAuthorization();
             services.AddCustomServices();
             services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }

@@ -11,6 +11,8 @@ using Data.Repositories;
 using Entities.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -140,10 +142,19 @@ namespace WebFramework.Configurations
                 .AddDefaultTokenProviders();
         }
 
+
+        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+            });
+        }
+
         public static void AddCustomServices(this IServiceCollection services)
         {
             services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
         }
     }

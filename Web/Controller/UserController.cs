@@ -14,6 +14,8 @@ using Web.Models;
 
 namespace Web.Controller
 {
+    [ApiController]
+    [Route("[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -83,7 +85,7 @@ namespace Web.Controller
         /// <returns></returns>
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public virtual async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest)
+        public virtual async Task<ActionResult> Token([FromBody] TokenRequest tokenRequest)
         {
             if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
                 throw new Exception("OAuth flow is not password.");
