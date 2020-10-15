@@ -22,7 +22,6 @@ namespace Data
             base.OnModelCreating(modelBuilder);
 
             var entitiesAssembly = typeof(IEntity).Assembly;
-
             modelBuilder.RegisterAllEntities<IEntity>(entitiesAssembly);
             modelBuilder.RegisterEntityTypeConfiguration(entitiesAssembly);
         }
@@ -66,7 +65,7 @@ namespace Data
 
                 foreach (var property in properties)
                 {
-                    var propName = property.Name;
+                    //  var propName = property.Name;
                     var val = (string) property.GetValue(item.Entity, null);
 
                     if (val.HasValue())
