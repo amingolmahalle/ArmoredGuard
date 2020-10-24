@@ -12,7 +12,7 @@ namespace Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
-        public ApplicationDbContext(DbContextOptions options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
