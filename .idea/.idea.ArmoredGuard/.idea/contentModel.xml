@@ -85,6 +85,7 @@
       </e>
       <e p="Web" t="IncludeRecursive">
         <e p="Controller" t="Include">
+          <e p="IdentityController.cs" t="Include" />
           <e p="UserController.cs" t="Include" />
         </e>
         <e p="Models" t="Include">

@@ -47,7 +47,7 @@ namespace Data.Repositories
                 cancellationToken: cancellationToken);
             
             if (exists)
-                throw new Exception("نام کاربری تکراری است");
+                throw new Exception("duplicate username");
 
             var passwordHash = SecurityHelper.GetSha256Hash(password);
             
