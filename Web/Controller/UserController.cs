@@ -82,7 +82,7 @@ namespace Web.Controller
 
             var user = new User
             {
-                Age = userRequest.Age,
+                // Age = userRequest.Age,
                 FullName = userRequest.FullName,
                 Gender = userRequest.Gender,
                 UserName = userRequest.UserName,
@@ -111,7 +111,7 @@ namespace Web.Controller
             updateUser.UserName = user?.UserName;
             updateUser.PasswordHash = user?.PasswordHash;
             updateUser.FullName = user?.FullName;
-            updateUser.Age = user.Age;
+            // updateUser.Age = user.Age;
             updateUser.Gender = user.Gender;
             updateUser.IsActive = user.IsActive;
             // updateUser.LastLoginDate = user.LastLoginDate;

@@ -11,32 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61d92b03-5972-4a76-a42c-13d6c4cc26d1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Common/IdentitySettings.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Common/JwtSettings.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Services/DomainModels/ClaimsDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/indexLayout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Models/UpdateUserRequest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Models/UpdateUserResponse.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/Common.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Common/Common.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/SecuritySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/SecuritySettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Data.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Migrations/20201024213443_init.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Migrations/20201024213443_init.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Migrations/ApplicationDbContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Entities/Entities.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Entities/Entities.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Services.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Services/IJwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services/IJwtService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Services/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services/JwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Entities/User/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Entities/User/User.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Web/Controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Controller/UserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/Models/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Models/UserRequest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/Web.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Web.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebFramework/WebFramework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WebFramework/WebFramework.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +83,6 @@
       <option value="$PROJECT_DIR$/Web/Properties/launchSettings.json" />
       <option value="$PROJECT_DIR$/Entities/User/UserRole.cs" />
       <option value="$PROJECT_DIR$/Entities/User/Role.cs" />
-      <option value="$PROJECT_DIR$/Entities/User/User.cs" />
       <option value="$PROJECT_DIR$/Web/Models/UserDto.cs" />
       <option value="$PROJECT_DIR$/Web/Models/TokenResponse.cs" />
       <option value="$PROJECT_DIR$/Services/DomainModels/TokenResult.cs" />
@@ -123,10 +101,14 @@
       <option value="$PROJECT_DIR$/Entities/Entities.csproj" />
       <option value="$PROJECT_DIR$/Services/Services.csproj" />
       <option value="$PROJECT_DIR$/WebFramework/Swagger/SwaggerConfigurationExtensions.cs" />
-      <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
       <option value="$PROJECT_DIR$/Web/Controller/IdentityController.cs" />
       <option value="$PROJECT_DIR$/WebFramework/WebFramework.csproj" />
       <option value="$PROJECT_DIR$/Web/Startup.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UpdateUserDto.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UpdateUserResponse.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UpdateUserRequest.cs" />
+      <option value="$PROJECT_DIR$/Entities/User/User.cs" />
+      <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1hdGIItsgACHw2oMBklL0YUhXXw" />
@@ -209,7 +191,7 @@
       <workItem from="1617983246979" duration="638000" />
       <workItem from="1617984849148" duration="1593000" />
       <workItem from="1628779302002" duration="4178000" />
-      <workItem from="1628838570370" duration="12756000" />
+      <workItem from="1628838570370" duration="13570000" />
     </task>
     <servers />
   </component>
@@ -340,10 +322,10 @@
           <line>107</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="107" containingFunctionPresentation="method 'Update'">
             <startOffsets>
-              <option value="3808" />
+              <option value="3811" />
             </startOffsets>
             <endOffsets>
-              <option value="3809" />
+              <option value="3812" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="19" />
@@ -353,10 +335,10 @@
           <line>126</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="126" containingFunctionPresentation="method 'Delete'">
             <startOffsets>
-              <option value="4534" />
+              <option value="4540" />
             </startOffsets>
             <endOffsets>
-              <option value="4535" />
+              <option value="4541" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="20" />
@@ -366,10 +348,10 @@
           <line>92</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="92" containingFunctionPresentation="method 'Create'">
             <startOffsets>
-              <option value="3301" />
+              <option value="3304" />
             </startOffsets>
             <endOffsets>
-              <option value="3445" />
+              <option value="3448" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="21" />
