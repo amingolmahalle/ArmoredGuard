@@ -37,9 +37,8 @@ namespace Web.Controller
             _roleManager = roleManager;
         }
 
-        [HttpGet("/get-by-id/{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult<GetByUserIdResponse>> GetById(int id)
+        [HttpGet("get-by-id/{id:int}")]
+        public async Task<ActionResult<GetByUserIdResponse>> GetById(int id)
         {
             User user = await _userManager.FindByIdAsync(id.ToString());
 
@@ -61,59 +60,49 @@ namespace Web.Controller
         }
 
         [HttpPost("create")]
-        [AllowAnonymous]
-        public virtual async Task<IActionResult> Create(CreateUserRequest request)
+        public async Task<IActionResult> Create(CreateUserRequest request)
         {
-            using (TransactionScope transactionScope = new TransactionScope())
+            // using (TransactionScope transactionScope = new TransactionScope())
+            // {
+            try
             {
-                try
+                _logger.LogInformation("calling Create User Action");
+
+                var user = new User
                 {
-                    _logger.LogInformation("calling Create User Action");
+                    BirthDate = request.BirthDate,
+                    FullName = request.FullName,
+                    Gender = request.Gender,
+                    UserName = request.UserName,
+                    Email = request.Email
+                };
+                await _userManager.CreateAsync(user, request.Password);
 
-                    var user = new User
-                    {
-                        BirthDate = request.BirthDate,
-                        FullName = request.FullName,
-                        Gender = request.Gender,
-                        UserName = request.UserName,
-                        Email = request.Email
-                    };
-                    await _userManager.CreateAsync(user, request.Password);
+                if(request.RoleId == 0)
+                    return BadRequest("RoleId is Invalid");
+                
+                var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
 
-                    Role role = new Role {Id = request.RoleId};
+                if (role == null)
+                    return BadRequest("RoleId is Invalid");
+                
+                await _userManager.AddToRoleAsync(user, role.Name);
 
-                    string roleName = await _roleManager.GetRoleNameAsync(role);
+                // transactionScope.Complete();
 
-                    if (string.IsNullOrEmpty(roleName))
-                    {
-                        return BadRequest("RoleId is Invalid");
-                    }
-                    //     // TODO: Just For Test 
-                    //     await _roleManager.CreateAsync(new Role
-                    //     {
-                    //         Name = "Admin",
-                    //         Description = "admin role"
-                    //     });
-                    // }
+                return Ok();
+            }
 
-                    await _userManager.AddToRoleAsync(user, "roleName");
-
-                    transactionScope.Complete();
-
-                    return Ok();
-                }
-
-                catch (Exception e)
-                {
-                    transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
-                }
+            catch (Exception e)
+            {
+                // transactionScope.Dispose();
+                throw new Exception(e.Message, e.InnerException);
+                // }
             }
         }
 
-        [HttpPut("update-profile")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task UpdateProfile(int id, UpdateUserProfileRequest request,
+        [HttpPut("update-profile/{id:int}")]
+        public async Task UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
             User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
@@ -151,9 +140,8 @@ namespace Web.Controller
             await _userManager.UpdateSecurityStampAsync(updateUser);
         }
 
-        [HttpPut("change-password")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task<IActionResult> ChangePassword(int id, ChangeUserPasswordRequest request,
+        [HttpPut("change-password/{id:int}")]
+        public async Task<IActionResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
             CancellationToken cancellationToken)
         {
             User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
@@ -168,9 +156,8 @@ namespace Web.Controller
             return Ok();
         }
 
-        [HttpPut("inactivate/{id}")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
+        [HttpPut("inactivate/{id:int}")]
+        public async Task<ActionResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
         {
             User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
 
@@ -189,9 +176,8 @@ namespace Web.Controller
             return Ok();
         }
 
-        [HttpPut("activate/{id}")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
+        [HttpPut("activate/{id:int}")]
+        public async Task<ActionResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
         {
             User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
 

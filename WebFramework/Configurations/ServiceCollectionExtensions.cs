@@ -96,10 +96,13 @@ namespace WebFramework.Configurations
 
                         var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
                         if (validatedUser == null)
+                        {
+                            //UnAuthorized
                             context.Fail("Token security stamp is not valid.");
+                        }
 
                         if (!user.IsActive)
-                            context.Fail("User is not active.");
+                            context.Fail("User is not active");
 
                         await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
                     },
@@ -117,7 +120,7 @@ namespace WebFramework.Configurations
                             context.Response.ContentType = "application/json";
 
                             context.Response.StatusCode = 401;
-                            
+
                             return context.Response.WriteAsync("Unauthorized");
                         }
 

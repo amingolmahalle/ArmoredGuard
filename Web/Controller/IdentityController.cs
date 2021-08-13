@@ -46,15 +46,18 @@ namespace Web.Controller
         /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
-        public virtual async Task<ActionResult> Token([FromBody] TokenRequest tokenRequest)
+        public async Task<ActionResult> Token([FromBody] TokenRequest tokenRequest)
         {
             if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
-                throw new Exception("OAuth flow is not password.");
+                throw new Exception("OAuth flow is not password");
 
             User user = await _userManager.FindByNameAsync(tokenRequest.Username);
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
+            
+            if (!user.IsActive)
+                return BadRequest("User is not active");
 
             bool isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.Password);
 
