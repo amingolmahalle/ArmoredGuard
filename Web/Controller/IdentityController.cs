@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 using Services.DomainModels;
 using Services.Services;
 using Web.Models;
@@ -49,18 +51,17 @@ namespace Web.Controller
             if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
                 throw new Exception("OAuth flow is not password.");
 
-            //var user = await userRepository.GetByUserAndPass(username, password, cancellationToken);
             User user = await _userManager.FindByNameAsync(tokenRequest.Username);
 
             if (user == null)
-                throw new Exception("نام کاربری یا رمز عبور اشتباه است");
+                return NotFound("Invalid Username or Password");
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.Password);
+            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.Password);
 
             if (!isPasswordValid)
-                throw new Exception("نام کاربری یا رمز عبور اشتباه است");
+                return NotFound("Invalid Username or Password");
 
-            var roleName = (await _userManager.GetRolesAsync(user)).Single();
+            string roleName = (await _userManager.GetRolesAsync(user)).Single();
 
             ClaimsDto tokenResult = new ClaimsDto
             {
@@ -70,7 +71,7 @@ namespace Web.Controller
                 SecurityStampClaim = user.SecurityStamp
             };
 
-            var jwt = await _jwtService.GenerateAsync(tokenResult);
+            AccessToken jwt = await _jwtService.GenerateAsync(tokenResult);
 
             return new JsonResult(jwt);
         }
@@ -78,31 +79,29 @@ namespace Web.Controller
         [HttpGet("get-claims")]
         public IActionResult GetClaims()
         {
-            bool result = HttpContext.User.Identity.IsAuthenticated;
+            bool result = HttpContext.User.Identity is {IsAuthenticated: true};
 
-            if (result)
-            {
-                var claims = _httpContextAccessor.HttpContext.User.Claims.ToList();
+            if (!result || _httpContextAccessor.HttpContext == null)
+                return Unauthorized();
 
-                return Ok(
-                    new ClaimsDto
-                    {
-                        UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
-                        FullName = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                        RoleName = claims.Single(c => c.Type == ClaimTypes.Role).Value,
-                        SecurityStampClaim =
-                            claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType).Value
-                    });
-            }
+            List<Claim> claims = _httpContextAccessor.HttpContext.User.Claims.ToList();
 
-            return Unauthorized();
+            return Ok(
+                new ClaimsDto
+                {
+                    UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
+                    FullName = claims.Single(c => c.Type == ClaimTypes.Name).Value,
+                    RoleName = claims.Single(c => c.Type == ClaimTypes.Role).Value,
+                    SecurityStampClaim =
+                        claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType).Value
+                });
         }
 
         [HttpGet("is-valid-token")]
         [AllowAnonymous]
         public bool IsValidToken()
         {
-            return HttpContext.User.Identity.IsAuthenticated;
+            return HttpContext.User.Identity is {IsAuthenticated: true};
         }
     }
 }

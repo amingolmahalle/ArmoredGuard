@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Data.Contracts;
@@ -6,7 +6,6 @@ using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Web.Models;
 
@@ -36,53 +35,38 @@ namespace Web.Controller
             _roleManager = roleManager;
         }
 
-        [HttpGet]
+        [HttpGet("/get-by-id/{id:int}")]
         [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<GetByUserIdResponse>> GetById(int id)
         {
-            //var userName = HttpContext.User.Identity.GetUserName();
-            //userName = HttpContext.User.Identity.Name;
-            //var userId = HttpContext.User.Identity.GetUserId();
-            //var userIdInt = HttpContext.User.Identity.GetUserId<int>();
-            //var phone = HttpContext.User.Identity.FindFirstValue(ClaimTypes.MobilePhone);
-            //var role = HttpContext.User.Identity.FindFirstValue(ClaimTypes.Role);
+            User user = await _userManager.FindByIdAsync(id.ToString());
 
-            var users = await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
-            return Ok(users);
-        }
-
-        [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult<User>> Get(int id, CancellationToken cancellationToken)
-        {
-            var user2 = await _userManager.FindByIdAsync(id.ToString());
-            var role = await _roleManager.FindByNameAsync("Admin");
-
-            var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
-                return NotFound();
+                return NoContent();
 
-            await _userManager.UpdateSecurityStampAsync(user);
-            //await userRepository.UpdateSecurityStampAsync(user, cancellationToken);
+            var getByUserIdResponse = new GetByUserIdResponse
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                UserName = user.UserName,
+                LastLoginDate = user.LastLoginDate.GetValueOrDefault()
+            };
 
-            return user;
+            return getByUserIdResponse;
         }
 
         [HttpPost("create")]
         [AllowAnonymous]
-        public virtual async Task<User> Create(UserRequest userRequest, CancellationToken cancellationToken)
+        public virtual async Task Create(CreateUserRequest userRequest)
         {
-            _logger.LogInformation("متد Create فراخوانی شد");
-
-            //var exists = await userRepository.TableNoTracking.AnyAsync(p => p.UserName == userDto.UserName);
-            
-            //if (exists)
-            //    return BadRequest("نام کاربری تکراری است");
-
+            _logger.LogInformation("calling Create User Action");
 
             var user = new User
             {
-                // Age = userRequest.Age,
+                BirthDate = userRequest.BirthDate,
                 FullName = userRequest.FullName,
                 Gender = userRequest.Gender,
                 UserName = userRequest.UserName,
@@ -97,36 +81,103 @@ namespace Web.Controller
             });
 
             await _userManager.AddToRoleAsync(user, "Admin");
-
-            //await userRepository.AddAsync(user, userDto.Password, cancellationToken);
-            return user;
         }
 
-        [HttpPut]
+        [HttpPut("update-profile")]
         [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult> Update(int id, User user, CancellationToken cancellationToken)
+        public virtual async Task UpdateProfile(int id, UpdateUserProfileRequest request,
+            CancellationToken cancellationToken)
         {
-            var updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
 
-            updateUser.UserName = user?.UserName;
-            updateUser.PasswordHash = user?.PasswordHash;
-            updateUser.FullName = user?.FullName;
-            // updateUser.Age = user.Age;
-            updateUser.Gender = user.Gender;
-            updateUser.IsActive = user.IsActive;
-            // updateUser.LastLoginDate = user.LastLoginDate;
+            if (request?.UserName != null)
+            {
+                updateUser.UserName = request.UserName;
+            }
 
-            await _userRepository.UpdateAsync(updateUser, cancellationToken);
+            if (request?.Email != null)
+            {
+                updateUser.Email = request.Email;
+            }
+
+            if (request?.PhoneNumber != null)
+            {
+                updateUser.PhoneNumber = request.PhoneNumber;
+            }
+
+            if (request?.BirthDate != null)
+            {
+                updateUser.BirthDate = request.BirthDate;
+            }
+
+            if (request?.FullName != null)
+            {
+                updateUser.FullName = request.FullName;
+            }
+
+            if (request?.Gender != null)
+            {
+                updateUser.Gender = request.Gender.GetValueOrDefault();
+            }
+
+            await _userManager.UpdateSecurityStampAsync(updateUser);
+        }
+
+        [HttpPut("change-password")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<IActionResult> ChangePassword(int id, ChangeUserPasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+
+            IdentityResult result =
+                await _userManager.ChangePasswordAsync(updateUser, request.CurrentPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+                return NotFound(
+                    $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
 
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpPut("inactivate/{id}")]
         [Authorize(Roles = "Admin")]
-        public virtual async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(cancellationToken, id);
-            await _userRepository.DeleteAsync(user, cancellationToken);
+            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+
+            if (updateUser == null)
+            {
+                return NoContent();
+            }
+
+            if (!updateUser.IsActive)
+                return BadRequest("User is disabled");
+
+            updateUser.IsActive = false;
+
+            await _userManager.UpdateSecurityStampAsync(updateUser);
+
+            return Ok();
+        }
+
+        [HttpPut("activate/{id}")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<ActionResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+
+            if (updateUser == null)
+            {
+                return NoContent();
+            }
+
+            if (updateUser.IsActive)
+                return BadRequest("user is active");
+
+            updateUser.IsActive = true;
+
+            await _userManager.UpdateSecurityStampAsync(updateUser);
 
             return Ok();
         }

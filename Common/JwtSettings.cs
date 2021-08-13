@@ -12,6 +12,6 @@ namespace Common
         
         public int NotBeforeMinutes { get; set; }
         
-        public int ExpirationMinutes { get; set; }
+        public int ExpirationTime { get; set; }
     }
 }

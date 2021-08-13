@@ -11,11 +11,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61d92b03-5972-4a76-a42c-13d6c4cc26d1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Web/Models/UpdateUserRequest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Web/Models/UpdateUserResponse.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Models/User/ChangeUserPasswordRequest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Models/User/GetByUserIdResponse.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Models/User/UpdateUserProfileRequest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/JwtSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/JwtSettings.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Entities/User/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Entities/User/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Services/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services/JwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Web/Controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Controller/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Models/UpdateUserRequest.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Models/UpdateUserResponse.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Models/UserRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Models/User/CreateUserRequest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web/appsettings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,43 +43,55 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Data/Repositories/UserRepository.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9BD927F4-99FF-4B73-B1ED-5349652BB75D/86/HttpProtocol.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Repositories/Repository.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2DCE9581-4549-4044-9BB7-7C788663309D/4/DeveloperExceptionPageMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A8EE20E6-6995-41E0-A2DF-43D758CC2B0D/e4/6d89474e/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/780074E4-40D8-4E73-A2A8-68D28D385F18/e5/1d5da57a/ActionMethodExecutor.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8A7589DB-BA2E-4406-907D-EAFEC1549CDA/7/SwaggerGenServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/6/AuthenticationMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A8EE20E6-6995-41E0-A2DF-43D758CC2B0D/DF/UnauthorizedAccessException.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4594B4F5-B33E-427C-BD19-FC78EF892E46/4/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Entities/BaseEntity/BaseEntity.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/5/AuthenticationHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/ApplicationDbContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Entities/User/Role.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0A900375-B7DF-4168-B845-7C07A33E45D1/40/da43fd47/UserManager`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/51C9F33F-28A2-41BF-ADE4-C43F06BB9337/3/IdentityUser.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/167/TaskContinuation.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/13/RoleManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/147/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Entities/User/User.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Web/Controller/UserController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/544CCB14-3830-48CA-A59E-D705555664E5/7/ClaimsPrincipal.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Services/Services/JwtService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/82/9c1d44b0/AsyncTaskMethodBuilder`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1FDCFFE5-BBE7-4E1E-A676-358B4C4B75AD/7/JwtBearerHandler.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Contracts/IUserRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/544CCB14-3830-48CA-A59E-D705555664E5/5/Claim.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Web/Models/TokenRequest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/1D/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Contracts/IRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1FDCFFE5-BBE7-4E1E-A676-358B4C4B75AD/6/JwtBearerEvents.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Services/Services/IJwtService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Web/Startup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/34/IUserClaimsPrincipalFactory.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9BD927F4-99FF-4B73-B1ED-5349652BB75D/86/HttpProtocol.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2DCE9581-4549-4044-9BB7-7C788663309D/4/DeveloperExceptionPageMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8A7589DB-BA2E-4406-907D-EAFEC1549CDA/7/SwaggerGenServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/44228A68-A84F-4B11-9BAC-841603ABD5DF/bf/fe56510b/UserManager`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/6/AuthenticationMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C6F16FEF-8657-4957-94FA-0CEC1121D993/4c/25583699/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4594B4F5-B33E-427C-BD19-FC78EF892E46/4/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/5/AuthenticationHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/44228A68-A84F-4B11-9BAC-841603ABD5DF/1D/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0A900375-B7DF-4168-B845-7C07A33E45D1/40/da43fd47/UserManager`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A1A0CE1E-54FF-4EAE-8D38-4D54FD63881A/8e/d459c91f/UserOnlyStore`6.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/167/TaskContinuation.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/147/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Web/Controller/UserController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Services/Services/JwtService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/82/9c1d44b0/AsyncTaskMethodBuilder`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8C63CB3D-56ED-42AB-BB60-937A1C0DBA7D/E/PasswordHasher.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1FDCFFE5-BBE7-4E1E-A676-358B4C4B75AD/7/JwtBearerHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Contracts/IUserRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A1A0CE1E-54FF-4EAE-8D38-4D54FD63881A/5/UserOnlyStore.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Contracts/IRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8260B232-972C-49DC-8BE9-E209F7DCC316/41/0b1a9f29/IdentityUser`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Common/SecuritySettings.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Web/Program.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/D5EDF430-AB5A-4412-A0B9-E75F3C32EB0A/91/24986486/EntityFrameworkServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Services/AccessToken.cs" root0="FORCE_HIGHLIGHTING" />
@@ -87,11 +107,9 @@
       <option value="$PROJECT_DIR$/Web/Models/TokenResponse.cs" />
       <option value="$PROJECT_DIR$/Services/DomainModels/TokenResult.cs" />
       <option value="$PROJECT_DIR$/Services/DomainModels/ClaimsDto.cs" />
-      <option value="$PROJECT_DIR$/Services/Services/JwtService.cs" />
       <option value="$PROJECT_DIR$/Services/Services/IJwtService.cs" />
       <option value="$PROJECT_DIR$/Common/SecuritySettings.cs" />
       <option value="$PROJECT_DIR$/Web/appsettings.Development.json" />
-      <option value="$PROJECT_DIR$/Web/appsettings.json" />
       <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" />
       <option value="$PROJECT_DIR$/WebFramework/Swagger/UnauthorizedResponsesOperationFilter.cs" />
       <option value="$PROJECT_DIR$/WebFramework/Swagger/ApplySummariesOperationFilter.cs" />
@@ -101,13 +119,21 @@
       <option value="$PROJECT_DIR$/Entities/Entities.csproj" />
       <option value="$PROJECT_DIR$/Services/Services.csproj" />
       <option value="$PROJECT_DIR$/WebFramework/Swagger/SwaggerConfigurationExtensions.cs" />
-      <option value="$PROJECT_DIR$/Web/Controller/IdentityController.cs" />
       <option value="$PROJECT_DIR$/WebFramework/WebFramework.csproj" />
       <option value="$PROJECT_DIR$/Web/Startup.cs" />
       <option value="$PROJECT_DIR$/Web/Models/UpdateUserDto.cs" />
       <option value="$PROJECT_DIR$/Web/Models/UpdateUserResponse.cs" />
       <option value="$PROJECT_DIR$/Web/Models/UpdateUserRequest.cs" />
       <option value="$PROJECT_DIR$/Entities/User/User.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/ChangeUserPasswordRequest.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UserRequest.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UpdateUserProfileRequest.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/GetByUserIdResponse.cs" />
+      <option value="$PROJECT_DIR$/Web/Controller/IdentityController.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/CreateUserRequest.cs" />
+      <option value="$PROJECT_DIR$/Common/JwtSettings.cs" />
+      <option value="$PROJECT_DIR$/Web/appsettings.json" />
+      <option value="$PROJECT_DIR$/Services/Services/JwtService.cs" />
       <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
     </changedPaths>
   </component>
@@ -191,7 +217,7 @@
       <workItem from="1617983246979" duration="638000" />
       <workItem from="1617984849148" duration="1593000" />
       <workItem from="1628779302002" duration="4178000" />
-      <workItem from="1628838570370" duration="13570000" />
+      <workItem from="1628838570370" duration="23839000" />
     </task>
     <servers />
   </component>
@@ -228,13 +254,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Web/Controller/IdentityController.cs</url>
-          <line>79</line>
+          <line>80</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" initialLine="62" containingFunctionPresentation="method 'IsValidToken'">
             <startOffsets>
-              <option value="2672" />
+              <option value="2613" />
             </startOffsets>
             <endOffsets>
-              <option value="2673" />
+              <option value="2614" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="2" />
@@ -280,81 +306,94 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>41</line>
-          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="41" containingFunctionPresentation="method 'Get'">
-            <startOffsets>
-              <option value="1244" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1245" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>56</line>
+          <line>40</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="56" containingFunctionPresentation="method 'Get'">
             <startOffsets>
-              <option value="2003" />
+              <option value="1199" />
             </startOffsets>
             <endOffsets>
-              <option value="2004" />
+              <option value="1200" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>73</line>
-          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="73" containingFunctionPresentation="method 'Create'">
-            <startOffsets>
-              <option value="2652" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2653" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>107</line>
+          <line>89</line>
           <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="107" containingFunctionPresentation="method 'Update'">
             <startOffsets>
-              <option value="3811" />
+              <option value="2830" />
             </startOffsets>
             <endOffsets>
-              <option value="3812" />
+              <option value="2831" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>126</line>
-          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="126" containingFunctionPresentation="method 'Delete'">
+          <line>122</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="122" containingFunctionPresentation="method 'Update'">
             <startOffsets>
-              <option value="4540" />
+              <option value="3719" />
             </startOffsets>
             <endOffsets>
-              <option value="4541" />
+              <option value="3775" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="20" />
+          <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>92</line>
-          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="92" containingFunctionPresentation="method 'Create'">
+          <line>129</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="130" containingFunctionPresentation="method 'ChangeUserPassword'">
             <startOffsets>
-              <option value="3304" />
+              <option value="4025" />
             </startOffsets>
             <endOffsets>
-              <option value="3448" />
+              <option value="4026" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="21" />
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/44228A68-A84F-4B11-9BAC-841603ABD5DF/1D/UserManager.cs</url>
+          <line>700</line>
+          <properties documentPath="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/44228A68-A84F-4B11-9BAC-841603ABD5DF/1D/UserManager.cs" initialLine="700" containingFunctionPresentation="method 'CheckPasswordAsync'">
+            <startOffsets>
+              <option value="27917" />
+            </startOffsets>
+            <endOffsets>
+              <option value="27918" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/44228A68-A84F-4B11-9BAC-841603ABD5DF/1D/UserManager.cs</url>
+          <line>711</line>
+          <properties documentPath="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/44228A68-A84F-4B11-9BAC-841603ABD5DF/1D/UserManager.cs" initialLine="711" containingFunctionPresentation="method 'CheckPasswordAsync'">
+            <startOffsets>
+              <option value="28278" />
+            </startOffsets>
+            <endOffsets>
+              <option value="28359" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>135</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="139" containingFunctionPresentation="method 'ChangeUserPassword'">
+            <startOffsets>
+              <option value="4280" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4302" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
