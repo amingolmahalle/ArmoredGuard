@@ -17,6 +17,7 @@ namespace Web.Controller
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class IdentityController : ControllerBase
     {
         private readonly IJwtService _jwtService;
@@ -80,6 +81,7 @@ namespace Web.Controller
         }
 
         [HttpGet("get-claims")]
+        [Authorize]
         public IActionResult GetClaims()
         {
             bool result = HttpContext.User.Identity is {IsAuthenticated: true};

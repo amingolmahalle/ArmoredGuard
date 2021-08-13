@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using Data.Contracts;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +14,7 @@ namespace Web.Controller
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -60,6 +60,7 @@ namespace Web.Controller
         }
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create(CreateUserRequest request)
         {
             // using (TransactionScope transactionScope = new TransactionScope())
@@ -102,6 +103,7 @@ namespace Web.Controller
         }
 
         [HttpPut("update-profile/{id:int}")]
+        
         public async Task UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
