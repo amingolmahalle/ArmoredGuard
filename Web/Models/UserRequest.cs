@@ -4,7 +4,7 @@ using Entities.User;
 
 namespace Web.Models
 {
-    public class UserDto : IValidatableObject
+    public class UserRequest : IValidatableObject
     {
         [Required] [StringLength(100)] public string UserName { get; set; }
 

@@ -10,6 +10,7 @@ using Data.Contracts;
 using Data.Repositories;
 using Entities.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -67,12 +68,10 @@ namespace WebFramework.Configurations
                             .CreateLogger(nameof(JwtBearerEvents));
 
                         logger.LogError("Authentication failed.", context.Exception);
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = 401;
 
-                        if (context.Exception != null)
-                            throw new Exception(
-                                "Authentication failed.");
-
-                        return Task.CompletedTask;
+                        return context.Response.WriteAsync("Unauthorized");
                     },
                     OnTokenValidated = async context =>
                     {
@@ -113,12 +112,16 @@ namespace WebFramework.Configurations
 
                         logger.LogError("OnChallenge error", context.Error, context.ErrorDescription);
 
-                        if (context.AuthenticateFailure != null)
-                            throw new Exception("Authenticate failure.");
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.ContentType = "application/json";
 
-                        throw new Exception("You are unauthorized to access this resource.");
+                            context.Response.StatusCode = 401;
+                            
+                            return context.Response.WriteAsync("Unauthorized");
+                        }
 
-                        //return Task.CompletedTask;
+                        return Task.CompletedTask;
                     }
                 };
             });
@@ -151,7 +154,7 @@ namespace WebFramework.Configurations
             });
         }
 
-        public static void AddCustomServices(this IServiceCollection services)
+        public static void AddInjectionServices(this IServiceCollection services)
         {
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

@@ -11,13 +11,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61d92b03-5972-4a76-a42c-13d6c4cc26d1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Common/IdentitySettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Common/JwtSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Services/DomainModels/ClaimsDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/contentModel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/indexLayout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArmoredGuard/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/ApplicationDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/ApplicationDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/Common.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Common/Common.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/SecuritySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/SecuritySettings.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Data.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Migrations/20201024213443_init.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Migrations/20201024213443_init.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Migrations/ApplicationDbContextModelSnapshot.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Entities/Entities.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Entities/Entities.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Services.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Services/IJwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services/IJwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Services/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Services/JwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Controller/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Controller/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Models/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Models/UserRequest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Properties/launchSettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Web/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Startup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Web/Web.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Web/Web.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebFramework/WebFramework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WebFramework/WebFramework.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,73 +46,88 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Web/Controller/UserController.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Web/Models/TokenRequest.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Web/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4B69A5CA-8541-4F74-AF24-1079DAB6B64E/a9/941ec336/ISecurityStampValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Web/Startup.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8A5C3216-9D05-44D4-B256-B7F620B9E14A/24/ControllerBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Services/AccessToken.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/346AC160-1803-412E-B0A1-21046C4AC027/8/ServiceProvider.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/92B5E598-6D6C-4D94-8B37-43C9DCEF6A74/1D8/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/ApplicationDbContext.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Common/SecuritySettings.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Services/Services/IJwtService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Services/Services/JwtService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Entities/User/User.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Entities/BaseEntity/BaseEntity.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8C515D11-6774-4292-AE1E-0213E7791F08/1D/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Entities/User/Role.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Repositories/UserRepository.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Migrations/20201024213443_init.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9BD927F4-99FF-4B73-B1ED-5349652BB75D/86/HttpProtocol.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Repositories/Repository.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Contracts/IRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2DCE9581-4549-4044-9BB7-7C788663309D/4/DeveloperExceptionPageMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A8EE20E6-6995-41E0-A2DF-43D758CC2B0D/e4/6d89474e/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/780074E4-40D8-4E73-A2A8-68D28D385F18/e5/1d5da57a/ActionMethodExecutor.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8A7589DB-BA2E-4406-907D-EAFEC1549CDA/7/SwaggerGenServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/6/AuthenticationMiddleware.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A8EE20E6-6995-41E0-A2DF-43D758CC2B0D/DF/UnauthorizedAccessException.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4594B4F5-B33E-427C-BD19-FC78EF892E46/4/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Entities/BaseEntity/BaseEntity.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/B270E96C-9274-4BEE-A18E-117FCB52DCB6/5/AuthenticationHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/ApplicationDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Entities/User/Role.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0A900375-B7DF-4168-B845-7C07A33E45D1/40/da43fd47/UserManager`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/51C9F33F-28A2-41BF-ADE4-C43F06BB9337/3/IdentityUser.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/167/TaskContinuation.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/13/RoleManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/147/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Entities/User/User.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Web/Controller/UserController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/544CCB14-3830-48CA-A59E-D705555664E5/7/ClaimsPrincipal.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Services/Services/JwtService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DDC8B40C-2AD9-409B-AAC4-577C24DA66BB/82/9c1d44b0/AsyncTaskMethodBuilder`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1FDCFFE5-BBE7-4E1E-A676-358B4C4B75AD/7/JwtBearerHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Contracts/IUserRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/544CCB14-3830-48CA-A59E-D705555664E5/5/Claim.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Web/Models/TokenRequest.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/1D/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Contracts/IRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1FDCFFE5-BBE7-4E1E-A676-358B4C4B75AD/6/JwtBearerEvents.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Services/Services/IJwtService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Web/Startup.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4ADEF63D-9452-4EE2-92CB-016A9E110062/34/IUserClaimsPrincipalFactory.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Common/SecuritySettings.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Web/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/D5EDF430-AB5A-4412-A0B9-E75F3C32EB0A/91/24986486/EntityFrameworkServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Services/AccessToken.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/Common/Class1.cs" />
-        <option value="$PROJECT_DIR$/Data/Class1.cs" />
-        <option value="$PROJECT_DIR$/Services/Class1.cs" />
-        <option value="$PROJECT_DIR$/Entities/Class1.cs" />
-        <option value="$PROJECT_DIR$/Common/BaseEntity.cs" />
-        <option value="$PROJECT_DIR$/Entities/BaseEntity/BaseEntity.cs" />
-        <option value="$PROJECT_DIR$/Entities/User/Role.cs" />
-        <option value="$PROJECT_DIR$/Services/AccessToken.cs" />
-        <option value="$PROJECT_DIR$/Services/Services/IJwtService.cs" />
-        <option value="$PROJECT_DIR$/Common/SiteSettings.cs" />
-        <option value="$PROJECT_DIR$/WebFramework/Class1.cs" />
-        <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollections.cs" />
-        <option value="$PROJECT_DIR$/Data/Contracts/IUserRepository.cs" />
-        <option value="$PROJECT_DIR$/Common/Helpers/StringExtensions.cs" />
-        <option value="$PROJECT_DIR$/Common/Helpers/Assert.cs" />
-        <option value="$PROJECT_DIR$/Data/Contracts/IRepository.cs" />
-        <option value="$PROJECT_DIR$/Common/Helpers/SecurityHelper.cs" />
-        <option value="$PROJECT_DIR$/Common/Helpers/IdentityExtensions.cs" />
-        <option value="$PROJECT_DIR$/Web/Program.cs" />
-        <option value="$PROJECT_DIR$/Common/SecuritySettings.cs" />
-        <option value="$PROJECT_DIR$/Data/Repositories/UserRepository.cs" />
-        <option value="$PROJECT_DIR$/Entities/User/User.cs" />
-        <option value="$PROJECT_DIR$/Common/Helpers/ModelBuilderExtensions.cs" />
-        <option value="$PROJECT_DIR$/Web/Models/TokenRequest.cs" />
-        <option value="$PROJECT_DIR$/Web/Models/UserDto.cs" />
-        <option value="$PROJECT_DIR$/Services/Services/JwtService.cs" />
-        <option value="$PROJECT_DIR$/Data/Repositories/Repository.cs" />
-        <option value="$PROJECT_DIR$/WebFramework/Configurations/IdentityConfigurationExtensions.cs" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" />
-        <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
-        <option value="$PROJECT_DIR$/Web/Startup.cs" />
-        <option value="$PROJECT_DIR$/Web/appsettings.json" />
-        <option value="$PROJECT_DIR$/Web/appsettings.Development.json" />
-        <option value="$PROJECT_DIR$/Data/ApplicationDbContext.cs" />
-      </list>
-    </option>
+    <changedPaths>
+      <option value="$PROJECT_DIR$/Data/Repositories/Repository.cs" />
+      <option value="$PROJECT_DIR$/Web/Controller/TokenController.cs" />
+      <option value="$PROJECT_DIR$/Web/Properties/launchSettings.json" />
+      <option value="$PROJECT_DIR$/Entities/User/UserRole.cs" />
+      <option value="$PROJECT_DIR$/Entities/User/Role.cs" />
+      <option value="$PROJECT_DIR$/Entities/User/User.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/UserDto.cs" />
+      <option value="$PROJECT_DIR$/Web/Models/TokenResponse.cs" />
+      <option value="$PROJECT_DIR$/Services/DomainModels/TokenResult.cs" />
+      <option value="$PROJECT_DIR$/Services/DomainModels/ClaimsDto.cs" />
+      <option value="$PROJECT_DIR$/Services/Services/JwtService.cs" />
+      <option value="$PROJECT_DIR$/Services/Services/IJwtService.cs" />
+      <option value="$PROJECT_DIR$/Common/SecuritySettings.cs" />
+      <option value="$PROJECT_DIR$/Web/appsettings.Development.json" />
+      <option value="$PROJECT_DIR$/Web/appsettings.json" />
+      <option value="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" />
+      <option value="$PROJECT_DIR$/WebFramework/Swagger/UnauthorizedResponsesOperationFilter.cs" />
+      <option value="$PROJECT_DIR$/WebFramework/Swagger/ApplySummariesOperationFilter.cs" />
+      <option value="$PROJECT_DIR$/Web/Web.csproj" />
+      <option value="$PROJECT_DIR$/Common/Common.csproj" />
+      <option value="$PROJECT_DIR$/Data/Data.csproj" />
+      <option value="$PROJECT_DIR$/Entities/Entities.csproj" />
+      <option value="$PROJECT_DIR$/Services/Services.csproj" />
+      <option value="$PROJECT_DIR$/WebFramework/Swagger/SwaggerConfigurationExtensions.cs" />
+      <option value="$PROJECT_DIR$/Web/Controller/UserController.cs" />
+      <option value="$PROJECT_DIR$/Web/Controller/IdentityController.cs" />
+      <option value="$PROJECT_DIR$/WebFramework/WebFramework.csproj" />
+      <option value="$PROJECT_DIR$/Web/Startup.cs" />
+    </changedPaths>
   </component>
   <component name="ProjectId" id="1hdGIItsgACHw2oMBklL0YUhXXw" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -105,17 +139,19 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.3500847" />
-    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.29983062" />
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34997195" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="Rider.SolutionExplorerActivator" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TWShift.3" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../IdentityServer/IdentityServer.sln" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DotnetZoom/MyApi.sln" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.CSharpInteractiveConfiguration" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
     <configuration name="Web" type="LaunchSettings" factoryName=".NET Launch Settings Profile" temporary="true">
@@ -130,7 +166,7 @@
       <option name="SEND_DEBUG_REQUEST" value="1" />
       <option name="ADDITIONAL_IIS_EXPRESS_ARGUMENTS" value="" />
       <method v="2">
-        <option name="Build" enabled="true" />
+        <option name="Build" />
       </method>
     </configuration>
     <recent_temporary>
@@ -139,7 +175,7 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -158,196 +194,185 @@
       <workItem from="1602348983002" duration="6281000" />
       <workItem from="1602528947613" duration="2225000" />
       <workItem from="1602747731818" duration="7732000" />
+      <workItem from="1607289986910" duration="2173000" />
+      <workItem from="1607429193458" duration="1243000" />
+      <workItem from="1607459996958" duration="32000" />
+      <workItem from="1613411230908" duration="9306000" />
+      <workItem from="1613567096006" duration="1441000" />
+      <workItem from="1613572695488" duration="3013000" />
+      <workItem from="1613588027475" duration="766000" />
+      <workItem from="1613729069138" duration="9727000" />
+      <workItem from="1613936025875" duration="2384000" />
+      <workItem from="1614344415802" duration="9250000" />
+      <workItem from="1617817245627" duration="2630000" />
+      <workItem from="1617980989157" duration="607000" />
+      <workItem from="1617983246979" duration="638000" />
+      <workItem from="1617984849148" duration="1593000" />
+      <workItem from="1628779302002" duration="4178000" />
+      <workItem from="1628838570370" duration="12756000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="135" y="-18" width="1099" height="757" key="#Web" timestamp="1602351497688">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="135" y="-18" width="1099" height="757" key="#Web/0.0.1366.768@0.0.1366.768" timestamp="1602351497688" />
-    <state x="135" y="-18" width="1099" height="757" key="#Web:_IIS_Express" timestamp="1602351457875">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="135" y="-18" width="1099" height="757" key="#Web:_IIS_Express/0.0.1366.768@0.0.1366.768" timestamp="1602351457875" />
-    <state x="278" y="4" width="802" height="666" key="#Web_Browsers" timestamp="1602351496702">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="278" y="4" width="802" height="666" key="#Web_Browsers/0.0.1366.768@0.0.1366.768" timestamp="1602351496702" />
-    <state x="432" y="49" width="1141" height="964" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602935691927">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="59" y="-30" width="1306" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.768@0.0.1366.768" timestamp="1602351423248" />
-    <state x="432" y="49" width="1141" height="964" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1602935691927" />
-    <state x="440" y="-15" key="#xdebugger.evaluate" timestamp="1602751480869">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="440" y="-15" key="#xdebugger.evaluate/0.0.1366.768@0.0.1366.768" timestamp="1602751480869" />
-    <state width="334" height="589" key="DebuggerActiveHint" timestamp="1602750503606">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="334" height="589" key="DebuggerActiveHint/0.0.1366.768@0.0.1366.768" timestamp="1602750503606" />
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1600333746468">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1600333746468" />
-    <state width="1364" height="254" key="GridCell.Tab.0.bottom" timestamp="1603577323992">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1603577323992" />
-    <state width="1802" height="367" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049661" />
-    <state width="1364" height="254" key="GridCell.Tab.0.center" timestamp="1603577323991">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1603577323991" />
-    <state width="1802" height="367" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049659" />
-    <state width="1364" height="254" key="GridCell.Tab.0.left" timestamp="1603577323990">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1603577323990" />
-    <state width="1802" height="367" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049658" />
-    <state width="1364" height="254" key="GridCell.Tab.0.right" timestamp="1603577323991">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1603577323991" />
-    <state width="1802" height="367" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049660" />
-    <state width="1364" height="254" key="GridCell.Tab.1.bottom" timestamp="1603577323995">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.1.bottom/0.0.1366.768@0.0.1366.768" timestamp="1603577323995" />
-    <state width="1802" height="367" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049664" />
-    <state width="1364" height="254" key="GridCell.Tab.1.center" timestamp="1603577323994">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.1.center/0.0.1366.768@0.0.1366.768" timestamp="1603577323994" />
-    <state width="1802" height="367" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049663" />
-    <state width="1364" height="254" key="GridCell.Tab.1.left" timestamp="1603577323992">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.1.left/0.0.1366.768@0.0.1366.768" timestamp="1603577323992" />
-    <state width="1802" height="367" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049662" />
-    <state width="1364" height="254" key="GridCell.Tab.1.right" timestamp="1603577323994">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.1.right/0.0.1366.768@0.0.1366.768" timestamp="1603577323994" />
-    <state width="1802" height="367" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049663" />
-    <state width="1364" height="254" key="GridCell.Tab.2.bottom" timestamp="1603577323996">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.2.bottom/0.0.1366.768@0.0.1366.768" timestamp="1603577323996" />
-    <state width="1802" height="367" key="GridCell.Tab.2.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049666" />
-    <state width="1364" height="254" key="GridCell.Tab.2.center" timestamp="1603577323996">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.2.center/0.0.1366.768@0.0.1366.768" timestamp="1603577323996" />
-    <state width="1802" height="367" key="GridCell.Tab.2.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049665" />
-    <state width="1364" height="254" key="GridCell.Tab.2.left" timestamp="1603577323995">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.2.left/0.0.1366.768@0.0.1366.768" timestamp="1603577323995" />
-    <state width="1802" height="367" key="GridCell.Tab.2.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049665" />
-    <state width="1364" height="254" key="GridCell.Tab.2.right" timestamp="1603577323996">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.2.right/0.0.1366.768@0.0.1366.768" timestamp="1603577323996" />
-    <state width="1802" height="367" key="GridCell.Tab.2.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049666" />
-    <state width="1364" height="254" key="GridCell.Tab.3.bottom" timestamp="1603577323998">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.3.bottom/0.0.1366.768@0.0.1366.768" timestamp="1603577323998" />
-    <state width="1802" height="367" key="GridCell.Tab.3.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049669" />
-    <state width="1364" height="254" key="GridCell.Tab.3.center" timestamp="1603577323997">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.3.center/0.0.1366.768@0.0.1366.768" timestamp="1603577323997" />
-    <state width="1802" height="367" key="GridCell.Tab.3.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049667" />
-    <state width="1364" height="254" key="GridCell.Tab.3.left" timestamp="1603577323997">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.3.left/0.0.1366.768@0.0.1366.768" timestamp="1603577323997" />
-    <state width="1802" height="367" key="GridCell.Tab.3.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049667" />
-    <state width="1364" height="254" key="GridCell.Tab.3.right" timestamp="1603577323998">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.3.right/0.0.1366.768@0.0.1366.768" timestamp="1603577323998" />
-    <state width="1802" height="367" key="GridCell.Tab.3.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049668" />
-    <state width="1364" height="254" key="GridCell.Tab.4.bottom" timestamp="1603577324001">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.4.bottom/0.0.1366.768@0.0.1366.768" timestamp="1603577324001" />
-    <state width="1802" height="367" key="GridCell.Tab.4.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049671" />
-    <state width="1364" height="254" key="GridCell.Tab.4.center" timestamp="1603577324000">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.4.center/0.0.1366.768@0.0.1366.768" timestamp="1603577324000" />
-    <state width="1802" height="367" key="GridCell.Tab.4.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049670" />
-    <state width="1364" height="254" key="GridCell.Tab.4.left" timestamp="1603577323999">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.4.left/0.0.1366.768@0.0.1366.768" timestamp="1603577323999" />
-    <state width="1802" height="367" key="GridCell.Tab.4.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049669" />
-    <state width="1364" height="254" key="GridCell.Tab.4.right" timestamp="1603577324000">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="1364" height="254" key="GridCell.Tab.4.right/0.0.1366.768@0.0.1366.768" timestamp="1603577324000" />
-    <state width="1802" height="367" key="GridCell.Tab.4.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602937049671" />
-    <state x="591" y="288" width="800" height="537" key="Rider.ProjectTemplateDialog.Size" timestamp="1600335814949">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="591" y="288" width="800" height="537" key="Rider.ProjectTemplateDialog.Size/72.27.1848.1053@72.27.1848.1053" timestamp="1600335814949" />
-    <state x="791" y="235" width="399" height="643" key="RiderGenerateDialog" timestamp="1600336966063">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="791" y="235" width="399" height="643" key="RiderGenerateDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1600336966063" />
-    <state width="683" height="383" key="XDebugger.FullValuePopup" timestamp="1602751480473">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state width="683" height="383" key="XDebugger.FullValuePopup/0.0.1366.768@0.0.1366.768" timestamp="1602751480473" />
-    <state x="417" y="144" width="853" height="624" key="find.popup" timestamp="1602752110058">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="417" y="144" width="853" height="624" key="find.popup/0.0.1366.768@0.0.1366.768" timestamp="1602752110058" />
-    <state x="636" y="292" width="720" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601321610591" />
-    <state x="435" y="123" width="672" height="494" key="search.everywhere.popup" timestamp="1602750758246">
-      <screen x="0" y="0" width="1366" height="768" />
-    </state>
-    <state x="435" y="123" width="672" height="494" key="search.everywhere.popup/0.0.1366.768@0.0.1366.768" timestamp="1602750758246" />
-    <state x="660" y="196" width="670" height="676" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601320133580" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
-          <line>88</line>
-          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="88">
+          <url>file://$PROJECT_DIR$/Web/Controller/IdentityController.cs</url>
+          <line>79</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/IdentityController.cs" initialLine="62" containingFunctionPresentation="method 'IsValidToken'">
             <startOffsets>
-              <option value="3154" />
+              <option value="2672" />
             </startOffsets>
             <endOffsets>
-              <option value="3155" />
+              <option value="2673" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="6" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs</url>
+          <line>63</line>
+          <properties documentPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" initialLine="62" containingFunctionPresentation="lambda expression inside method 'AddJwtAuthentication'">
+            <startOffsets>
+              <option value="2422" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2423" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs</url>
+          <line>76</line>
+          <properties documentPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" initialLine="82" containingFunctionPresentation="lambda expression inside method 'AddJwtAuthentication'">
+            <startOffsets>
+              <option value="3057" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3058" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs</url>
+          <line>106</line>
+          <properties documentPath="$PROJECT_DIR$/WebFramework/Configurations/ServiceCollectionExtensions.cs" initialLine="113" containingFunctionPresentation="lambda expression inside method 'AddJwtAuthentication'">
+            <startOffsets>
+              <option value="4687" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4688" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>41</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="41" containingFunctionPresentation="method 'Get'">
+            <startOffsets>
+              <option value="1244" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1245" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>56</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="56" containingFunctionPresentation="method 'Get'">
+            <startOffsets>
+              <option value="2003" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2004" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>73</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="73" containingFunctionPresentation="method 'Create'">
+            <startOffsets>
+              <option value="2652" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2653" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>107</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="107" containingFunctionPresentation="method 'Update'">
+            <startOffsets>
+              <option value="3808" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3809" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>126</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="126" containingFunctionPresentation="method 'Delete'">
+            <startOffsets>
+              <option value="4534" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4535" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Web/Controller/UserController.cs</url>
+          <line>92</line>
+          <properties documentPath="$PROJECT_DIR$/Web/Controller/UserController.cs" initialLine="92" containingFunctionPresentation="method 'Create'">
+            <startOffsets>
+              <option value="3301" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3445" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

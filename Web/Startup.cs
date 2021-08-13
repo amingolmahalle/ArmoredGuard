@@ -24,10 +24,11 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<SecuritySettings>(_configuration.GetSection(nameof(SecuritySettings)));
-            services.AddCustomServices();
+            services.AddInjectionServices();
             services.AddDbContext(_configuration);
             services.AddCustomIdentity(_securitySettings.IdentitySettings);
             services.AddJwtAuthentication(_securitySettings.JwtSettings);
+            services.AddSwaggerGen();
             services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
@@ -37,6 +38,14 @@ namespace Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 

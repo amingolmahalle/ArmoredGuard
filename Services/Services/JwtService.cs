@@ -6,25 +6,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Entities.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Services.DomainModels;
 
 namespace Services.Services
 {
     public class JwtService : IJwtService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SecuritySettings _securitySettings;
 
         private readonly SignInManager<User> _signInManager;
 
-        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings, SignInManager<User> signInManager)
+        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             _securitySettings = securitySettings.Value;
             _signInManager = signInManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<AccessToken> GenerateAsync(User user)
+        public async Task<AccessToken> GenerateAsync(ClaimsDto claimsDto)
         {
             var secretKey = Encoding.UTF8.GetBytes(_securitySettings.JwtSettings.SecretKey); // longer that 16 character
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey),
@@ -36,7 +40,7 @@ namespace Services.Services
                 SecurityAlgorithms.Aes128KW,
                 SecurityAlgorithms.Aes128CbcHmacSha256);
 
-            var claims = await _getClaimsAsync(user);
+            var claims = await _setClaimsAsync(claimsDto);
 
             var descriptor = new SecurityTokenDescriptor
             {
@@ -63,12 +67,18 @@ namespace Services.Services
             return new AccessToken(securityToken);
         }
 
-        private async Task<IEnumerable<Claim>> _getClaimsAsync(User user)
+        private async Task<IEnumerable<Claim>> _setClaimsAsync(ClaimsDto claimsDto)
         {
-            var result = await _signInManager.ClaimsFactory.CreateAsync(user);
+            // ClaimsPrincipal result = await _signInManager.ClaimsFactory.CreateAsync(user);
 
             //add custom claims
-            var claims = new List<Claim>(result.Claims);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role, claimsDto.RoleName),
+                new Claim(ClaimTypes.NameIdentifier, claimsDto.UserId.ToString()),
+                new Claim(ClaimTypes.Name, claimsDto.FullName),
+                new Claim(new ClaimsIdentityOptions().SecurityStampClaimType, claimsDto.SecurityStampClaim)
+            };
 
             return claims;
         }

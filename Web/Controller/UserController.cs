@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Services.Services;
 using Web.Models;
 
 namespace Web.Controller
@@ -22,28 +20,20 @@ namespace Web.Controller
 
         private readonly ILogger<UserController> _logger;
 
-        private readonly IJwtService _jwtService;
-
         private readonly UserManager<User> _userManager;
 
         private readonly RoleManager<Role> _roleManager;
 
-        private readonly SignInManager<User> _signInManager;
-
         public UserController(
             IUserRepository userRepository,
             ILogger<UserController> logger,
-            IJwtService jwtService,
             UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            SignInManager<User> signInManager)
+            RoleManager<Role> roleManager)
         {
             _userRepository = userRepository;
             _logger = logger;
-            _jwtService = jwtService;
             _userManager = userManager;
             _roleManager = roleManager;
-            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -78,39 +68,11 @@ namespace Web.Controller
             return user;
         }
 
-        /// <summary>
-        /// This method generate JWT Token
-        /// </summary>
-        /// <param name="tokenRequest">The information of token request</param>
-        /// <returns></returns>
-        [HttpPost("[action]")]
+        [HttpPost("create")]
         [AllowAnonymous]
-        public virtual async Task<ActionResult> Token([FromBody] TokenRequest tokenRequest)
+        public virtual async Task<User> Create(UserRequest userRequest, CancellationToken cancellationToken)
         {
-            if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
-                throw new Exception("OAuth flow is not password.");
-
-            //var user = await userRepository.GetByUserAndPass(username, password, cancellationToken);
-            var user = await _userManager.FindByNameAsync(tokenRequest.Username);
-            
-            if (user == null)
-                throw new Exception("نام کاربری یا رمز عبور اشتباه است");
-
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.Password);
-            
-            if (!isPasswordValid)
-                throw new Exception("نام کاربری یا رمز عبور اشتباه است");
-
-            var jwt = await _jwtService.GenerateAsync(user);
-            
-            return new JsonResult(jwt);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public virtual async Task<User> Create(UserDto userDto, CancellationToken cancellationToken)
-        {
-            _logger.LogError("متد Create فراخوانی شد");
+            _logger.LogInformation("متد Create فراخوانی شد");
 
             //var exists = await userRepository.TableNoTracking.AnyAsync(p => p.UserName == userDto.UserName);
             
@@ -120,13 +82,13 @@ namespace Web.Controller
 
             var user = new User
             {
-                Age = userDto.Age,
-                FullName = userDto.FullName,
-                Gender = userDto.Gender,
-                UserName = userDto.UserName,
-                Email = userDto.Email
+                Age = userRequest.Age,
+                FullName = userRequest.FullName,
+                Gender = userRequest.Gender,
+                UserName = userRequest.UserName,
+                Email = userRequest.Email
             };
-            await _userManager.CreateAsync(user, userDto.Password);
+            await _userManager.CreateAsync(user, userRequest.Password);
 
             await _roleManager.CreateAsync(new Role
             {
@@ -146,13 +108,13 @@ namespace Web.Controller
         {
             var updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
 
-            updateUser.UserName = user.UserName;
-            updateUser.PasswordHash = user.PasswordHash;
-            updateUser.FullName = user.FullName;
+            updateUser.UserName = user?.UserName;
+            updateUser.PasswordHash = user?.PasswordHash;
+            updateUser.FullName = user?.FullName;
             updateUser.Age = user.Age;
             updateUser.Gender = user.Gender;
             updateUser.IsActive = user.IsActive;
-            updateUser.LastLoginDate = user.LastLoginDate;
+            // updateUser.LastLoginDate = user.LastLoginDate;
 
             await _userRepository.UpdateAsync(updateUser, cancellationToken);
 
