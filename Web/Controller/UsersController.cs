@@ -1,6 +1,8 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Data.Contracts;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
@@ -13,19 +15,19 @@ namespace Web.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
 
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<UsersController> _logger;
 
         private readonly UserManager<User> _userManager;
 
         private readonly RoleManager<Role> _roleManager;
 
-        public UserController(
+        public UsersController(
             IUserRepository userRepository,
-            ILogger<UserController> logger,
+            ILogger<UsersController> logger,
             UserManager<User> userManager,
             RoleManager<Role> roleManager)
         {
@@ -60,27 +62,53 @@ namespace Web.Controller
 
         [HttpPost("create")]
         [AllowAnonymous]
-        public virtual async Task Create(CreateUserRequest userRequest)
+        public virtual async Task<IActionResult> Create(CreateUserRequest request)
         {
-            _logger.LogInformation("calling Create User Action");
-
-            var user = new User
+            using (TransactionScope transactionScope = new TransactionScope())
             {
-                BirthDate = userRequest.BirthDate,
-                FullName = userRequest.FullName,
-                Gender = userRequest.Gender,
-                UserName = userRequest.UserName,
-                Email = userRequest.Email
-            };
-            await _userManager.CreateAsync(user, userRequest.Password);
+                try
+                {
+                    _logger.LogInformation("calling Create User Action");
 
-            await _roleManager.CreateAsync(new Role
-            {
-                Name = "Admin",
-                Description = "admin role"
-            });
+                    var user = new User
+                    {
+                        BirthDate = request.BirthDate,
+                        FullName = request.FullName,
+                        Gender = request.Gender,
+                        UserName = request.UserName,
+                        Email = request.Email
+                    };
+                    await _userManager.CreateAsync(user, request.Password);
 
-            await _userManager.AddToRoleAsync(user, "Admin");
+                    Role role = new Role {Id = request.RoleId};
+
+                    string roleName = await _roleManager.GetRoleNameAsync(role);
+
+                    if (string.IsNullOrEmpty(roleName))
+                    {
+                        return BadRequest("RoleId is Invalid");
+                    }
+                    //     // TODO: Just For Test 
+                    //     await _roleManager.CreateAsync(new Role
+                    //     {
+                    //         Name = "Admin",
+                    //         Description = "admin role"
+                    //     });
+                    // }
+
+                    await _userManager.AddToRoleAsync(user, "roleName");
+
+                    transactionScope.Complete();
+
+                    return Ok();
+                }
+
+                catch (Exception e)
+                {
+                    transactionScope.Dispose();
+                    throw new Exception(e.Message, e.InnerException);
+                }
+            }
         }
 
         [HttpPut("update-profile")]

@@ -14,6 +14,8 @@ namespace Web.Models
         [Required] [StringLength(500)] public string Password { get; set; }
 
         [Required] [StringLength(100)] public string FullName { get; set; }
+        
+        public int RoleId { get; set; }
 
         public DateTime? BirthDate { get; set; }
 
