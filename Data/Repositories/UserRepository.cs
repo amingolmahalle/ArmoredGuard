@@ -13,13 +13,6 @@ namespace Data.Repositories
         {
         }
 
-        public async Task UpdateLastLoginDateAsync(User user, CancellationToken cancellationToken)
-        {
-            user.LastLoginDate = DateTimeOffset.Now;
-
-            await UpdateAsync(user, cancellationToken);
-        }
-
         public async Task UpdateLastSeenDateAsync(User user, CancellationToken cancellationToken)
         {
             user.LastSeenDate = DateTimeOffset.Now;

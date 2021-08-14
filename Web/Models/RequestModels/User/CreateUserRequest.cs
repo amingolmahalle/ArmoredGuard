@@ -29,7 +29,7 @@ namespace Web.Models.RequestModels.User
             if (!PhoneNumber.IsMobileNumber())
                 yield return new ValidationResult("PhoneNumber is invalid", new[] {nameof(PhoneNumber)});
             
-            if (!PhoneNumber.IsValidEmail())
+            if (!Email.IsValidEmail())
                 yield return new ValidationResult("Email Address is invalid", new[] {nameof(Email)});
         }
     }

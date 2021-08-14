@@ -1,7 +1,6 @@
 using Common.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +28,15 @@ namespace Web
             services.AddCustomIdentity(_securitySettings.IdentitySettings);
             services.AddJwtAuthentication(_securitySettings.JwtSettings);
             services.AddSwaggerGen();
-            services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.WithOrigins("http://localhost:5000", "https://localhost:5001")
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,6 +55,8 @@ namespace Web
             });
 
             app.UseRouting();
+            
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

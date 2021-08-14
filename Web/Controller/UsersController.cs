@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Common.Helpers;
 using Data.Contracts;
 using Entities.User;
@@ -55,7 +56,7 @@ namespace Web.Controller
                 BirthDate = user.BirthDate,
                 Gender = user.Gender,
                 UserName = user.UserName,
-                LastLoginDate = user.LastLoginDate.GetValueOrDefault()
+                LastLoginDate = user.LastSeenDate.GetValueOrDefault()
             };
 
             return getByUserIdResponse;
@@ -65,48 +66,53 @@ namespace Web.Controller
         [AllowAnonymous]
         public async Task<IActionResult> Create(CreateUserRequest request)
         {
-            // using (TransactionScope transactionScope = new TransactionScope())
-            // {
-            try
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                _logger.LogInformation("calling Create User Action");
-
-                var user = new User
+                try
                 {
-                    BirthDate = request.BirthDate,
-                    FullName = request.FullName,
-                    Gender = request.Gender,
-                    UserName = request.UserName,
-                    Email = request.Email.ToFormalEmail(),
-                    PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber()
-                };
-                await _userManager.CreateAsync(user, request.Password);
+                    _logger.LogInformation("calling Create User Action");
 
-                if(request.RoleId == 0)
-                    return BadRequest("RoleId is Invalid");
-                
-                var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
+                    var user = new User
+                    {
+                        BirthDate = request.BirthDate,
+                        FullName = request.FullName,
+                        Gender = request.Gender,
+                        UserName = request.UserName,
+                        Email = request.Email.ToFormalEmail(),
+                        PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber()
+                    };
+                    await _userManager.CreateAsync(user, request.Password);
 
-                if (role == null)
-                    return BadRequest("RoleId is Invalid");
-                
-                await _userManager.AddToRoleAsync(user, role.Name);
+                    if (request.RoleId == 0)
+                    {
+                        transactionScope.Dispose();
+                        return BadRequest("RoleId is Invalid");
+                    }
 
-                // transactionScope.Complete();
+                    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
 
-                return Ok();
-            }
+                    if (role == null)
+                    {
+                        transactionScope.Dispose();
+                        return BadRequest("RoleId is Invalid");
+                    }
 
-            catch (Exception e)
-            {
-                // transactionScope.Dispose();
-                throw new Exception(e.Message, e.InnerException);
-                // }
+                    await _userManager.AddToRoleAsync(user, role.Name);
+
+                    transactionScope.Complete();
+
+                    return Ok();
+                }
+
+                catch (Exception e)
+                {
+                    transactionScope.Dispose();
+                    throw new Exception(e.Message, e.InnerException);
+                }
             }
         }
 
         [HttpPut("update-profile/{id:int}")]
-        
         public async Task UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
