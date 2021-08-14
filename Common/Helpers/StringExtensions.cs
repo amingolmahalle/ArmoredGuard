@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Common.Helpers
 {
@@ -101,6 +103,71 @@ namespace Common.Helpers
         public static string NullIfEmpty(this string str)
         {
             return str?.Length == 0 ? null : str;
+        }
+
+        public static string ToFormalPhoneNumber(this string input)
+        {
+            input = input?.CleanString();
+
+            if (!IsMobileNumber(input))
+            {
+                return string.Empty;
+            }
+
+            if (input[0] != '0')
+            {
+                if (input[0] == '+')
+                {
+                    input = input.TrimStart('+');
+                }
+
+                if (input[0] == '9' && input[1] == '8' && input[2] == '9') //input.StartsWith("989")
+                {
+                    int len = input.Length - 3;
+                    input = "0" + input.Substring(2, len + 1);
+                }
+
+                if (input[0] != '0')
+                {
+                    input = "0" + input;
+                }
+            }
+
+            return input;
+        }
+        
+        public static string ToFormalEmail(this string input)
+        {
+            var formal = input.CleanString();
+
+            if (string.IsNullOrWhiteSpace(formal) || !formal.IsValidEmail())
+            {
+                throw new InvalidDataException("Email is invalid");
+            }
+
+            return formal;
+        }
+
+        public static bool IsValidEmail(this string strIn)
+        {
+            if (string.IsNullOrWhiteSpace(strIn))
+                return false;
+            try
+            {
+                return Regex.IsMatch(strIn,
+                    @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool IsMobileNumber(this string input)
+        {
+            return !string.IsNullOrWhiteSpace(input) &&
+                   Regex.IsMatch(input, @"(^09\d{9}$)|(^\+989\d{9}$)|(^9\d{9}$)|(^989\d{9}$)");
         }
     }
 }

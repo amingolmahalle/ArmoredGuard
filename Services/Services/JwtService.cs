@@ -4,9 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Common;
+using Common.Settings;
 using Entities.User;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -16,16 +15,14 @@ namespace Services.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SecuritySettings _securitySettings;
 
         private readonly SignInManager<User> _signInManager;
 
-        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor)
+        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings, SignInManager<User> signInManager)
         {
             _securitySettings = securitySettings.Value;
             _signInManager = signInManager;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AccessToken> GenerateAsync(ClaimsDto claimsDto)
@@ -72,15 +69,13 @@ namespace Services.Services
             // ClaimsPrincipal result = await _signInManager.ClaimsFactory.CreateAsync(user);
 
             //add custom claims
-            var claims = new List<Claim>
+            return new List<Claim>
             {
-                new Claim(ClaimTypes.Role, claimsDto.RoleName),
-                new Claim(ClaimTypes.NameIdentifier, claimsDto.UserId.ToString()),
-                new Claim(ClaimTypes.Name, claimsDto.FullName),
-                new Claim(new ClaimsIdentityOptions().SecurityStampClaimType, claimsDto.SecurityStampClaim)
+                new(ClaimTypes.Role, claimsDto.RoleName),
+                new(ClaimTypes.NameIdentifier, claimsDto.UserId.ToString()),
+                new(ClaimTypes.Name, claimsDto.Username),
+                new(new ClaimsIdentityOptions().SecurityStampClaimType, claimsDto.SecurityStampClaim)
             };
-
-            return claims;
         }
     }
 }

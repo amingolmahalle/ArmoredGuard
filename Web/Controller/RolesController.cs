@@ -4,7 +4,7 @@ using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Web.Models.Role;
+using Web.Models.RequestModels.Role;
 
 namespace Web.Controller
 {

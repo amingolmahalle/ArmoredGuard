@@ -1,9 +1,9 @@
 using System;
 using Entities.User;
 
-namespace Web.Models
+namespace Web.Models.ResponseModel.User
 {
-    public class UpdateUserProfileRequest
+    public class GetByUserIdResponse
     {
         public string UserName { get; set; }
         
@@ -15,6 +15,8 @@ namespace Web.Models
 
         public DateTime? BirthDate { get; set; }
 
-        public GenderType? Gender { get; set; }
+        public GenderType Gender { get; set; }
+        
+        public DateTimeOffset LastLoginDate { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Entities.User;
 using Services.DomainModels;
 
 namespace Services.Services

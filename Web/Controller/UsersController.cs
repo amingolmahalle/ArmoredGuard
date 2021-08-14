@@ -2,13 +2,15 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Helpers;
 using Data.Contracts;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Web.Models;
+using Web.Models.RequestModels.User;
+using Web.Models.ResponseModel.User;
 
 namespace Web.Controller
 {
@@ -75,7 +77,8 @@ namespace Web.Controller
                     FullName = request.FullName,
                     Gender = request.Gender,
                     UserName = request.UserName,
-                    Email = request.Email
+                    Email = request.Email.ToFormalEmail(),
+                    PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber()
                 };
                 await _userManager.CreateAsync(user, request.Password);
 

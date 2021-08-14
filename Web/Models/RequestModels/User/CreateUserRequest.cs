@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Common.Helpers;
 using Entities.User;
 
-namespace Web.Models
+namespace Web.Models.RequestModels.User
 {
     public class CreateUserRequest : IValidatableObject
     {
@@ -11,10 +12,12 @@ namespace Web.Models
 
         [Required] [StringLength(100)] public string Email { get; set; }
 
+        [StringLength(11)] public string PhoneNumber { get; set; }
+
         [Required] [StringLength(500)] public string Password { get; set; }
 
         [Required] [StringLength(100)] public string FullName { get; set; }
-        
+
         public int RoleId { get; set; }
 
         public DateTime? BirthDate { get; set; }
@@ -23,9 +26,11 @@ namespace Web.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (Password.Equals("123456"))
-                yield return new ValidationResult("Password cannot be 123456", new[] {nameof(Password)});
-
+            if (!PhoneNumber.IsMobileNumber())
+                yield return new ValidationResult("PhoneNumber is invalid", new[] {nameof(PhoneNumber)});
+            
+            if (!PhoneNumber.IsValidEmail())
+                yield return new ValidationResult("Email Address is invalid", new[] {nameof(Email)});
         }
     }
 }

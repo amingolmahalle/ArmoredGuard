@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models.Role
+namespace Web.Models.RequestModels.Role
 {
     public class CreateRoleRequest
     {

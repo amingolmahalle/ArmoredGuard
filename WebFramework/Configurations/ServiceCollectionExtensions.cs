@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Helpers;
+using Common.Settings;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
