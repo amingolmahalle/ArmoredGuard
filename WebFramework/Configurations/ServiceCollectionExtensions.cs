@@ -104,7 +104,7 @@ namespace WebFramework.Configurations
                         if (!user.IsActive)
                             context.Fail("User is not active");
 
-                        await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
+                        await userRepository.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
                     },
                     OnChallenge = context =>
                     {

@@ -22,6 +22,9 @@ namespace Entities.User
         
         public bool IsActive { get; set; }
         
+        
+        public DateTimeOffset? LastSeenDate { get; set; }
+        
         public DateTimeOffset? LastLoginDate { get; set; }
     }
 

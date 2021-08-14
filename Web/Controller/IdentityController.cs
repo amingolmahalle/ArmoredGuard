@@ -70,6 +70,7 @@ namespace Web.Controller
             ClaimsDto tokenResult = new ClaimsDto
             {
                 UserId = user.Id,
+                Username = user.UserName,
                 FullName = user.FullName,
                 RoleName = roleName,
                 SecurityStampClaim = user.SecurityStamp
@@ -95,6 +96,7 @@ namespace Web.Controller
                 new ClaimsDto
                 {
                     UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
+                    Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
                     FullName = claims.Single(c => c.Type == ClaimTypes.Name).Value,
                     RoleName = claims.Single(c => c.Type == ClaimTypes.Role).Value,
                     SecurityStampClaim =

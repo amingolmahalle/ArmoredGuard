@@ -13,10 +13,18 @@ namespace Data.Repositories
         {
         }
 
-        public Task UpdateLastLoginDateAsync(User user, CancellationToken cancellationToken)
+        public async Task UpdateLastLoginDateAsync(User user, CancellationToken cancellationToken)
         {
             user.LastLoginDate = DateTimeOffset.Now;
-            return UpdateAsync(user, cancellationToken);
+
+            await UpdateAsync(user, cancellationToken);
+        }
+
+        public async Task UpdateLastSeenDateAsync(User user, CancellationToken cancellationToken)
+        {
+            user.LastSeenDate = DateTimeOffset.Now;
+
+            await UpdateAsync(user, cancellationToken);
         }
     }
 }
