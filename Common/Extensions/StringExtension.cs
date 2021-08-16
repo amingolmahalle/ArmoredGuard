@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Common.Helpers
+namespace Common.Extensions
 {
-    public static class StringExtensions
+    public static class StringExtension
     {
         public static bool HasValue(this string value, bool ignoreWhiteSpace = true)
         {

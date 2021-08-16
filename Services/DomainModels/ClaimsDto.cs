@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Services.DomainModels
 {
     public class ClaimsDto
@@ -8,8 +10,8 @@ namespace Services.DomainModels
         
         public string FullName { get; set; }
         
-        public string RoleName { get; set; }
+        public IList<string> RolesName { get; set; }
         
-        public string SecurityStampClaim { get; set; }
+        public string SecurityStamp { get; set; }
     }
 }

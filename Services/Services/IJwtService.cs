@@ -5,6 +5,6 @@ namespace Services.Services
 {
     public interface IJwtService
     {
-        Task<AccessToken> GenerateAsync(ClaimsDto claimsDto);
+        AccessToken Generate(ClaimsDto claimsDto);
     }
 }

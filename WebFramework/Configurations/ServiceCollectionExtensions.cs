@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
+using Common.Extensions;
 using Common.Helpers;
 using Common.Settings;
 using Data;
@@ -33,8 +32,8 @@ namespace WebFramework.Configurations
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                var secretKey = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
-                var encryptionKey = Encoding.UTF8.GetBytes(jwtSettings.EncryptKey);
+                SecurityKey secretKey = SecurityHelper.CreateSecurityKey(jwtSettings.SecretKey);
+                SecurityKey encryptionKey = SecurityHelper.CreateEncryptionKey(jwtSettings.EncryptKey);
 
                 var validationParameters = new TokenValidationParameters
                 {
@@ -42,7 +41,7 @@ namespace WebFramework.Configurations
                     RequireSignedTokens = true,
 
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                    IssuerSigningKey = secretKey,
 
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
@@ -53,7 +52,7 @@ namespace WebFramework.Configurations
                     ValidateIssuer = true, //default : false
                     ValidIssuer = jwtSettings.Issuer,
 
-                    TokenDecryptionKey = new SymmetricSecurityKey(encryptionKey)
+                    TokenDecryptionKey = encryptionKey
                 };
 
                 options.RequireHttpsMetadata = false;
@@ -63,7 +62,7 @@ namespace WebFramework.Configurations
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        var logger = context.HttpContext
+                        ILogger logger = context.HttpContext
                             .RequestServices
                             .GetRequiredService<ILoggerFactory>()
                             .CreateLogger(nameof(JwtBearerEvents));
@@ -76,40 +75,45 @@ namespace WebFramework.Configurations
                     },
                     OnTokenValidated = async context =>
                     {
-                        var signInManager = context.HttpContext.RequestServices
-                            .GetRequiredService<SignInManager<User>>();
                         var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
 
-                        var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-
-                        if (claimsIdentity?.Claims?.Any() != true)
-                            context.Fail("This token has no claims.");
-
-                        var securityStamp =
-                            claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
-                        if (!securityStamp.HasValue())
-                            context.Fail("This token has no security stamp");
-
-                        //Find user and token from database and perform your custom validation
-                        var userId = claimsIdentity.GetUserId<int>();
-                        var user = await userRepository.GetByIdAsync(context.HttpContext.RequestAborted, userId);
-
-
-                        var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
-                        if (validatedUser == null)
+                        if (context.Principal != null)
                         {
-                            //UnAuthorized
-                            context.Fail("Token security stamp is not valid.");
+                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+
+                            if (claimsIdentity?.Claims.Any() != true)
+                                context.Fail("This token has no claims.");
+
+                            string securityStamp =
+                                claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
+
+                            if (!securityStamp.HasValue())
+                                context.Fail("This token has no security stamp");
+
+                            //Find user and token from database and perform your custom validation
+                            int userId = claimsIdentity.GetUserId<int>();
+                            User user = await userRepository.GetByIdAsync(context.HttpContext.RequestAborted, userId);
+
+                            SignInManager<User> signInManager = context.HttpContext.RequestServices
+                                .GetRequiredService<SignInManager<User>>();
+
+                            User validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
+
+                            if (validatedUser == null)
+                            {
+                                //UnAuthorized
+                                context.Fail("Token security stamp is not valid.");
+                            }
+
+                            if (!user.IsActive)
+                                context.Fail("User is not active");
+
+                            await userRepository.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
                         }
-
-                        if (!user.IsActive)
-                            context.Fail("User is not active");
-
-                        await userRepository.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
                     },
                     OnChallenge = context =>
                     {
-                        var logger = context.HttpContext
+                        ILogger logger = context.HttpContext
                             .RequestServices
                             .GetRequiredService<ILoggerFactory>()
                             .CreateLogger(nameof(JwtBearerEvents));

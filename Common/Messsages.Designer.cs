@@ -44,5 +44,11 @@ namespace Common {
                 resourceCulture = value;
             }
         }
+        
+        internal static string ArgumentIsEmpty {
+            get {
+                return ResourceManager.GetString("ArgumentIsEmpty", resourceCulture);
+            }
+        }
     }
 }

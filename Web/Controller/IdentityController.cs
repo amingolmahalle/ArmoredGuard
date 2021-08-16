@@ -56,7 +56,7 @@ namespace Web.Controller
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
-            
+
             if (!user.IsActive)
                 return BadRequest("User is not active");
 
@@ -65,18 +65,18 @@ namespace Web.Controller
             if (!isPasswordValid)
                 return NotFound("Invalid Username or Password");
 
-            string roleName = (await _userManager.GetRolesAsync(user)).Single();
+            IList<string> rolesName = (await _userManager.GetRolesAsync(user));
 
             ClaimsDto tokenResult = new ClaimsDto
             {
                 UserId = user.Id,
                 Username = user.UserName,
                 FullName = user.FullName,
-                RoleName = roleName,
-                SecurityStampClaim = user.SecurityStamp
+                RolesName = rolesName,
+                SecurityStamp = user.SecurityStamp
             };
 
-            AccessToken jwt = await _jwtService.GenerateAsync(tokenResult);
+            AccessToken jwt = _jwtService.Generate(tokenResult);
 
             return new JsonResult(jwt);
         }
@@ -97,10 +97,9 @@ namespace Web.Controller
                 {
                     UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                     Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                    FullName = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                    RoleName = claims.Single(c => c.Type == ClaimTypes.Role).Value,
-                    SecurityStampClaim =
-                        claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType).Value
+                    RolesName = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
+                    SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
+                        .Value
                 });
         }
 

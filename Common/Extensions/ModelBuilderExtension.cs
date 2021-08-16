@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
-namespace Common.Helpers
+namespace Common.Extensions
 {
-    public static class ModelBuilderExtensions
+    public static class ModelBuilderExtension
     {
         /// <summary>
         /// Dynamicaly load all IEntityTypeConfiguration with Reflection

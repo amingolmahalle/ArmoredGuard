@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace Common.Helpers
+namespace Common.Extensions
 {
-    public static class IdentityExtensions
+    public static class IdentityExtension
     {
         public static string FindFirstValue(this ClaimsIdentity identity, string claimType)
         {

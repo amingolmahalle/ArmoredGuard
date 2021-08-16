@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Common.Extensions;
 using Common.Helpers;
 using Data.Contracts;
 using Entities.User;

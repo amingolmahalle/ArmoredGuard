@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Common.Helpers
 {
-    public static class Assert
+    public class Assert
     {
         public static void NotNull<T>(T obj, string name, string message = null)
             where T : class
@@ -27,7 +27,7 @@ namespace Common.Helpers
                 || (obj is string str && string.IsNullOrWhiteSpace(str))
                 || (obj is IEnumerable list && !list.Cast<object>().Any()))
             {
-                throw new ArgumentException("Argument is empty : " + message, $"{name} : {typeof(T)}");
+                throw new ArgumentException(Messsages.ArgumentIsEmpty + message, $"{name} : {typeof(T)}");
             }
         }
     }

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Common.Extensions;
+using Common.Helpers;
 using Common.Settings;
-using Entities.User;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.DomainModels;
@@ -17,29 +17,43 @@ namespace Services.Services
     {
         private readonly SecuritySettings _securitySettings;
 
-        private readonly SignInManager<User> _signInManager;
+        // private readonly SignInManager<User> _signInManager;
 
-        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings, SignInManager<User> signInManager)
+        public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings)
         {
             _securitySettings = securitySettings.Value;
-            _signInManager = signInManager;
         }
 
-        public async Task<AccessToken> GenerateAsync(ClaimsDto claimsDto)
+        public AccessToken Generate(ClaimsDto claimsDto)
         {
-            var secretKey = Encoding.UTF8.GetBytes(_securitySettings.JwtSettings.SecretKey); // longer that 16 character
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey),
-                SecurityAlgorithms.HmacSha256Signature);
+            // longer that 16 character
+            SecurityKey secretKey = SecurityHelper.CreateSecurityKey(_securitySettings.JwtSettings.SecretKey);
+            SigningCredentials signingCredentials = SecurityHelper.CreateSigningCredentials(secretKey);
 
-            var encryptionKey = Encoding.UTF8.GetBytes(_securitySettings.JwtSettings.EncryptKey); //must be 16 character
-            var encryptingCredentials = new EncryptingCredentials(
-                new SymmetricSecurityKey(encryptionKey),
-                SecurityAlgorithms.Aes128KW,
-                SecurityAlgorithms.Aes128CbcHmacSha256);
+            // must be 16 character
+            SecurityKey encryptionKey = SecurityHelper.CreateEncryptionKey(_securitySettings.JwtSettings.EncryptKey);
+            EncryptingCredentials encryptingCredentials = SecurityHelper.CreateEncryptingCredentials(encryptionKey);
 
-            var claims = await _setClaimsAsync(claimsDto);
+            IEnumerable<Claim> claims = _setClaims(claimsDto);
 
-            var descriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor descriptor =
+                _createSecurityTokenDescriptor(signingCredentials, encryptingCredentials, claims);
+
+            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            //JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+            //JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(descriptor);
+
+            return new AccessToken(jwtSecurityToken);
+        }
+
+        private SecurityTokenDescriptor _createSecurityTokenDescriptor(
+            SigningCredentials signingCredentials,
+            EncryptingCredentials encryptingCredentials,
+            IEnumerable<Claim> claims)
+        {
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
             {
                 Issuer = _securitySettings.JwtSettings.Issuer,
                 Audience = _securitySettings.JwtSettings.Audience,
@@ -50,32 +64,21 @@ namespace Services.Services
                 EncryptingCredentials = encryptingCredentials,
                 Subject = new ClaimsIdentity(claims)
             };
-
-            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            //JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-            //JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
-
-            //string encryptedJwt = tokenHandler.WriteToken(securityToken);
-
-            return new AccessToken(securityToken);
+            return descriptor;
         }
 
-        private async Task<IEnumerable<Claim>> _setClaimsAsync(ClaimsDto claimsDto)
+        private IEnumerable<Claim> _setClaims(ClaimsDto claimsDto)
         {
             // ClaimsPrincipal result = await _signInManager.ClaimsFactory.CreateAsync(user);
 
             //add custom claims
-            return new List<Claim>
-            {
-                new(ClaimTypes.Role, claimsDto.RoleName),
-                new(ClaimTypes.NameIdentifier, claimsDto.UserId.ToString()),
-                new(ClaimTypes.Name, claimsDto.Username),
-                new(new ClaimsIdentityOptions().SecurityStampClaimType, claimsDto.SecurityStampClaim)
-            };
+            ICollection<Claim> claims = new Collection<Claim>();
+            claims.AddUserId(claimsDto.UserId.ToString());
+            claims.AddUserName(claimsDto.Username);
+            claims.AddSecurityStamp(claimsDto.SecurityStamp);
+            claims.AddRoles(claimsDto.RolesName.ToArray());
+
+            return claims;
         }
     }
 }
