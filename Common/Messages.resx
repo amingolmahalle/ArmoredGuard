@@ -21,4 +21,7 @@
     <data name="ArgumentIsEmpty" xml:space="preserve">
         <value>Argument is empty : </value>
     </data>
+    <data name="InvalidUsernameOrPassword" xml:space="preserve">
+        <value>Invalid Username or Password</value>
+    </data>
 </root>

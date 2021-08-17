@@ -4,22 +4,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Common.Extensions;
-using Common.Helpers;
 using Data.Contracts;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Web.Controller.Base;
 using Web.Models.RequestModels.User;
 using Web.Models.ResponseModel.User;
+using WebFramework.ApiResult;
 
 namespace Web.Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    [Authorize]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly IUserRepository _userRepository;
 
@@ -42,12 +40,12 @@ namespace Web.Controller
         }
 
         [HttpGet("get-by-id/{id:int}")]
-        public async Task<ActionResult<GetByUserIdResponse>> GetById(int id)
+        public async Task<ApiResult<GetByUserIdResponse>> GetById(int id)
         {
             User user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return NoContent();
+                return Ok(); //?NoContent
 
             var getByUserIdResponse = new GetByUserIdResponse
             {
@@ -65,7 +63,7 @@ namespace Web.Controller
 
         [HttpPost("create")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create(CreateUserRequest request)
+        public async Task<ApiResult> Create(CreateUserRequest request)
         {
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -114,46 +112,51 @@ namespace Web.Controller
         }
 
         [HttpPut("update-profile/{id:int}")]
-        public async Task UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
+        public async Task<ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
-            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
+            if (user == null)
+                return NotFound();
+            
             if (request?.UserName != null)
             {
-                updateUser.UserName = request.UserName;
+                user.UserName = request.UserName;
             }
 
             if (request?.Email != null)
             {
-                updateUser.Email = request.Email;
+                user.Email = request.Email;
             }
 
             if (request?.PhoneNumber != null)
             {
-                updateUser.PhoneNumber = request.PhoneNumber;
+                user.PhoneNumber = request.PhoneNumber;
             }
 
             if (request?.BirthDate != null)
             {
-                updateUser.BirthDate = request.BirthDate;
+                user.BirthDate = request.BirthDate;
             }
 
             if (request?.FullName != null)
             {
-                updateUser.FullName = request.FullName;
+                user.FullName = request.FullName;
             }
 
             if (request?.Gender != null)
             {
-                updateUser.Gender = request.Gender.GetValueOrDefault();
+                user.Gender = request.Gender.GetValueOrDefault();
             }
 
-            await _userManager.UpdateSecurityStampAsync(updateUser);
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            return Ok();
         }
 
         [HttpPut("change-password/{id:int}")]
-        public async Task<IActionResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
+        public async Task<ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
             CancellationToken cancellationToken)
         {
             User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
@@ -169,41 +172,41 @@ namespace Web.Controller
         }
 
         [HttpPut("inactivate/{id:int}")]
-        public async Task<ActionResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
+        public async Task<ApiResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
         {
-            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
-            if (updateUser == null)
+            if (user == null)
             {
-                return NoContent();
+                return NotFound();
             }
 
-            if (!updateUser.IsActive)
+            if (!user.IsActive)
                 return BadRequest("User is disabled");
 
-            updateUser.IsActive = false;
+            user.IsActive = false;
 
-            await _userManager.UpdateSecurityStampAsync(updateUser);
+            await _userManager.UpdateSecurityStampAsync(user);
 
             return Ok();
         }
 
         [HttpPut("activate/{id:int}")]
-        public async Task<ActionResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
+        public async Task<ApiResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
         {
-            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
-            if (updateUser == null)
+            if (user == null)
             {
-                return NoContent();
+                return NotFound();
             }
 
-            if (updateUser.IsActive)
+            if (user.IsActive)
                 return BadRequest("user is active");
 
-            updateUser.IsActive = true;
+            user.IsActive = true;
 
-            await _userManager.UpdateSecurityStampAsync(updateUser);
+            await _userManager.UpdateSecurityStampAsync(user);
 
             return Ok();
         }

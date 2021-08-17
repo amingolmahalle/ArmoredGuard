@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Web.Swagger;
 using WebFramework.Configurations;
 
 namespace Web
@@ -27,7 +28,7 @@ namespace Web
             services.AddDbContext(_configuration);
             services.AddCustomIdentity(_securitySettings.IdentitySettings);
             services.AddJwtAuthentication(_securitySettings.JwtSettings);
-            services.AddSwaggerGen();
+            services.AddCustomSwagger();
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -55,7 +56,7 @@ namespace Web
             });
 
             app.UseRouting();
-            
+
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();

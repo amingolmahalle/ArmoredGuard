@@ -27,7 +27,7 @@ namespace Common.Helpers
                 || (obj is string str && string.IsNullOrWhiteSpace(str))
                 || (obj is IEnumerable list && !list.Cast<object>().Any()))
             {
-                throw new ArgumentException(Messsages.ArgumentIsEmpty + message, $"{name} : {typeof(T)}");
+                throw new ArgumentException(Messages.ArgumentIsEmpty + message, $"{name} : {typeof(T)}");
             }
         }
     }

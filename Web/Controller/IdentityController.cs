@@ -8,17 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Services;
 using Services.DomainModels;
+using Services.Dtos;
 using Services.Services;
+using Web.Controller.Base;
 using Web.Models;
+using WebFramework.ApiResult;
 
 namespace Web.Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    [Authorize]
-    public class IdentityController : ControllerBase
+    public class IdentityController : BaseController
     {
         private readonly IJwtService _jwtService;
 
@@ -47,12 +46,12 @@ namespace Web.Controller
         /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
-        public async Task<ActionResult> Token([FromBody] TokenRequest tokenRequest)
+        public async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest)
         {
-            if (!tokenRequest.GrantType.Equals("password", StringComparison.OrdinalIgnoreCase))
+            if (!tokenRequest.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
                 throw new Exception("OAuth flow is not password");
 
-            User user = await _userManager.FindByNameAsync(tokenRequest.Username);
+            User user = await _userManager.FindByNameAsync(tokenRequest.username);
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
@@ -60,7 +59,7 @@ namespace Web.Controller
             if (!user.IsActive)
                 return BadRequest("User is not active");
 
-            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.Password);
+            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.password);
 
             if (!isPasswordValid)
                 return NotFound("Invalid Username or Password");
@@ -71,43 +70,39 @@ namespace Web.Controller
             {
                 UserId = user.Id,
                 Username = user.UserName,
-                FullName = user.FullName,
-                RolesName = rolesName,
+                Roles = rolesName,
                 SecurityStamp = user.SecurityStamp
             };
 
-            AccessToken jwt = _jwtService.Generate(tokenResult);
+            AccessTokenDto jwt = _jwtService.Generate(tokenResult);
 
             return new JsonResult(jwt);
         }
 
         [HttpGet("get-claims")]
-        [Authorize]
-        public IActionResult GetClaims()
+        public ApiResult<ClaimsDto> GetClaims()
         {
-            bool result = HttpContext.User.Identity is {IsAuthenticated: true};
-
-            if (!result || _httpContextAccessor.HttpContext == null)
-                return Unauthorized();
+            if (_httpContextAccessor.HttpContext == null)
+                return BadRequest();
 
             List<Claim> claims = _httpContextAccessor.HttpContext.User.Claims.ToList();
 
-            return Ok(
+            return
                 new ClaimsDto
                 {
                     UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                     Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                    RolesName = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
+                    Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
                     SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
                         .Value
-                });
+                };
         }
 
         [HttpGet("is-valid-token")]
         [AllowAnonymous]
-        public bool IsValidToken()
+        public ApiResult<object> IsValidToken()
         {
-            return HttpContext.User.Identity is {IsAuthenticated: true};
+            return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
     }
 }

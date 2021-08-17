@@ -23,11 +23,11 @@ namespace Web.Models.RequestModels.User
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!PhoneNumber.IsMobileNumber())
-                yield return new ValidationResult("PhoneNumber is invalid", new[] {nameof(PhoneNumber)});
+            if (!string.IsNullOrEmpty(PhoneNumber) && !PhoneNumber.IsMobileNumber())
+                yield return new ValidationResult("phone number is invalid", new[] {nameof(PhoneNumber)});
 
-            if (!PhoneNumber.IsValidEmail())
-                yield return new ValidationResult("Email Address is invalid", new[] {nameof(Email)});
+            if (!string.IsNullOrEmpty(Email) && !PhoneNumber.IsValidEmail())
+                yield return new ValidationResult("email address is invalid", new[] {nameof(Email)});
         }
     }
 }

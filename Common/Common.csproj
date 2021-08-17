@@ -11,17 +11,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Messsages.resx">
+      <EmbeddedResource Update="Messages.resx">
         <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Messsages.Designer.cs</LastGenOutput>
+        <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Messsages.Designer.cs">
+      <Compile Update="Messages.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
-        <DependentUpon>Messsages.resx</DependentUpon>
+        <DependentUpon>Messages.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

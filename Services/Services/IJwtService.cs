@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using Services.DomainModels;
+using Services.Dtos;
 
 namespace Services.Services
 {
     public interface IJwtService
     {
-        AccessToken Generate(ClaimsDto claimsDto);
+        AccessTokenDto Generate(ClaimsDto claimsDto);
     }
 }

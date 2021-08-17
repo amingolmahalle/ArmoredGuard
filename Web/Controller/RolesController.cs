@@ -1,16 +1,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Entities.User;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Web.Controller.Base;
 using Web.Models.RequestModels.Role;
+using WebFramework.ApiResult;
 
 namespace Web.Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class RolesController : ControllerBase
+    public class RolesController : BaseController
     {
         private readonly RoleManager<Role> _roleManager;
 
@@ -20,8 +19,7 @@ namespace Web.Controller
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Create(CreateRoleRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResult> Create(CreateRoleRequest request, CancellationToken cancellationToken)
         {
             await _roleManager.CreateAsync(new Role
             {

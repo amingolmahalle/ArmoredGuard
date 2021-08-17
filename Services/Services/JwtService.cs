@@ -10,6 +10,7 @@ using Common.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.DomainModels;
+using Services.Dtos;
 
 namespace Services.Services
 {
@@ -24,7 +25,7 @@ namespace Services.Services
             _securitySettings = securitySettings.Value;
         }
 
-        public AccessToken Generate(ClaimsDto claimsDto)
+        public AccessTokenDto Generate(ClaimsDto claimsDto)
         {
             // longer that 16 character
             SecurityKey secretKey = SecurityHelper.CreateSecurityKey(_securitySettings.JwtSettings.SecretKey);
@@ -45,7 +46,7 @@ namespace Services.Services
 
             JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(descriptor);
 
-            return new AccessToken(jwtSecurityToken);
+            return new AccessTokenDto(jwtSecurityToken);
         }
 
         private SecurityTokenDescriptor _createSecurityTokenDescriptor(
@@ -76,7 +77,7 @@ namespace Services.Services
             claims.AddUserId(claimsDto.UserId.ToString());
             claims.AddUserName(claimsDto.Username);
             claims.AddSecurityStamp(claimsDto.SecurityStamp);
-            claims.AddRoles(claimsDto.RolesName.ToArray());
+            claims.AddRoles(claimsDto.Roles.ToArray());
 
             return claims;
         }
