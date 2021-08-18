@@ -1,8 +1,6 @@
-using System;
-using Services.DomainModels;
 using Services.Dtos;
 
-namespace Services.Services
+namespace Services.Contracts
 {
     public interface IJwtService
     {

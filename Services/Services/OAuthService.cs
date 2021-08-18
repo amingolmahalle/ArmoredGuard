@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Data.Contracts;
 using Entities.OAuth;
+using Services.Contracts;
 using Services.Dtos;
 
 namespace Services.Services
@@ -21,11 +22,6 @@ namespace Services.Services
             _oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
         }
 
-        public Task<bool> IsApplicantValidAsync(string clientId, Guid secretCode)
-        {
-            return _oAuthClientRepository.IsExistOAuthClientByClientIdAndSecretCodeAsync(clientId, secretCode);
-        }
-
         public Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(
             string clientId, Guid secretCode)
         {
@@ -41,9 +37,19 @@ namespace Services.Services
                 userId,
                 refreshToken,
                 clientId);
+        }
 
-
-            //TODO: return dto
+        public Task AddRefreshTokenAsync(AddRefreshTokenDto request, CancellationToken cancellationToken)
+        {
+            OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken
+            {
+                CreatedBy = request.UserId,
+                RefreshCode = request.RefreshCode,
+                OAuthClientId = request.OAuthClientId,
+                CreatedAt = request.CreatedAt,
+                ExpiresAt = request.ExpireAt
+            };
+            return _oAuthRefreshTokenRepository.AddAsync(oAuthRefreshToken, cancellationToken);
         }
 
         public async Task RenewRefreshTokenAsync(RenewRefreshTokenDto request, CancellationToken cancellationToken)
@@ -55,7 +61,7 @@ namespace Services.Services
             var newOAuthRefreshToken = new OAuthRefreshToken
             {
                 CreatedBy = request.UserId,
-                OAuthClientId =request.OAuthClientId,
+                OAuthClientId = request.OAuthClientId,
                 RefreshCode = request.NewRefreshToken,
                 CreatedAt = request.CreatedAt,
                 ExpiresAt = request.ExpiresAt

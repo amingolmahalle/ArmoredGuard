@@ -29,7 +29,7 @@ namespace Web.Swagger
                     {
                         Password = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri("/Identity/token", UriKind.Relative),
+                            TokenUrl = new Uri("/Identity/get-token-by-username-and-password", UriKind.Relative),
                            
                         }
                     }

@@ -14,7 +14,7 @@ namespace Web.Models.RequestModels.Identity
 
         [Required] public string client_id { get; set; }
 
-        [Required] public Guid client_secret { get; set; }
+        [Required] public string client_secret { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

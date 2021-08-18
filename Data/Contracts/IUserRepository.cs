@@ -7,5 +7,6 @@ namespace Data.Contracts
     public interface IUserRepository : IRepository<User>
     {
         Task UpdateLastSeenDateAsync(User user, CancellationToken cancellationToken);
+        Task<bool> GetUserByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken);
     }
 }

@@ -8,6 +8,7 @@ namespace Data.Contracts
 {
     public interface IRepository<TEntity> where TEntity : class, IEntity
     {
+        //TODO: TKey
         DbSet<TEntity> Entities { get; }
 
         IQueryable<TEntity> Table { get; }

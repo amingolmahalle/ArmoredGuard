@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Services.DomainModels
+namespace Services.Dtos
 {
     public class ClaimsDto
     {

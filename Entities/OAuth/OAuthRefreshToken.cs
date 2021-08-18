@@ -21,6 +21,8 @@ namespace Entities.OAuth
         public void Configure(EntityTypeBuilder<OAuthRefreshToken> builder)
         {
             builder.Property(p => p.RefreshCode).IsRequired();
+
+            //TODO: ADD Constraint UserId andClientId should be unique
         }
     }
 }

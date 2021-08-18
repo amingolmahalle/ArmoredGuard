@@ -9,7 +9,7 @@ using Common.Helpers;
 using Common.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Services.DomainModels;
+using Services.Contracts;
 using Services.Dtos;
 
 namespace Services.Services

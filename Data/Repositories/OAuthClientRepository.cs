@@ -12,14 +12,6 @@ namespace Data.Repositories
         {
         }
 
-        public Task<bool> IsExistOAuthClientByClientIdAndSecretCodeAsync(string clientId, Guid secretCode)
-        {
-            return TableNoTracking.AnyAsync(oc =>
-                oc.Name == clientId &&
-                oc.SecretCode == secretCode &&
-                oc.Enabled);
-        }
-
         public async Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(string clientId, Guid secretCode)
         {
             OAuthClient oAuthClient = await TableNoTracking.SingleOrDefaultAsync(oc =>

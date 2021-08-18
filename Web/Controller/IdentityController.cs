@@ -11,9 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Services.DomainModels;
+using Services.Contracts;
 using Services.Dtos;
-using Services.Services;
 using Web.Controller.Base;
 using Web.Models.RequestModels.Identity;
 using WebFramework.ApiResult;
@@ -23,6 +22,7 @@ namespace Web.Controller
     public class IdentityController : BaseController
     {
         private readonly IJwtService _jwtService;
+
         private readonly IOAuthService _oAuthService;
 
         private readonly SignInManager<User> _signInManager;
@@ -47,12 +47,13 @@ namespace Web.Controller
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
         public async Task<IActionResult> GetTokenByUsernameAndPassword(
-            [FromForm] GetTokenByUsernameAndPasswordRequest request)
+            [FromForm] GetTokenByUsernameAndPasswordRequest request, CancellationToken cancellationToken)
         {
-            bool isApplicantValidAsync =
-                await _oAuthService.IsApplicantValidAsync(request.client_id, request.client_secret);
+            int? oauthClientId =
+                await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(request.client_id,
+                    Guid.Parse(request.client_secret));
 
-            if (!isApplicantValidAsync)
+            if (!oauthClientId.HasValue)
                 return Unauthorized("invalid ClientId Or SecretCode");
 
             User user = await _userManager.FindByNameAsync(request.username);
@@ -80,6 +81,17 @@ namespace Web.Controller
 
             AccessTokenDto accessToken = _jwtService.Generate(tokenResult);
 
+            var addRefreshTokenDto = new AddRefreshTokenDto
+            {
+                RefreshCode = Guid.Parse(accessToken.refresh_token),
+                UserId = user.Id,
+                OAuthClientId = oauthClientId.Value,
+                CreatedAt = accessToken.CreatedAt,
+                ExpireAt = accessToken.ExpiresAt
+            };
+
+            await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
+
             return new JsonResult(accessToken);
         }
 
@@ -97,7 +109,7 @@ namespace Web.Controller
                     int? oAuthClientId =
                         await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
                             request.client_id,
-                            request.client_secret);
+                            Guid.Parse(request.client_secret));
 
                     if (!oAuthClientId.HasValue)
                     {
@@ -114,10 +126,10 @@ namespace Web.Controller
                     if (oAuthRefreshToken == null)
                     {
                         transactionScope.Dispose();
-                        return Unauthorized("invalid refresh code for user");
+                        return Unauthorized("invalid refresh code for this user");
                     }
 
-                    if (oAuthRefreshToken.ExpiresAt >= oAuthRefreshToken.CreatedAt)
+                    if (oAuthRefreshToken.ExpiresAt <= DateTimeOffset.UtcNow)
                     {
                         transactionScope.Dispose();
                         return Unauthorized("refresh token has expired. please get the token again");
@@ -193,12 +205,11 @@ namespace Web.Controller
         }
 
         [HttpGet("is-valid-token")]
-        [AllowAnonymous]
         public ApiResult<object> IsValidToken()
         {
             return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
-        
+
         //TODO: Logout Endpoint
     }
 }

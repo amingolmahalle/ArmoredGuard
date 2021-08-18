@@ -32,6 +32,9 @@ namespace Web.Models.RequestModels.User
             
             if (!Email.IsValidEmail())
                 yield return new ValidationResult("Email Address is invalid", new[] {nameof(Email)});
+
+            if (UserName.Length < 4)
+                yield return new ValidationResult("Username must be longer than 4 characters", new[] {nameof(UserName)});
         }
     }
 }

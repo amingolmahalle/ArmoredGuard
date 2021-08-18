@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Entities.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -17,7 +18,7 @@ namespace Entities.OAuth
 
         public string RedirectUri { get; set; }
 
-        public OAuthRefreshToken OAuthRefreshToken { get; set; }
+        public List<OAuthRefreshToken> OAuthRefreshTokens { get; set; }
     }
 
     public class OAuthClientConfiguration : IEntityTypeConfiguration<OAuthClient>
@@ -44,9 +45,9 @@ namespace Entities.OAuth
                 .HasMaxLength(300);
 
             builder
-                .HasOne(e => e.OAuthRefreshToken)
+                .HasMany(e => e.OAuthRefreshTokens)
                 .WithOne(e => e.OAuthClient)
-                .HasForeignKey<OAuthRefreshToken>(f => f.OAuthClientId);
+                .HasForeignKey(f => f.OAuthClientId);
         }
     }
 }

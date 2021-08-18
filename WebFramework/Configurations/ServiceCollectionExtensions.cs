@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Services.Contracts;
 using Services.Services;
 
 namespace WebFramework.Configurations
@@ -75,7 +76,7 @@ namespace WebFramework.Configurations
                     },
                     OnTokenValidated = async context =>
                     {
-                        var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
 
                         if (context.Principal != null)
                         {
@@ -92,7 +93,7 @@ namespace WebFramework.Configurations
 
                             //Find user and token from database and perform your custom validation
                             int userId = claimsIdentity.GetUserId<int>();
-                            User user = await userRepository.GetByIdAsync(context.HttpContext.RequestAborted, userId);
+                            User user = await userService.GetByIdAsync(userId, context.HttpContext.RequestAborted);
 
                             SignInManager<User> signInManager = context.HttpContext.RequestServices
                                 .GetRequiredService<SignInManager<User>>();
@@ -108,7 +109,7 @@ namespace WebFramework.Configurations
                             if (!user.IsActive)
                                 context.Fail("User is not active");
 
-                            await userRepository.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
+                            await userService.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
                         }
                     },
                     OnChallenge = context =>
@@ -166,9 +167,11 @@ namespace WebFramework.Configurations
         {
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IOAuthService, OAuthService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IOAuthClientRepository, OAuthClientRepository>();
+            services.AddScoped<IOAuthRefreshTokenRepository, OAuthRefreshTokenRepository>();
         }
     }
 }

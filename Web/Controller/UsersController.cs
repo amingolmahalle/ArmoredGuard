@@ -4,12 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Common.Extensions;
-using Data.Contracts;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Services.Contracts;
 using Web.Controller.Base;
 using Web.Models.RequestModels.User;
 using Web.Models.ResponseModel.User;
@@ -19,7 +19,9 @@ namespace Web.Controller
 {
     public class UsersController : BaseController
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
+
+        private readonly IOAuthService _oAuthService;
 
         private readonly ILogger<UsersController> _logger;
 
@@ -28,15 +30,17 @@ namespace Web.Controller
         private readonly RoleManager<Role> _roleManager;
 
         public UsersController(
-            IUserRepository userRepository,
+            IUserService userService,
             ILogger<UsersController> logger,
             UserManager<User> userManager,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager,
+            IOAuthService oAuthService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
+            _oAuthService = oAuthService;
         }
 
         [HttpGet("get-by-id/{id:int}")]
@@ -45,7 +49,7 @@ namespace Web.Controller
             User user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return Ok(); //?NoContent
+                return NotFound();
 
             var getByUserIdResponse = new GetByUserIdResponse
             {
@@ -63,13 +67,19 @@ namespace Web.Controller
 
         [HttpPost("create")]
         [AllowAnonymous]
-        public async Task<ApiResult> Create(CreateUserRequest request)
+        public async Task<ApiResult> Create(CreateUserRequest request, CancellationToken cancellationToken)
         {
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    _logger.LogInformation("calling Create User Action");
+                    bool isExistUser =
+                        await _userService.IsExistUserByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
+
+                    if (isExistUser)
+                        return BadRequest("user already exists");
+
+                    _logger.LogInformation("calling create user endpoint");
 
                     var user = new User
                     {
@@ -115,7 +125,7 @@ namespace Web.Controller
         public async Task<ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
-            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
+            User user = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (user == null)
                 return NotFound();
@@ -154,7 +164,9 @@ namespace Web.Controller
         public async Task<ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
             CancellationToken cancellationToken)
         {
-            User updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
+            // TODO:transaction Scope
+
+            User updateUser = await _userService.GetByIdAsync(id, cancellationToken);
 
             IdentityResult result =
                 await _userManager.ChangePasswordAsync(updateUser, request.CurrentPassword, request.NewPassword);
@@ -162,8 +174,8 @@ namespace Web.Controller
             if (!result.Succeeded)
                 return NotFound(
                     $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
-            
-            //TODO: remove RefreshCode From table
+
+            //TODO: remove refresh token
 
             return Ok();
         }
@@ -171,7 +183,8 @@ namespace Web.Controller
         [HttpPut("inactivate/{id:int}")]
         public async Task<ApiResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
         {
-            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
+            // TODO:transaction Scope
+            User user = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (user == null)
             {
@@ -185,13 +198,16 @@ namespace Web.Controller
 
             await _userManager.UpdateSecurityStampAsync(user);
 
+            //TODO: remove refresh token
+
             return Ok();
         }
 
         [HttpPut("activate/{id:int}")]
         public async Task<ApiResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
         {
-            User user = await _userRepository.GetByIdAsync(cancellationToken, id);
+            // TODO:transaction Scope
+            User user = await _userService.GetByIdAsync(id, cancellationToken);
 
             if (user == null)
             {
@@ -205,7 +221,11 @@ namespace Web.Controller
 
             await _userManager.UpdateSecurityStampAsync(user);
 
+            //TODO: remove refresh token
+
             return Ok();
         }
+
+        //TODO: Mobile Confirmed With Otp (redis)
     }
 }

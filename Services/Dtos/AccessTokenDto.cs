@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Services.Dtos
@@ -26,7 +25,7 @@ namespace Services.Dtos
 
         public int expires_in { get; set; }
 
-        [NotMapped] public DateTimeOffset CreatedAt { get; set; }
-        [NotMapped] public DateTimeOffset ExpiresAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset ExpiresAt { get; set; }
     }
 }

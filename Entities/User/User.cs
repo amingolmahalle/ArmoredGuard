@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Entities.BaseEntity;
 using Entities.OAuth;
@@ -25,7 +26,7 @@ namespace Entities.User
 
         public DateTimeOffset? LastSeenDate { get; set; }
 
-        public OAuthRefreshToken OAuthRefreshToken { get; set; }
+        public List<OAuthRefreshToken> OAuthRefreshTokens { get; set; }
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
@@ -43,9 +44,12 @@ namespace Entities.User
                 .HasMaxLength(100);
 
             builder
-                .HasOne(e => e.OAuthRefreshToken)
+                .HasMany(e => e.OAuthRefreshTokens)
                 .WithOne(e => e.User)
-                .HasForeignKey<OAuthRefreshToken>(f => f.CreatedBy);
+                .HasForeignKey(f => f.CreatedBy);
+            
+            
+            //TODO: Constraint on Mobile Number(unique)
         }
     }
 
