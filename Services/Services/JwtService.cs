@@ -18,8 +18,6 @@ namespace Services.Services
     {
         private readonly SecuritySettings _securitySettings;
 
-        // private readonly SignInManager<User> _signInManager;
-
         public JwtService(IOptionsSnapshot<SecuritySettings> securitySettings)
         {
             _securitySettings = securitySettings.Value;
@@ -40,12 +38,8 @@ namespace Services.Services
             SecurityTokenDescriptor descriptor =
                 _createSecurityTokenDescriptor(signingCredentials, encryptingCredentials, claims);
 
-            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            //JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-            //JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
-
             JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(descriptor);
-
+            
             return new AccessTokenDto(jwtSecurityToken);
         }
 
@@ -70,9 +64,6 @@ namespace Services.Services
 
         private IEnumerable<Claim> _setClaims(ClaimsDto claimsDto)
         {
-            // ClaimsPrincipal result = await _signInManager.ClaimsFactory.CreateAsync(user);
-
-            //add custom claims
             ICollection<Claim> claims = new Collection<Claim>();
             claims.AddUserId(claimsDto.UserId.ToString());
             claims.AddUserName(claimsDto.Username);

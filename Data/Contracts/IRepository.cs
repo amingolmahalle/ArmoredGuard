@@ -16,6 +16,10 @@ namespace Data.Contracts
 
         ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids);
 
+        Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+
         Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+
+        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
     }
 }

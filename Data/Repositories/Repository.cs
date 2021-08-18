@@ -30,12 +30,31 @@ namespace Data.Repositories
             return Entities.FindAsync(ids, cancellationToken);
         }
 
+        public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
+        {
+            Assert.NotNull(entity, nameof(entity));
+            await Entities.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+
+            if (saveNow)
+                await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
         public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
         {
             Assert.NotNull(entity, nameof(entity));
             Entities.Update(entity);
+
             if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
+        {
+            Assert.NotNull(entity, nameof(entity));
+            Entities.Remove(entity);
+
+            if (saveNow)
+                await DbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

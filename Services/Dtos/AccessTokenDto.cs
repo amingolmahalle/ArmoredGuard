@@ -1,16 +1,21 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text.Json;
 
 namespace Services.Dtos
 {
     public class AccessTokenDto
     {
+        private readonly DateTime _dateTimeNow = DateTime.UtcNow;
+
         public AccessTokenDto(JwtSecurityToken securityToken)
         {
             access_token = new JwtSecurityTokenHandler().WriteToken(securityToken);
             token_type = "Bearer";
-            expires_in = (int) (securityToken.ValidTo - DateTime.UtcNow).TotalSeconds;
+            refresh_token = Guid.NewGuid().ToString();
+            expires_in = (int) (securityToken.ValidTo - _dateTimeNow).TotalSeconds;
+            CreatedAt = _dateTimeNow;
+            ExpiresAt = securityToken.ValidTo;
         }
 
         public string access_token { get; set; }
@@ -20,5 +25,8 @@ namespace Services.Dtos
         public string token_type { get; set; }
 
         public int expires_in { get; set; }
+
+        [NotMapped] public DateTimeOffset CreatedAt { get; set; }
+        [NotMapped] public DateTimeOffset ExpiresAt { get; set; }
     }
 }

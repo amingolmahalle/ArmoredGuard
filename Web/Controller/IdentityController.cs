@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
+using Entities.OAuth;
 using Entities.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +15,7 @@ using Services.DomainModels;
 using Services.Dtos;
 using Services.Services;
 using Web.Controller.Base;
-using Web.Models;
+using Web.Models.RequestModels.Identity;
 using WebFramework.ApiResult;
 
 namespace Web.Controller
@@ -20,6 +23,7 @@ namespace Web.Controller
     public class IdentityController : BaseController
     {
         private readonly IJwtService _jwtService;
+        private readonly IOAuthService _oAuthService;
 
         private readonly SignInManager<User> _signInManager;
 
@@ -31,27 +35,27 @@ namespace Web.Controller
             IJwtService jwtService,
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOAuthService authService)
         {
             _jwtService = jwtService;
             _signInManager = signInManager;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _oAuthService = authService;
         }
 
-        /// <summary>
-        /// This method generate JWT Token
-        /// </summary>
-        /// <param name="tokenRequest">The information of token request</param>
-        /// <returns></returns>
-        [HttpPost("token")]
+        [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
-        public async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest)
+        public async Task<IActionResult> GetTokenByUsernameAndPassword(
+            [FromForm] GetTokenByUsernameAndPasswordRequest request)
         {
-            if (!tokenRequest.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
-                throw new Exception("OAuth flow is not password");
+            bool isApplicantValidAsync =
+                await _oAuthService.IsApplicantValidAsync(request.client_id, request.client_secret);
 
-            User user = await _userManager.FindByNameAsync(tokenRequest.username);
+            if (!isApplicantValidAsync)
+                return Unauthorized("invalid ClientId Or SecretCode");
+
+            User user = await _userManager.FindByNameAsync(request.username);
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
@@ -59,7 +63,7 @@ namespace Web.Controller
             if (!user.IsActive)
                 return BadRequest("User is not active");
 
-            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, tokenRequest.password);
+            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, request.password);
 
             if (!isPasswordValid)
                 return NotFound("Invalid Username or Password");
@@ -74,9 +78,99 @@ namespace Web.Controller
                 SecurityStamp = user.SecurityStamp
             };
 
-            AccessTokenDto jwt = _jwtService.Generate(tokenResult);
+            AccessTokenDto accessToken = _jwtService.Generate(tokenResult);
 
-            return new JsonResult(jwt);
+            return new JsonResult(accessToken);
+        }
+
+        [HttpPost("get-token-by-refresh-code")]
+        public async Task<IActionResult> GetTokenByRefreshCode(
+            GetTokenByRefreshCodeRequest request,
+            CancellationToken cancellationToken)
+        {
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    int? oAuthClientId =
+                        await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
+                            request.client_id,
+                            request.client_secret);
+
+                    if (!oAuthClientId.HasValue)
+                    {
+                        transactionScope.Dispose();
+                        return Unauthorized("invalid ClientId Or SecretCode");
+                    }
+
+                    OAuthRefreshToken oAuthRefreshToken =
+                        await _oAuthService.GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
+                            userId,
+                            request.refresh_token,
+                            oAuthClientId.Value);
+
+                    if (oAuthRefreshToken == null)
+                    {
+                        transactionScope.Dispose();
+                        return Unauthorized("invalid refresh code for user");
+                    }
+
+                    if (oAuthRefreshToken.ExpiresAt >= oAuthRefreshToken.CreatedAt)
+                    {
+                        transactionScope.Dispose();
+                        return Unauthorized("refresh token has expired. please get the token again");
+                    }
+
+                    User user = await _userManager.FindByIdAsync(userId.ToString());
+
+                    if (user == null)
+                    {
+                        transactionScope.Dispose();
+                        return NotFound("invalid username or password");
+                    }
+
+                    if (!user.IsActive)
+                    {
+                        transactionScope.Dispose();
+                        return BadRequest("User is not active");
+                    }
+
+                    IList<string> rolesName = await _userManager.GetRolesAsync(user);
+
+                    ClaimsDto tokenResult = new ClaimsDto
+                    {
+                        UserId = user.Id,
+                        Username = user.UserName,
+                        Roles = rolesName,
+                        SecurityStamp = user.SecurityStamp
+                    };
+
+                    AccessTokenDto accessToken = _jwtService.Generate(tokenResult);
+
+                    var renewRefreshTokenDto = new RenewRefreshTokenDto
+                    {
+                        UserId = user.Id,
+                        OAuthClientId = oAuthClientId.Value,
+                        OAuthRefreshTokenId = oAuthRefreshToken.Id,
+                        CreatedAt = accessToken.CreatedAt,
+                        ExpiresAt = accessToken.ExpiresAt,
+                        NewRefreshToken = Guid.Parse(accessToken.refresh_token)
+                    };
+
+                    await _oAuthService.RenewRefreshTokenAsync(renewRefreshTokenDto, cancellationToken);
+
+                    transactionScope.Complete();
+
+                    return new JsonResult(accessToken);
+                }
+                catch (Exception e)
+                {
+                    transactionScope.Dispose();
+                    throw new Exception(e.Message, e.InnerException);
+                }
+            }
         }
 
         [HttpGet("get-claims")]
@@ -104,5 +198,7 @@ namespace Web.Controller
         {
             return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
+        
+        //TODO: Logout Endpoint
     }
 }

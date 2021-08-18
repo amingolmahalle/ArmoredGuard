@@ -79,7 +79,7 @@ namespace WebFramework.Configurations
 
                         if (context.Principal != null)
                         {
-                            var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                            ClaimsIdentity claimsIdentity = context.Principal.Identity as ClaimsIdentity;
 
                             if (claimsIdentity?.Claims.Any() != true)
                                 context.Fail("This token has no claims.");
@@ -165,8 +165,10 @@ namespace WebFramework.Configurations
         public static void AddInjectionServices(this IServiceCollection services)
         {
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IOAuthService, OAuthService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOAuthClientRepository, OAuthClientRepository>();
         }
     }
 }

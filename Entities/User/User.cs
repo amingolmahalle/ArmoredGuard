@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Entities.BaseEntity;
+using Entities.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,33 +14,45 @@ namespace Entities.User
         {
             IsActive = true;
         }
-        
+
         public string FullName { get; set; }
-        
+
         public DateTime? BirthDate { get; set; }
-        
+
         public GenderType Gender { get; set; }
-        
+
         public bool IsActive { get; set; }
-        
+
         public DateTimeOffset? LastSeenDate { get; set; }
+
+        public OAuthRefreshToken OAuthRefreshToken { get; set; }
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(p => p.FullName).IsRequired().HasMaxLength(100);
-            builder.Property(p => p.UserName).IsRequired().HasMaxLength(100);
+            builder
+                .Property(p => p.FullName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder
+                .Property(p => p.UserName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder
+                .HasOne(e => e.OAuthRefreshToken)
+                .WithOne(e => e.User)
+                .HasForeignKey<OAuthRefreshToken>(f => f.CreatedBy);
         }
     }
 
     public enum GenderType
     {
-        [Display(Name = "Male")]
-        Male = 1,
+        [Display(Name = "Male")] Male = 1,
 
-        [Display(Name = "Female")]
-        Female = 2
+        [Display(Name = "Female")] Female = 2
     }
 }

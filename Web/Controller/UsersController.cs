@@ -119,11 +119,6 @@ namespace Web.Controller
 
             if (user == null)
                 return NotFound();
-            
-            if (request?.UserName != null)
-            {
-                user.UserName = request.UserName;
-            }
 
             if (request?.Email != null)
             {
@@ -150,7 +145,7 @@ namespace Web.Controller
                 user.Gender = request.Gender.GetValueOrDefault();
             }
 
-            await _userManager.UpdateSecurityStampAsync(user);
+            await _userManager.UpdateAsync(user);
 
             return Ok();
         }
@@ -167,6 +162,8 @@ namespace Web.Controller
             if (!result.Succeeded)
                 return NotFound(
                     $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
+            
+            //TODO: remove RefreshCode From table
 
             return Ok();
         }
