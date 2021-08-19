@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Web.Swagger;
 using WebFramework.Configurations;
 
@@ -38,6 +39,8 @@ namespace Web
                         .AllowAnyHeader());
             });
             services.AddControllers();
+
+            services.AddStackExchangeRedisCache(options => { options.Configuration = "localhost:6379"; });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

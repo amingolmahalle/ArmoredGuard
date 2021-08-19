@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Extensions;
 using Entities.BaseEntity;
-using Entities.User;
+using Entities.Entity;
 
 namespace Data
 {

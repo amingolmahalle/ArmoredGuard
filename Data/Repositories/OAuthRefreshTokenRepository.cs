@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Data.Contracts;
-using Entities.OAuth;
+using Entities.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
-    public class OAuthRefreshTokenRepository : Repository<OAuthRefreshToken>, IOAuthRefreshTokenRepository
+    public class OAuthRefreshTokenRepository : Repository<OAuthRefreshToken,int>, IOAuthRefreshTokenRepository
     {
         public OAuthRefreshTokenRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

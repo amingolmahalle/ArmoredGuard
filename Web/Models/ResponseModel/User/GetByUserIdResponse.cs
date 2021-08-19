@@ -1,5 +1,5 @@
 using System;
-using Entities.User;
+using Entities.Entity;
 
 namespace Web.Models.ResponseModel.User
 {

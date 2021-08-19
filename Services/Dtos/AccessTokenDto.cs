@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
 
 namespace Services.Dtos
 {
@@ -9,23 +10,24 @@ namespace Services.Dtos
 
         public AccessTokenDto(JwtSecurityToken securityToken)
         {
-            access_token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            token_type = "Bearer";
-            refresh_token = Guid.NewGuid().ToString();
-            expires_in = (int) (securityToken.ValidTo - _dateTimeNow).TotalSeconds;
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(securityToken);
+            TokenType = "Bearer";
+            RefreshToken = Guid.NewGuid().ToString();
+            ExpiresIn = (int) (securityToken.ValidTo - _dateTimeNow).TotalSeconds;
             CreatedAt = _dateTimeNow;
             ExpiresAt = securityToken.ValidTo;
         }
 
-        public string access_token { get; set; }
+        [JsonProperty("access_token")] public string AccessToken { get; set; }
 
-        public string refresh_token { get; set; }
+        [JsonProperty("refresh_token")] public string RefreshToken { get; set; }
 
-        public string token_type { get; set; }
+        [JsonProperty("token_type")] public string TokenType { get; set; }
 
-        public int expires_in { get; set; }
+        [JsonProperty("expires_in")] public int ExpiresIn { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset ExpiresAt { get; set; }
+        [JsonProperty("Created_at")] public DateTimeOffset CreatedAt { get; set; }
+
+        [JsonProperty("Expires_at")] public DateTimeOffset ExpiresAt { get; set; }
     }
 }

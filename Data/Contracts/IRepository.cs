@@ -6,16 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Contracts
 {
-    public interface IRepository<TEntity> where TEntity : class, IEntity
+    public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity
     {
-        //TODO: TKey
         DbSet<TEntity> Entities { get; }
 
         IQueryable<TEntity> Table { get; }
 
         IQueryable<TEntity> TableNoTracking { get; }
 
-        ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids);
+        ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id);
 
         Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 

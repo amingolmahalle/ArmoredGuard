@@ -4,7 +4,7 @@ using Entities.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Entities.OAuth
+namespace Entities.Entity
 {
     public class OAuthClient : BaseEntity<int>
     {

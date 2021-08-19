@@ -8,7 +8,7 @@ using Entities.BaseEntity;
 
 namespace Data.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity>
+    public class Repository<TEntity,TKey> : IRepository<TEntity,TKey>
         where TEntity : class, IEntity
     {
         protected readonly ApplicationDbContext DbContext;
@@ -25,9 +25,9 @@ namespace Data.Repositories
             Entities = DbContext.Set<TEntity>(); // City => Cities
         }
 
-        public virtual ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids)
+        public virtual ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id)
         {
-            return Entities.FindAsync(ids, cancellationToken);
+            return Entities.FindAsync(id, cancellationToken);
         }
 
         public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)

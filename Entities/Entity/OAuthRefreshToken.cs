@@ -3,12 +3,12 @@ using Entities.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Entities.OAuth
+namespace Entities.Entity
 {
     public class OAuthRefreshToken : BaseEntity<int>
     {
         public int CreatedBy { get; set; }
-        public User.User User { get; set; }
+        public User User { get; set; }
         public int OAuthClientId { get; set; }
         public OAuthClient OAuthClient { get; set; }
         public Guid RefreshCode { get; set; }
@@ -20,9 +20,13 @@ namespace Entities.OAuth
     {
         public void Configure(EntityTypeBuilder<OAuthRefreshToken> builder)
         {
-            builder.Property(p => p.RefreshCode).IsRequired();
+            builder
+                .Property(p => p.RefreshCode)
+                .IsRequired();
 
-            //TODO: ADD Constraint UserId andClientId should be unique
+            builder
+                .HasIndex(p => new {p.CreatedBy, p.OAuthClientId})
+                .IsUnique();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Common.Extensions;
-using Entities.User;
+using Entities.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -74,7 +74,7 @@ namespace Web.Controller
                 try
                 {
                     bool isExistUser =
-                        await _userService.IsExistUserByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
+                        await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
                     if (isExistUser)
                         return BadRequest("user already exists");
@@ -155,7 +155,7 @@ namespace Web.Controller
                 user.Gender = request.Gender.GetValueOrDefault();
             }
 
-            await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user); 
 
             return Ok();
         }
@@ -179,53 +179,5 @@ namespace Web.Controller
 
             return Ok();
         }
-
-        [HttpPut("inactivate/{id:int}")]
-        public async Task<ApiResult> Inactivate([FromRoute] int id, CancellationToken cancellationToken)
-        {
-            // TODO:transaction Scope
-            User user = await _userService.GetByIdAsync(id, cancellationToken);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!user.IsActive)
-                return BadRequest("User is disabled");
-
-            user.IsActive = false;
-
-            await _userManager.UpdateSecurityStampAsync(user);
-
-            //TODO: remove refresh token
-
-            return Ok();
-        }
-
-        [HttpPut("activate/{id:int}")]
-        public async Task<ApiResult> Activate([FromRoute] int id, CancellationToken cancellationToken)
-        {
-            // TODO:transaction Scope
-            User user = await _userService.GetByIdAsync(id, cancellationToken);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (user.IsActive)
-                return BadRequest("user is active");
-
-            user.IsActive = true;
-
-            await _userManager.UpdateSecurityStampAsync(user);
-
-            //TODO: remove refresh token
-
-            return Ok();
-        }
-
-        //TODO: Mobile Confirmed With Otp (redis)
     }
 }

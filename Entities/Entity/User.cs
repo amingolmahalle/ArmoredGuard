@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Entities.BaseEntity;
-using Entities.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Entities.User
+namespace Entities.Entity
 {
     public class User : IdentityUser<int>, IEntity
     {
@@ -44,12 +43,18 @@ namespace Entities.User
                 .HasMaxLength(100);
 
             builder
+                .Property(p => p.PhoneNumber)
+                .IsRequired()
+                .HasMaxLength(11);
+
+            builder
+                .HasIndex(p => p.PhoneNumber)
+                .IsUnique();
+
+            builder
                 .HasMany(e => e.OAuthRefreshTokens)
                 .WithOne(e => e.User)
                 .HasForeignKey(f => f.CreatedBy);
-            
-            
-            //TODO: Constraint on Mobile Number(unique)
         }
     }
 

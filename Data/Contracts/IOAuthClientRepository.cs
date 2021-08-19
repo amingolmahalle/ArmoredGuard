@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Entities.OAuth;
+using Entities.Entity;
 
 namespace Data.Contracts
 {
-    public interface IOAuthClientRepository : IRepository<OAuthClient>
+    public interface IOAuthClientRepository : IRepository<OAuthClient,int>
     {
         Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(string clientId, Guid secretCode);
     }

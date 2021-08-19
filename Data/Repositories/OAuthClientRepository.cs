@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Data.Contracts;
-using Entities.OAuth;
+using Entities.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
-    public class OAuthClientRepository : Repository<OAuthClient>, IOAuthClientRepository
+    public class OAuthClientRepository : Repository<OAuthClient,int>, IOAuthClientRepository
     {
         public OAuthClientRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

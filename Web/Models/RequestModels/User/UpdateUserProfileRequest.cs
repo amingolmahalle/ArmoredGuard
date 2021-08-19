@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Common.Extensions;
-using Entities.User;
+using Entities.Entity;
 
 namespace Web.Models.RequestModels.User
 {
@@ -20,7 +20,7 @@ namespace Web.Models.RequestModels.User
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!string.IsNullOrEmpty(PhoneNumber) && !PhoneNumber.IsMobileNumber())
+            if (!string.IsNullOrEmpty(PhoneNumber) && !PhoneNumber.IsPhoneNumber())
                 yield return new ValidationResult("phone number is invalid", new[] {nameof(PhoneNumber)});
 
             if (!string.IsNullOrEmpty(Email) && !PhoneNumber.IsValidEmail())

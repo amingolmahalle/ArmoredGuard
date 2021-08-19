@@ -109,7 +109,7 @@ namespace Common.Extensions
         {
             input = input?.CleanString();
 
-            if (!IsMobileNumber(input))
+            if (!IsPhoneNumber(input))
             {
                 return string.Empty;
             }
@@ -164,7 +164,7 @@ namespace Common.Extensions
             }
         }
 
-        public static bool IsMobileNumber(this string input)
+        public static bool IsPhoneNumber(this string input)
         {
             return !string.IsNullOrWhiteSpace(input) &&
                    Regex.IsMatch(input, @"(^09\d{9}$)|(^\+989\d{9}$)|(^9\d{9}$)|(^989\d{9}$)");

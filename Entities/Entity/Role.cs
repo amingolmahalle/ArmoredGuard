@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Entities.BaseEntity;
+﻿using Entities.BaseEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Entities.User
+namespace Entities.Entity
 {
     public class Role : IdentityRole<int>, IEntity
     {
-        [Required]
-        [StringLength(100)]
         public string Description { get; set; }
     }
 
@@ -17,7 +14,15 @@ namespace Entities.User
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.Property(p => p.Name).IsRequired().HasMaxLength(50);
+            builder
+                .Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(30);
+
+            builder
+                .Property(p => p.Description)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }

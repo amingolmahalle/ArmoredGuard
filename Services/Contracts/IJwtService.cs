@@ -4,6 +4,6 @@ namespace Services.Contracts
 {
     public interface IJwtService
     {
-        AccessTokenDto Generate(ClaimsDto claimsDto);
+        AccessTokenDto GenerateToken(ClaimsDto claimsDto);
     }
 }

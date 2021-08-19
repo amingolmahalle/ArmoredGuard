@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Entities.User;
+using Entities.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.Controller.Base;

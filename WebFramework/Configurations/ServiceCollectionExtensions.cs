@@ -8,7 +8,7 @@ using Common.Settings;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
-using Entities.User;
+using Entities.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Services.Contracts;
 using Services.Services;
+using WebFramework.Caching.Redis;
 
 namespace WebFramework.Configurations
 {
@@ -165,10 +166,14 @@ namespace WebFramework.Configurations
 
         public static void AddInjectionServices(this IServiceCollection services)
         {
+            //Services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IOAuthService, OAuthService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IRedisService, RedisService>();
+
+            //Repositories
+            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IOAuthClientRepository, OAuthClientRepository>();
             services.AddScoped<IOAuthRefreshTokenRepository, OAuthRefreshTokenRepository>();

@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Entities.OAuth;
+using Entities.Entity;
 
 namespace Data.Contracts
 {
-    public interface IOAuthRefreshTokenRepository : IRepository<OAuthRefreshToken>
+    public interface IOAuthRefreshTokenRepository : IRepository<OAuthRefreshToken,int>
     {
         Task<OAuthRefreshToken> GetOAuthRefreshTokenUserIdAndRefreshCodeAndClientIdAsync(
             int userId,

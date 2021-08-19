@@ -23,7 +23,7 @@ namespace Services.Services
             _securitySettings = securitySettings.Value;
         }
 
-        public AccessTokenDto Generate(ClaimsDto claimsDto)
+        public AccessTokenDto GenerateToken(ClaimsDto claimsDto)
         {
             // longer that 16 character
             SecurityKey secretKey = SecurityHelper.CreateSecurityKey(_securitySettings.JwtSettings.SecretKey);

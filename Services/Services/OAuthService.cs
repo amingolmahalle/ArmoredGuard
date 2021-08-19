@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Data.Contracts;
-using Entities.OAuth;
+using Entities.Entity;
 using Services.Contracts;
 using Services.Dtos;
 

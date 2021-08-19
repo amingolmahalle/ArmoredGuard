@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Entities.OAuth;
+using Entities.Entity;
 using Services.Dtos;
 
 namespace Services.Contracts
@@ -12,7 +12,9 @@ namespace Services.Contracts
 
         Task RenewRefreshTokenAsync(RenewRefreshTokenDto request, CancellationToken cancellationToken);
 
-        Task<OAuthRefreshToken> GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(int userId, Guid refreshCode,
+        Task<OAuthRefreshToken> GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
+            int userId,
+            Guid refreshCode,
             int clientId);
 
         Task AddRefreshTokenAsync(AddRefreshTokenDto request, CancellationToken cancellationToken);
