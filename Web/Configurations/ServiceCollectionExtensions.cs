@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Common.Enums;
+using Common.Exceptions;
 using Common.Extensions;
 using Common.Helpers;
 using Common.Settings;
@@ -65,16 +68,15 @@ namespace Web.Configurations
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        ILogger logger = context.HttpContext
-                            .RequestServices
-                            .GetRequiredService<ILoggerFactory>()
-                            .CreateLogger(nameof(JwtBearerEvents));
+                        if (context.Exception != null)
+                            throw new AppException(
+                                ApiResultStatusCodeType.UnAuthorized,
+                                "Authentication failed",
+                                HttpStatusCode.Unauthorized,
+                                context.Exception,
+                                null);
 
-                        logger.LogError("Authentication failed.", context.Exception);
-                        context.Response.ContentType = "application/json";
-                        context.Response.StatusCode = 401;
-
-                        return context.Response.WriteAsync("Unauthorized");
+                        return Task.CompletedTask;
                     },
                     OnTokenValidated = async context =>
                     {
@@ -116,23 +118,18 @@ namespace Web.Configurations
                     },
                     OnChallenge = context =>
                     {
-                        ILogger logger = context.HttpContext
-                            .RequestServices
-                            .GetRequiredService<ILoggerFactory>()
-                            .CreateLogger(nameof(JwtBearerEvents));
-
-                        logger.LogError("OnChallenge error", context.Error, context.ErrorDescription);
-
-                        if (!context.Response.HasStarted)
-                        {
-                            context.Response.ContentType = "application/json";
-
-                            context.Response.StatusCode = 401;
-
-                            return context.Response.WriteAsync("Unauthorized");
-                        }
-
-                        return Task.CompletedTask;
+                        if (context.AuthenticateFailure != null)
+                            throw new AppException(
+                                ApiResultStatusCodeType.UnAuthorized,
+                                "Authenticate failure",
+                                HttpStatusCode.Unauthorized,
+                                context.AuthenticateFailure,
+                                null);
+                        
+                        throw new AppException(
+                            ApiResultStatusCodeType.UnAuthorized,
+                            "You are unauthorized to access this resource",
+                            HttpStatusCode.Unauthorized);
                     }
                 };
             });

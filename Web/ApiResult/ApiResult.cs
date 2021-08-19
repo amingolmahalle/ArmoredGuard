@@ -2,6 +2,7 @@ using System.Linq;
 using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Web.ApiResult
 {
@@ -18,6 +19,15 @@ namespace Web.ApiResult
             IsSuccess = isSuccess;
             StatusCode = statusCode;
             Message = message;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
         }
 
         #region Implicit Operators
@@ -67,7 +77,7 @@ namespace Web.ApiResult
         #endregion
     }
 
-    public class ApiResult<TData> : ApiResult where TData : class 
+    public class ApiResult<TData> : ApiResult where TData : class
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public TData Data { get; set; }
@@ -76,6 +86,15 @@ namespace Web.ApiResult
             isSuccess, statusCode, message)
         {
             Data = data;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
         }
 
         #region Implicit Operators

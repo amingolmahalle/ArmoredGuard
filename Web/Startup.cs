@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Configurations;
+using Web.Middleware;
 using Web.Swagger;
 
 namespace Web
@@ -49,6 +50,7 @@ namespace Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
