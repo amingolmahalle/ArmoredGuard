@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Common.Enums;
 using Entities.BaseEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -56,12 +57,5 @@ namespace Entities.Entity
                 .WithOne(e => e.User)
                 .HasForeignKey(f => f.CreatedBy);
         }
-    }
-
-    public enum GenderType
-    {
-        [Display(Name = "Male")] Male = 1,
-
-        [Display(Name = "Female")] Female = 2
     }
 }

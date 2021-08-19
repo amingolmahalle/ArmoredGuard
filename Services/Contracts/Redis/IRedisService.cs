@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Services.Services.Redis
+namespace Services.Contracts.Redis
 {
     public interface IRedisService
     {

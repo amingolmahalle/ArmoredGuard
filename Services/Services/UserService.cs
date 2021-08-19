@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Enums;
 using Common.Helpers;
-using Common.Helpers.Enums;
 using Data.Contracts;
 using Entities.Entity;
 using Microsoft.AspNetCore.Identity;
 using Services.Contracts;
+using Services.Contracts.Redis;
 using Services.Dtos;
-using Services.Services.Redis;
 
 namespace Services.Services
 {
@@ -118,11 +118,6 @@ namespace Services.Services
         public Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword)
         {
             return _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-        }
-
-        public async Task<User> GetByIdAsync(int userId, CancellationToken cancellationToken)
-        {
-            return await _userRepository.GetByIdAsync(cancellationToken, userId);
         }
 
         public Task<User> GetByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken)

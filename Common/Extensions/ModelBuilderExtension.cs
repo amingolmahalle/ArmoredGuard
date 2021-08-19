@@ -40,7 +40,6 @@ namespace Common.Extensions
         /// Dynamicaly register all Entities that inherit from specific BaseType
         /// </summary>
         /// <param name="modelBuilder"></param>
-        /// <param name="baseType">Base type that Entities inherit from this</param>
         /// <param name="assemblies">Assemblies contains Entities</param>
         public static void RegisterAllEntities<TBaseType>(this ModelBuilder modelBuilder, params Assembly[] assemblies)
         {

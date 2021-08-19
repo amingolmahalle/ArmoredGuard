@@ -1,4 +1,4 @@
-namespace Common.Helpers.Enums
+namespace Common.Enums
 {
     public enum RegisterType
     {

@@ -23,20 +23,27 @@ namespace Services.Services
         }
 
         public Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(
-            string clientId, Guid secretCode)
+            string clientId,
+            Guid secretCode,
+            CancellationToken cancellationToken)
         {
-            return _oAuthClientRepository.GetOAuthClientIdByClientIdAndSecretCodeAsync(clientId, secretCode);
+            return _oAuthClientRepository.GetOAuthClientIdByClientIdAndSecretCodeAsync(
+                clientId,
+                secretCode,
+                cancellationToken);
         }
 
         public Task<OAuthRefreshToken> GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
             int userId,
             Guid refreshToken,
-            int clientId)
+            int clientId,
+            CancellationToken cancellationToken)
         {
-            return _oAuthRefreshTokenRepository.GetOAuthRefreshTokenUserIdAndRefreshCodeAndClientIdAsync(
+            return _oAuthRefreshTokenRepository.GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
                 userId,
                 refreshToken,
-                clientId);
+                clientId,
+                cancellationToken);
         }
 
         public Task AddRefreshTokenAsync(AddRefreshTokenDto request, CancellationToken cancellationToken)
@@ -50,6 +57,11 @@ namespace Services.Services
                 ExpiresAt = request.ExpireAt
             };
             return _oAuthRefreshTokenRepository.AddAsync(oAuthRefreshToken, cancellationToken);
+        }
+
+        public async Task DeleteAllUserRefreshCodesAsync(int userId, CancellationToken cancellationToken)
+        {
+            await _oAuthRefreshTokenRepository.DeleteAllUserRefreshCodesAsync(userId, cancellationToken);
         }
 
         public async Task RenewRefreshTokenAsync(RenewRefreshTokenDto request, CancellationToken cancellationToken)

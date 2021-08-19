@@ -1,4 +1,4 @@
-using Common.Helpers.Enums;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Web.ApiResult;
@@ -13,7 +13,7 @@ namespace Web.Filter
                 && objectResult.StatusCode == null
                 && objectResult.Value is not ApiResult.ApiResult)
             {
-                var apiResult = new ApiResult<object>(objectResult.Value, true, ApiResultStatusCode.Success);
+                var apiResult = new ApiResult<object>(objectResult.Value, true, ApiResultStatusCodeType.Success);
                 context.Result = new JsonResult(apiResult) {StatusCode = objectResult.StatusCode};
             }
 

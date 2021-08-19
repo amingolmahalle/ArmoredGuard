@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Entities.BaseEntity;
@@ -14,12 +15,12 @@ namespace Data.Contracts
 
         IQueryable<TEntity> TableNoTracking { get; }
 
-        ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id);
-
         Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 
         Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+
+        Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
     }
 }

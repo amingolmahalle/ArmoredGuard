@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Services.Contracts;
+using Services.Contracts.Redis;
 using Services.Services;
 using Services.Services.Redis;
 
@@ -94,7 +95,7 @@ namespace Web.Configurations
 
                             //Find user and token from database and perform your custom validation
                             int userId = claimsIdentity.GetUserId<int>();
-                            User user = await userService.GetByIdAsync(userId, context.HttpContext.RequestAborted);
+                            User user = await userService.FindByIdAsync(userId.ToString());
 
                             SignInManager<User> signInManager = context.HttpContext.RequestServices
                                 .GetRequiredService<SignInManager<User>>();

@@ -1,5 +1,5 @@
 using System;
-using Entities.Entity;
+using Common.Enums;
 
 namespace Web.Models.ResponseModel.User
 {

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using Services.Contracts.Redis;
 
 namespace Services.Services.Redis
 {

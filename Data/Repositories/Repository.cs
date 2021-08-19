@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Entities.BaseEntity;
 
 namespace Data.Repositories
 {
-    public class Repository<TEntity,TKey> : IRepository<TEntity,TKey>
+    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
         where TEntity : class, IEntity
     {
         protected readonly ApplicationDbContext DbContext;
@@ -23,11 +24,6 @@ namespace Data.Repositories
         {
             DbContext = dbContext;
             Entities = DbContext.Set<TEntity>(); // City => Cities
-        }
-
-        public virtual ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id)
-        {
-            return Entities.FindAsync(id, cancellationToken);
         }
 
         public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
@@ -52,6 +48,19 @@ namespace Data.Repositories
         {
             Assert.NotNull(entity, nameof(entity));
             Entities.Remove(entity);
+
+            if (saveNow)
+                await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public virtual async Task DeleteRangeAsync(
+            IEnumerable<TEntity> entities,
+            CancellationToken cancellationToken,
+            bool saveNow = true)
+        {
+            Assert.NotNull(entities, nameof(entities));
+
+            Entities.RemoveRange(entities);
 
             if (saveNow)
                 await DbContext.SaveChangesAsync(cancellationToken);

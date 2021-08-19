@@ -2,16 +2,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Services.Services.Redis;
+using Services.Contracts.Redis;
 using Web.Controller.Base;
 
 namespace Web.Controller
 {
-    public class NotificationController : BaseController
+    public class NotificationsController : BaseController
     {
         private readonly IRedisService _redisService;
 
-        public NotificationController(IRedisService redisService)
+        public NotificationsController(IRedisService redisService)
         {
             _redisService = redisService;
         }

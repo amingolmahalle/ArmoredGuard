@@ -1,6 +1,5 @@
 using System;
-using Common.Helpers.Enums;
-using Entities.Entity;
+using Common.Enums;
 
 namespace Services.Dtos
 {

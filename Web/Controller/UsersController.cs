@@ -46,7 +46,7 @@ namespace Web.Controller
             User user = await _userService.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return NotFound();
+                return NotFound("user not found");
 
             var getByUserIdResponse = new GetByUserIdResponse
             {
@@ -130,10 +130,10 @@ namespace Web.Controller
         public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
-            User user = await _userService.GetByIdAsync(id, cancellationToken);
+            User user = await _userService.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return NotFound();
+                return NotFound("user not found");
 
             if (request?.Email != null)
             {
@@ -169,20 +169,38 @@ namespace Web.Controller
         public async Task<ApiResult.ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
             CancellationToken cancellationToken)
         {
-            // TODO:transaction Scope
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    User user = await _userService.FindByIdAsync(id.ToString());
 
-            User user = await _userService.GetByIdAsync(id, cancellationToken);
+                    if (user == null)
+                    {
+                        transactionScope.Dispose();
+                        return NotFound("user not found");
+                    }
 
-            IdentityResult result =
-                await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+                    IdentityResult result =
+                        await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-            if (!result.Succeeded)
-                return NotFound(
-                    $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
+                    if (!result.Succeeded)
+                    {
+                        transactionScope.Dispose();
+                        return NotFound(
+                            $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
+                    }
 
-            //TODO: remove refresh token
+                    await _oAuthService.DeleteAllUserRefreshCodesAsync(user.Id, cancellationToken);
 
-            return Ok();
+                    return Ok();
+                }
+                catch (Exception e)
+                {
+                    transactionScope.Dispose();
+                    throw new Exception(e.Message, e.InnerException);
+                }
+            }
         }
     }
 }

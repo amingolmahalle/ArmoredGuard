@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Common.Enums;
 using Common.Extensions;
-using Entities.Entity;
 
 namespace Web.Models.RequestModels.User
 {

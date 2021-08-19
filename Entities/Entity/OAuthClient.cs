@@ -42,7 +42,7 @@ namespace Entities.Entity
 
             builder
                 .Property(p => p.RedirectUri)
-                .HasMaxLength(300);
+                .HasMaxLength(200);
 
             builder
                 .HasMany(e => e.OAuthRefreshTokens)

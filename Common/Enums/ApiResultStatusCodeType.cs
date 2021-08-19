@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Common.Helpers.Enums
+namespace Common.Enums
 {
-    public enum ApiResultStatusCode
+    public enum ApiResultStatusCodeType
     {
         [Display(Name = "The operation was successful")]
         Success = 0,

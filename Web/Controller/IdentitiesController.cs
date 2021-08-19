@@ -11,15 +11,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Contracts.Redis;
 using Services.Dtos;
-using Services.Services.Redis;
 using Web.ApiResult;
 using Web.Controller.Base;
 using Web.Models.RequestModels.Identity;
 
 namespace Web.Controller
 {
-    public class IdentityController : BaseController
+    public class IdentitiesController : BaseController
     {
         private readonly IJwtService _jwtService;
 
@@ -33,7 +33,7 @@ namespace Web.Controller
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IdentityController(
+        public IdentitiesController(
             IJwtService jwtService,
             SignInManager<User> signInManager,
             IOAuthService authService,
@@ -56,7 +56,7 @@ namespace Web.Controller
         {
             int? oAuthClientId =
                 await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(request.ClientId,
-                    Guid.Parse(request.ClientSecret));
+                    Guid.Parse(request.ClientSecret), cancellationToken);
 
             if (!oAuthClientId.HasValue)
                 return Unauthorized("invalid ClientId Or SecretCode");
@@ -112,7 +112,7 @@ namespace Web.Controller
                     int? oAuthClientId =
                         await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
                             request.ClientId,
-                            Guid.Parse(request.ClientSecret));
+                            Guid.Parse(request.ClientSecret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
                     {
@@ -126,7 +126,8 @@ namespace Web.Controller
                         await _oAuthService.GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
                             userId,
                             request.RefreshToken,
-                            oAuthClientId.Value);
+                            oAuthClientId.Value,
+                            cancellationToken);
 
                     if (oAuthRefreshToken == null)
                     {
@@ -202,7 +203,7 @@ namespace Web.Controller
                     int? oAuthClientId =
                         await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
                             request.ClientId,
-                            Guid.Parse(request.ClientSecret));
+                            Guid.Parse(request.ClientSecret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
                     {
@@ -223,7 +224,7 @@ namespace Web.Controller
                         transactionScope.Dispose();
                         return Unauthorized($" otp code {request.OtpCode} for this phone number is invalid");
                     }
-                    
+
                     User user = await _userService.GetByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
                     if (user == null)
@@ -260,7 +261,7 @@ namespace Web.Controller
                     };
 
                     await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
-                    
+
                     await _redisService.RemoveAsync(request.PhoneNumber, cancellationToken);
 
                     transactionScope.Complete();
@@ -283,15 +284,16 @@ namespace Web.Controller
 
             List<Claim> claims = _httpContextAccessor.HttpContext.User.Claims.ToList();
 
-            return
-                new ClaimsDto
-                {
-                    UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
-                    Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                    Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
-                    SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
-                        .Value
-                };
+            ClaimsDto claimsDto = new ClaimsDto
+            {
+                UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
+                Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
+                Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
+                SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
+                    .Value
+            };
+
+            return claimsDto;
         }
 
         [HttpGet("is-valid-token")]
@@ -300,6 +302,35 @@ namespace Web.Controller
             return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
 
-        //TODO: Logout Endpoint
+        [HttpGet("logout")]
+        public async Task<ApiResult.ApiResult> Logout(CancellationToken cancellationToken)
+        {
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    User user = await _userService.FindByIdAsync(userId.ToString());
+                    if (user == null)
+                    {
+                        transactionScope.Dispose();
+                        return NotFound("user not found");
+                    }
+                    await _userService.UpdateSecurityStampAsync(user);
+                    await _oAuthService.DeleteAllUserRefreshCodesAsync(userId, cancellationToken);
+                    
+                    transactionScope.Complete();
+                    
+                    return Ok();
+                }
+
+                catch (Exception e)
+                {
+                    transactionScope.Dispose();
+                    throw new Exception(e.Message, e.InnerException);
+                }
+            }
+        }
     }
 }

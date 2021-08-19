@@ -29,8 +29,6 @@ namespace Services.Contracts
 
         Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword);
 
-        Task<User> GetByIdAsync(int userId, CancellationToken cancellationToken);
-
         Task<User> GetByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken);
 
         Task UpdateLastSeenDateAsync(User user, CancellationToken cancellationToken);
