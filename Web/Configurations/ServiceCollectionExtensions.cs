@@ -19,9 +19,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Services.Contracts;
 using Services.Services;
-using WebFramework.Caching.Redis;
+using Services.Services.Redis;
 
-namespace WebFramework.Configurations
+namespace Web.Configurations
 {
     public static class ServiceCollectionExtensions
     {
@@ -170,6 +170,7 @@ namespace WebFramework.Configurations
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IOAuthService, OAuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRedisService, RedisService>();
 
             //Repositories

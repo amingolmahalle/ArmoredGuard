@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Dtos;
+using Services.Services.Redis;
+using Web.ApiResult;
 using Web.Controller.Base;
 using Web.Models.RequestModels.Identity;
-using WebFramework.ApiResult;
-using WebFramework.Caching.Redis;
 
 namespace Web.Controller
 {
@@ -27,8 +27,6 @@ namespace Web.Controller
 
         private readonly SignInManager<User> _signInManager;
 
-        private readonly UserManager<User> _userManager;
-
         private readonly IUserService _userService;
 
         private readonly IRedisService _redisService;
@@ -38,7 +36,6 @@ namespace Web.Controller
         public IdentityController(
             IJwtService jwtService,
             SignInManager<User> signInManager,
-            UserManager<User> userManager,
             IOAuthService authService,
             IRedisService redisService,
             IUserService userService,
@@ -46,7 +43,6 @@ namespace Web.Controller
         {
             _jwtService = jwtService;
             _signInManager = signInManager;
-            _userManager = userManager;
             _redisService = redisService;
             _oAuthService = authService;
             _userService = userService;
@@ -65,7 +61,7 @@ namespace Web.Controller
             if (!oAuthClientId.HasValue)
                 return Unauthorized("invalid ClientId Or SecretCode");
 
-            User user = await _userManager.FindByNameAsync(request.Username);
+            User user = await _userService.FindByNameAsync(request.Username);
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
@@ -73,12 +69,12 @@ namespace Web.Controller
             if (!user.IsActive)
                 return BadRequest("User is not active");
 
-            bool isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            bool isPasswordValid = await _userService.CheckPasswordAsync(user, request.Password);
 
             if (!isPasswordValid)
                 return NotFound("Invalid Username or Password");
 
-            IList<string> rolesName = (await _userManager.GetRolesAsync(user));
+            IList<string> rolesName = (await _userService.GetRolesAsync(user));
 
             ClaimsDto tokenResult = new ClaimsDto
             {
@@ -144,7 +140,7 @@ namespace Web.Controller
                         return Unauthorized("refresh token has expired. please get the token again");
                     }
 
-                    User user = await _userManager.FindByIdAsync(userId.ToString());
+                    User user = await _userService.FindByIdAsync(userId.ToString());
 
                     if (user == null)
                     {
@@ -158,7 +154,7 @@ namespace Web.Controller
                         return BadRequest("user is not active");
                     }
 
-                    IList<string> rolesName = await _userManager.GetRolesAsync(user);
+                    IList<string> rolesName = await _userService.GetRolesAsync(user);
 
                     ClaimsDto tokenResult = new ClaimsDto
                     {
@@ -242,7 +238,7 @@ namespace Web.Controller
                         return BadRequest("user is not active");
                     }
 
-                    IList<string> rolesName = await _userManager.GetRolesAsync(user);
+                    IList<string> rolesName = await _userService.GetRolesAsync(user);
 
                     ClaimsDto tokenResult = new ClaimsDto
                     {

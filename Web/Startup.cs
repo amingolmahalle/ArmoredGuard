@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Web.Configurations;
 using Web.Swagger;
-using WebFramework.Configurations;
 
 namespace Web
 {
@@ -38,7 +37,7 @@ namespace Web
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddStackExchangeRedisCache(options => { options.Configuration = "localhost:6379"; });
         }
@@ -64,7 +63,6 @@ namespace Web
 
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(config => { config.MapControllers(); });
         }
     }

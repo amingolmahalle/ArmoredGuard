@@ -1,32 +1,33 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Entities.Entity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
 using Web.Controller.Base;
 using Web.Models.RequestModels.Role;
-using WebFramework.ApiResult;
 
 namespace Web.Controller
 {
     public class RolesController : BaseController
     {
-        private readonly RoleManager<Role> _roleManager;
+        private readonly IRoleService _roleService;
 
-        public RolesController(RoleManager<Role> roleManager)
+        public RolesController(IRoleService roleService)
         {
-            _roleManager = roleManager;
+            _roleService = roleService;
         }
 
         [HttpPost("create")]
-        public async Task<ApiResult> Create(CreateRoleRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> Create(CreateRoleRequest request, CancellationToken cancellationToken)
         {
-            await _roleManager.CreateAsync(new Role
+            var role = new Role
             {
                 Name = request.RoleName,
                 Description = request.Description ?? request.RoleName.ToLower()
-            });
-            
+            };
+
+            await _roleService.CreateAsync(role);
+
             return Ok();
         }
     }

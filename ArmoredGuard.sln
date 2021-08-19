@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entiti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{ADEE2B61-777F-49D5-8E76-E089EEA014B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFramework", "WebFramework\WebFramework.csproj", "{FBEF1168-449E-447F-9A53-B1755501260B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +36,5 @@ Global
 		{ADEE2B61-777F-49D5-8E76-E089EEA014B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADEE2B61-777F-49D5-8E76-E089EEA014B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADEE2B61-777F-49D5-8E76-E089EEA014B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FBEF1168-449E-447F-9A53-B1755501260B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBEF1168-449E-447F-9A53-B1755501260B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBEF1168-449E-447F-9A53-B1755501260B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBEF1168-449E-447F-9A53-B1755501260B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

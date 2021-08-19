@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
-namespace WebFramework.Caching.Redis
+namespace Services.Services.Redis
 {
     public class RedisService : IRedisService
     {
@@ -15,7 +15,6 @@ namespace WebFramework.Caching.Redis
         {
             _distributedCache = distributedCache;
         }
-
 
         public async Task<T> GetAsync<T>(string key, CancellationToken cancellationToken) where T : class
         {
@@ -43,6 +42,17 @@ namespace WebFramework.Caching.Redis
             var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(ttl));
 
             await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
+        }
+
+        public async Task<bool> IsExistAsync(string key, CancellationToken cancellationToken)
+        {
+            bool hasValue = false;
+            Byte[] value = await _distributedCache.GetAsync(key, cancellationToken);
+
+            if (value != null && value.Length > 0)
+                hasValue = true;
+
+            return hasValue;
         }
 
         public async Task RemoveAsync(string key, CancellationToken cancellationToken)

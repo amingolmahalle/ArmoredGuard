@@ -2,9 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Services.Services.Redis;
 using Web.Controller.Base;
-using WebFramework.ApiResult;
-using WebFramework.Caching.Redis;
 
 namespace Web.Controller
 {
@@ -18,9 +17,14 @@ namespace Web.Controller
         }
 
         [HttpGet("send-otp")]
-        public async Task<ApiResult> SendOtp(string phoneNumber, CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> SendOtp(string phoneNumber, CancellationToken cancellationToken)
         {
-            string otpCode = MessageHelper.GenerateOtpCode();
+            bool hasExistOtpCodeForPhoneNumber = await _redisService.IsExistAsync(phoneNumber, cancellationToken);
+
+            if (hasExistOtpCodeForPhoneNumber)
+                return BadRequest("request is duplicate");
+
+            string otpCode = RandomGeneratorHelper.GenerateOtpCode();
 
             await _redisService.SetAsync(phoneNumber, otpCode, 2, cancellationToken);
 

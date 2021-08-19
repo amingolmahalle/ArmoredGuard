@@ -13,13 +13,13 @@ namespace Web.Models.RequestModels.User
 
         [StringLength(100)] public string Email { get; set; }
 
-        [StringLength(11)] public string PhoneNumber { get; set; }
+        [Required] [StringLength(11)] public string PhoneNumber { get; set; }
 
-        [StringLength(500)] public string Password { get; set; }
+        [StringLength(200)] public string Password { get; set; }
 
-        public string OtpCode { get; set; }
+        [StringLength(4)] public string OtpCode { get; set; }
 
-        [Required] [StringLength(100)] public string FullName { get; set; }
+        [StringLength(100)] public string FullName { get; set; }
 
         [Required] public RegisterType RegisterType { get; set; }
 

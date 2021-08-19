@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Services.Contracts;
+using Services.Dtos;
+using Web.ApiResult;
 using Web.Controller.Base;
 using Web.Models.RequestModels.User;
 using Web.Models.ResponseModel.User;
-using WebFramework.ApiResult;
 
 namespace Web.Controller
 {
@@ -25,28 +26,24 @@ namespace Web.Controller
 
         private readonly ILogger<UsersController> _logger;
 
-        private readonly UserManager<User> _userManager;
-
-        private readonly RoleManager<Role> _roleManager;
+        private readonly IRoleService _roleService;
 
         public UsersController(
             IUserService userService,
             ILogger<UsersController> logger,
-            UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            IOAuthService oAuthService)
+            IOAuthService oAuthService,
+            IRoleService roleService)
         {
             _userService = userService;
             _logger = logger;
-            _userManager = userManager;
-            _roleManager = roleManager;
             _oAuthService = oAuthService;
+            _roleService = roleService;
         }
 
         [HttpGet("get-by-id/{id:int}")]
         public async Task<ApiResult<GetByUserIdResponse>> GetById(int id)
         {
-            User user = await _userManager.FindByIdAsync(id.ToString());
+            User user = await _userService.FindByIdAsync(id.ToString());
 
             if (user == null)
                 return NotFound();
@@ -67,7 +64,7 @@ namespace Web.Controller
 
         [HttpPost("create")]
         [AllowAnonymous]
-        public async Task<ApiResult> Create(CreateUserRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> Create(CreateUserRequest request, CancellationToken cancellationToken)
         {
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -77,20 +74,12 @@ namespace Web.Controller
                         await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
                     if (isExistUser)
+                    {
+                        transactionScope.Dispose();
                         return BadRequest("user already exists");
+                    }
 
                     _logger.LogInformation("calling create user endpoint");
-
-                    var user = new User
-                    {
-                        BirthDate = request.BirthDate,
-                        FullName = request.FullName,
-                        Gender = request.Gender,
-                        UserName = request.UserName,
-                        Email = request.Email.ToFormalEmail(),
-                        PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber()
-                    };
-                    await _userManager.CreateAsync(user, request.Password);
 
                     if (request.RoleId == 0)
                     {
@@ -98,7 +87,7 @@ namespace Web.Controller
                         return BadRequest("RoleId is Invalid");
                     }
 
-                    var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
+                    var role = await _roleService.FindByIdAsync(request.RoleId.ToString());
 
                     if (role == null)
                     {
@@ -106,7 +95,23 @@ namespace Web.Controller
                         return BadRequest("RoleId is Invalid");
                     }
 
-                    await _userManager.AddToRoleAsync(user, role.Name);
+                    var createUserDto = new CreateUserDto
+                    {
+                        UserName = request.UserName,
+                        Email = request.Email.ToFormalEmail(),
+                        PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber(),
+                        Password = request.Password,
+                        OtpCode = request.OtpCode,
+                        FullName = request.FullName,
+                        RegisterType = request.RegisterType,
+                        RoleId = request.RoleId,
+                        BirthDate = request.BirthDate,
+                        Gender = request.Gender
+                    };
+
+                    User user = await _userService.CreateAsync(createUserDto, cancellationToken);
+
+                    await _userService.AddToRoleAsync(user, role.Name);
 
                     transactionScope.Complete();
 
@@ -122,7 +127,7 @@ namespace Web.Controller
         }
 
         [HttpPut("update-profile/{id:int}")]
-        public async Task<ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
+        public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
             CancellationToken cancellationToken)
         {
             User user = await _userService.GetByIdAsync(id, cancellationToken);
@@ -155,21 +160,21 @@ namespace Web.Controller
                 user.Gender = request.Gender.GetValueOrDefault();
             }
 
-            await _userManager.UpdateAsync(user); 
+            await _userService.UpdateAsync(user);
 
             return Ok();
         }
 
         [HttpPut("change-password/{id:int}")]
-        public async Task<ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
+        public async Task<ApiResult.ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
             CancellationToken cancellationToken)
         {
             // TODO:transaction Scope
 
-            User updateUser = await _userService.GetByIdAsync(id, cancellationToken);
+            User user = await _userService.GetByIdAsync(id, cancellationToken);
 
             IdentityResult result =
-                await _userManager.ChangePasswordAsync(updateUser, request.CurrentPassword, request.NewPassword);
+                await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
             if (!result.Succeeded)
                 return NotFound(

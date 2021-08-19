@@ -3,7 +3,7 @@ using Common.Helpers.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace WebFramework.ApiResult
+namespace Web.ApiResult
 {
     public class ApiResult
     {
