@@ -45,7 +45,7 @@ namespace Services.Services.Redis
             await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
         }
 
-        public async Task<bool> IsExistAsync(string key, CancellationToken cancellationToken)
+        public async Task<bool> TryGetAsync(string key, CancellationToken cancellationToken)
         {
             bool hasValue = false;
             Byte[] value = await _distributedCache.GetAsync(key, cancellationToken);

@@ -9,7 +9,7 @@ namespace Services.Contracts.Redis
 
         Task SetAsync(string key, string value, short ttl, CancellationToken cancellationToken);
 
-        Task<bool> IsExistAsync(string key, CancellationToken cancellationToken);
+        Task<bool> TryGetAsync(string key, CancellationToken cancellationToken);
 
         Task RemoveAsync(string key, CancellationToken cancellationToken);
     }

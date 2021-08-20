@@ -19,7 +19,7 @@ namespace Web.Controller
         [HttpGet("send-otp")]
         public async Task<ApiResult.ApiResult> SendOtp(string phoneNumber, CancellationToken cancellationToken)
         {
-            bool hasExistOtpCodeForPhoneNumber = await _redisService.IsExistAsync(phoneNumber, cancellationToken);
+            bool hasExistOtpCodeForPhoneNumber = await _redisService.TryGetAsync(phoneNumber, cancellationToken);
 
             if (hasExistOtpCodeForPhoneNumber)
                 return BadRequest("request is duplicate");
