@@ -1,15 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 
 namespace Web.Models.RequestModels.Identity
 {
     public class GetTokenByRefreshCodeRequest
     {
-        [JsonProperty("refresh_token")] [Required] public Guid RefreshToken { get; set; }
+        [Required] public Guid refresh_token { get; set; }
 
-        [JsonProperty("client_id")] [Required] public string ClientId { get; set; }
+        [Required] public string client_id { get; set; }
 
-        [JsonProperty("client_secret")] [Required] public string ClientSecret { get; set; }
+        [Required] public string client_secret { get; set; }
     }
 }

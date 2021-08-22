@@ -2,29 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Common.Extensions;
-using Newtonsoft.Json;
 
 namespace Web.Models.RequestModels.Identity
 {
     public class GetTokenByOtpRequest : IValidatableObject
     {
-        [JsonProperty("grant_type")] [Required] public string GrantType { get; set; }
+         [Required] public string grant_type { get; set; }
         
-        [JsonProperty("phone_number")] [Required] public string PhoneNumber { get; set; }
+         [Required] public string phone_number { get; set; }
 
-        [JsonProperty("otp_code")] [Required] public string OtpCode { get; set; }
+         [Required] public string otp_code { get; set; }
 
-        [JsonProperty("client_id")] [Required] public string ClientId { get; set; }
+        [Required] public string client_id { get; set; }
 
-        [JsonProperty("client_secret")] [Required] public string ClientSecret { get; set; }
+       [Required] public string client_secret { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!GrantType.Equals("otp", StringComparison.OrdinalIgnoreCase))
-                yield return new ValidationResult("GrantType is invalid", new[] {nameof(GrantType)});
+            if (!grant_type.Equals("otp", StringComparison.OrdinalIgnoreCase))
+                yield return new ValidationResult("GrantType is invalid", new[] {nameof(grant_type)});
             
-            if (!PhoneNumber.IsPhoneNumber())
-                yield return new ValidationResult("PhoneNumber is invalid", new[] {nameof(PhoneNumber)});
+            if (!phone_number.IsPhoneNumber())
+                yield return new ValidationResult("PhoneNumber is invalid", new[] {nameof(phone_number)});
         }
     }
 }

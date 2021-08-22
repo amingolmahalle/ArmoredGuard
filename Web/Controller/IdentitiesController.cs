@@ -55,13 +55,13 @@ namespace Web.Controller
             [FromForm] GetTokenByUsernameAndPasswordRequest request, CancellationToken cancellationToken)
         {
             int? oAuthClientId =
-                await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(request.ClientId,
-                    Guid.Parse(request.ClientSecret), cancellationToken);
+                await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(request.client_id,
+                    Guid.Parse(request.client_secret), cancellationToken);
 
             if (!oAuthClientId.HasValue)
                 return Unauthorized("invalid ClientId Or SecretCode");
 
-            User user = await _userService.FindByNameAsync(request.Username);
+            User user = await _userService.FindByNameAsync(request.username);
 
             if (user == null)
                 return NotFound("Invalid Username or Password");
@@ -69,7 +69,7 @@ namespace Web.Controller
             if (!user.IsActive)
                 return BadRequest("User is not active");
 
-            bool isPasswordValid = await _userService.CheckPasswordAsync(user, request.Password);
+            bool isPasswordValid = await _userService.CheckPasswordAsync(user, request.password);
 
             if (!isPasswordValid)
                 return NotFound("Invalid Username or Password");
@@ -88,11 +88,11 @@ namespace Web.Controller
 
             var addRefreshTokenDto = new AddRefreshTokenDto
             {
-                RefreshCode = Guid.Parse(accessToken.RefreshToken),
+                RefreshCode = Guid.Parse(accessToken.refresh_token),
                 UserId = user.Id,
                 OAuthClientId = oAuthClientId.Value,
-                CreatedAt = accessToken.CreatedAt,
-                ExpireAt = accessToken.ExpiresAt
+                CreatedAt = accessToken.Created_at,
+                ExpireAt = accessToken.Expires_at
             };
 
             await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
@@ -111,8 +111,8 @@ namespace Web.Controller
                 {
                     int? oAuthClientId =
                         await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
-                            request.ClientId,
-                            Guid.Parse(request.ClientSecret), cancellationToken);
+                            request.client_id,
+                            Guid.Parse(request.client_secret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
                     {
@@ -125,7 +125,7 @@ namespace Web.Controller
                     OAuthRefreshToken oAuthRefreshToken =
                         await _oAuthService.GetOAuthRefreshTokenByUserIdAndRefreshCodeAndClientIdAsync(
                             userId,
-                            request.RefreshToken,
+                            request.refresh_token,
                             oAuthClientId.Value,
                             cancellationToken);
 
@@ -172,9 +172,9 @@ namespace Web.Controller
                         UserId = user.Id,
                         OAuthClientId = oAuthClientId.Value,
                         OAuthRefreshTokenId = oAuthRefreshToken.Id,
-                        CreatedAt = accessToken.CreatedAt,
-                        ExpiresAt = accessToken.ExpiresAt,
-                        NewRefreshToken = Guid.Parse(accessToken.RefreshToken)
+                        CreatedAt = accessToken.Created_at,
+                        ExpiresAt = accessToken.Expires_at,
+                        NewRefreshToken = Guid.Parse(accessToken.refresh_token)
                     };
 
                     await _oAuthService.RenewRefreshTokenAsync(renewRefreshTokenDto, cancellationToken);
@@ -202,8 +202,8 @@ namespace Web.Controller
                 {
                     int? oAuthClientId =
                         await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(
-                            request.ClientId,
-                            Guid.Parse(request.ClientSecret), cancellationToken);
+                            request.client_id,
+                            Guid.Parse(request.client_secret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
                     {
@@ -211,7 +211,7 @@ namespace Web.Controller
                         return Unauthorized("invalid ClientId Or SecretCode");
                     }
 
-                    string otpCode = await _redisService.GetAsync<string>(request.PhoneNumber, cancellationToken);
+                    string otpCode = await _redisService.GetAsync<string>(request.phone_number, cancellationToken);
 
                     if (string.IsNullOrEmpty(otpCode))
                     {
@@ -219,13 +219,13 @@ namespace Web.Controller
                         return Unauthorized("No otp code found for this phone number");
                     }
 
-                    if (otpCode != request.OtpCode.Trim())
+                    if (otpCode != request.otp_code.Trim())
                     {
                         transactionScope.Dispose();
-                        return Unauthorized($" otp code {request.OtpCode} for this phone number is invalid");
+                        return Unauthorized($" otp code {request.otp_code} for this phone number is invalid");
                     }
 
-                    User user = await _userService.GetByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
+                    User user = await _userService.GetByPhoneNumberAsync(request.phone_number, cancellationToken);
 
                     if (user == null)
                     {
@@ -253,16 +253,16 @@ namespace Web.Controller
 
                     var addRefreshTokenDto = new AddRefreshTokenDto
                     {
-                        RefreshCode = Guid.Parse(accessToken.RefreshToken),
+                        RefreshCode = Guid.Parse(accessToken.refresh_token),
                         UserId = user.Id,
                         OAuthClientId = oAuthClientId.Value,
-                        CreatedAt = accessToken.CreatedAt,
-                        ExpireAt = accessToken.ExpiresAt
+                        CreatedAt = accessToken.Created_at,
+                        ExpireAt = accessToken.Expires_at
                     };
 
                     await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
 
-                    await _redisService.RemoveAsync(request.PhoneNumber, cancellationToken);
+                    await _redisService.RemoveAsync(request.phone_number, cancellationToken);
 
                     transactionScope.Complete();
 
