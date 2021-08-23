@@ -192,6 +192,7 @@ namespace Web.Controller
         }
 
         [HttpPost("get-token-by-otp")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTokenByOtp(
             GetTokenByOtpRequest request,
             CancellationToken cancellationToken)

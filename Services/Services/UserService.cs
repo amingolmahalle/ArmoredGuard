@@ -52,11 +52,11 @@ namespace Services.Services
             switch (request.RegisterType)
             {
                 case RegisterType.Password:
-                    if (string.IsNullOrEmpty(request.Password.Trim()))
+                    if (string.IsNullOrEmpty(request.Password?.Trim()))
                         throw new InvalidDataException("Password should not be empty");
                     break;
                 case RegisterType.Otp:
-                    if (string.IsNullOrEmpty(request.OtpCode.Trim()))
+                    if (string.IsNullOrEmpty(request.OtpCode?.Trim()))
                         throw new InvalidDataException("OtpCode should not be empty");
 
                     string otpCode = await _redisService.GetAsync<string>(request.PhoneNumber, cancellationToken);
@@ -64,7 +64,7 @@ namespace Services.Services
                     if (otpCode != request.OtpCode)
                         throw new Exception($" otp code {request.OtpCode} for this phone number is invalid");
 
-                    if (string.IsNullOrEmpty(request.Password.Trim()))
+                    if (string.IsNullOrEmpty(request.Password?.Trim()))
                         request.Password = RandomGeneratorHelper.GeneratePassword();
                     break;
                 default:

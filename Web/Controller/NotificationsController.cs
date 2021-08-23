@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts.Redis;
 using Web.Controller.Base;
@@ -17,6 +18,7 @@ namespace Web.Controller
         }
 
         [HttpGet("send-otp")]
+        [AllowAnonymous]
         public async Task<ApiResult.ApiResult> SendOtp(string phoneNumber, CancellationToken cancellationToken)
         {
             bool hasExistOtpCodeForPhoneNumber = await _redisService.TryGetAsync(phoneNumber, cancellationToken);
