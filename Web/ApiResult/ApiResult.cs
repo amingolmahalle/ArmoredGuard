@@ -1,4 +1,3 @@
-using System.Linq;
 using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -37,41 +36,9 @@ namespace Web.ApiResult
             return new ApiResult(true, ApiResultStatusCodeType.Success);
         }
 
-        public static implicit operator ApiResult(BadRequestResult result)
-        {
-            return new ApiResult(true, ApiResultStatusCodeType.BadRequest);
-        }
-
-        public static implicit operator ApiResult(BadRequestObjectResult result)
-        {
-            var message = result.Value?.ToString();
-            if (result.Value is SerializableError errors)
-            {
-                var errorMessages = errors.SelectMany(p => (string[]) p.Value).Distinct();
-                message = string.Join(" | ", errorMessages);
-            }
-
-            return new ApiResult(false, ApiResultStatusCodeType.BadRequest, message);
-        }
-
         public static implicit operator ApiResult(ContentResult result)
         {
             return new(true, ApiResultStatusCodeType.Success, result.Content);
-        }
-
-        public static implicit operator ApiResult(NotFoundResult result)
-        {
-            return new(false, ApiResultStatusCodeType.NotFound);
-        }
-
-        public static implicit operator ApiResult(NoContentResult result)
-        {
-            return new(true, ApiResultStatusCodeType.NoContent);
-        }
-
-        public static implicit operator ApiResult(NotFoundObjectResult result)
-        {
-            return new(false, ApiResultStatusCodeType.NotFound, result.Value?.ToString());
         }
 
         #endregion
@@ -111,47 +78,12 @@ namespace Web.ApiResult
 
         public static implicit operator ApiResult<TData>(OkObjectResult result)
         {
-            return new((TData) result.Value, true, ApiResultStatusCodeType.Success);
-        }
-
-        public static implicit operator ApiResult<TData>(BadRequestResult result)
-        {
-            return new(null, false, ApiResultStatusCodeType.BadRequest);
-        }
-
-        public static implicit operator ApiResult<TData>(BadRequestObjectResult result)
-        {
-            var message = result.Value?.ToString();
-
-            if (result.Value is SerializableError errors)
-            {
-                var errorMessages = errors.SelectMany(p => (string[]) p.Value)
-                    .Distinct();
-
-                message = string.Join(" | ", errorMessages);
-            }
-
-            return new ApiResult<TData>(null, false, ApiResultStatusCodeType.BadRequest, message);
+            return new((TData)result.Value, true, ApiResultStatusCodeType.Success);
         }
 
         public static implicit operator ApiResult<TData>(ContentResult result)
         {
             return new(null, true, ApiResultStatusCodeType.Success, result.Content);
-        }
-
-        public static implicit operator ApiResult<TData>(NoContentResult result)
-        {
-            return new(null, true, ApiResultStatusCodeType.NoContent);
-        }
-
-        public static implicit operator ApiResult<TData>(NotFoundResult result)
-        {
-            return new(null, false, ApiResultStatusCodeType.NotFound);
-        }
-
-        public static implicit operator ApiResult<TData>(NotFoundObjectResult result)
-        {
-            return new((TData) result.Value, false, ApiResultStatusCodeType.NotFound);
         }
 
         #endregion

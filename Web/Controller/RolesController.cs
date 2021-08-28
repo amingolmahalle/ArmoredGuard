@@ -1,4 +1,3 @@
-using System.Threading;
 using System.Threading.Tasks;
 using Entities.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,7 @@ namespace Web.Controller
         }
 
         [HttpPost("create")]
-        public async Task<ApiResult.ApiResult> Create(CreateRoleRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> Create(CreateRoleRequest request)
         {
             var role = new Role
             {

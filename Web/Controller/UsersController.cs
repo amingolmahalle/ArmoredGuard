@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Common.Exceptions;
 using Common.Extensions;
 using Entities.Entity;
 using Microsoft.AspNetCore.Authorization;
@@ -46,7 +47,7 @@ namespace Web.Controller
             User user = await _userService.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return NotFound("user not found");
+                throw new NotFoundException("user not found");
 
             var getByUserIdResponse = new GetByUserIdResponse
             {
@@ -74,26 +75,17 @@ namespace Web.Controller
                         await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
                     if (isExistUser)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("user already exists");
-                    }
+                        throw new BadRequestException("user already exists");
 
                     _logger.LogInformation("calling create user endpoint");
 
                     if (request.RoleId == 0)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("RoleId is Invalid");
-                    }
+                        throw new BadRequestException("RoleId is Invalid");
 
                     var role = await _roleService.FindByIdAsync(request.RoleId.ToString());
 
                     if (role == null)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("RoleId is Invalid");
-                    }
+                        throw new BadRequestException("RoleId is Invalid");
 
                     var createUserDto = new CreateUserDto
                     {
@@ -117,23 +109,22 @@ namespace Web.Controller
 
                     return Ok();
                 }
-
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }
 
         [HttpPut("update-profile/{id:int}")]
-        public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request)
         {
             User user = await _userService.FindByIdAsync(id.ToString());
 
             if (user == null)
-                return NotFound("user not found");
+                throw new NotFoundException("user not found");
 
             if (request?.Email != null)
             {
@@ -176,29 +167,24 @@ namespace Web.Controller
                     User user = await _userService.FindByIdAsync(id.ToString());
 
                     if (user == null)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound("user not found");
-                    }
+                        throw new NotFoundException("user not found");
 
                     IdentityResult result =
                         await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
                     if (!result.Succeeded)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound(
+                        throw new NotFoundException(
                             $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
-                    }
 
                     await _oAuthService.DeleteAllUserRefreshCodesAsync(user.Id, cancellationToken);
 
                     return Ok();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }

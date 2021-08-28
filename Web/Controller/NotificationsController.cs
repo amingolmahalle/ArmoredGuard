@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Exceptions;
 using Common.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace Web.Controller
             bool hasExistOtpCodeForPhoneNumber = await _redisService.TryGetAsync(phoneNumber, cancellationToken);
 
             if (hasExistOtpCodeForPhoneNumber)
-                return BadRequest("request is duplicate");
+                throw new BadRequestException("request is duplicate");
 
             string otpCode = RandomGeneratorHelper.GenerateOtpCode();
 

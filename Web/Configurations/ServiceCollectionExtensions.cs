@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Common.Enums;
 using Common.Exceptions;
 using Common.Extensions;
 using Common.Helpers;
@@ -13,12 +11,10 @@ using Data.Contracts;
 using Data.Repositories;
 using Entities.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Services.Contracts;
 using Services.Contracts.Redis;
@@ -69,12 +65,7 @@ namespace Web.Configurations
                     OnAuthenticationFailed = context =>
                     {
                         if (context.Exception != null)
-                            throw new AppException(
-                                ApiResultStatusCodeType.UnAuthorized,
-                                "Authentication failed",
-                                HttpStatusCode.Unauthorized,
-                                context.Exception,
-                                null);
+                            throw new UnAuthorizedException("Authentication failed");
 
                         return Task.CompletedTask;
                     },
@@ -119,17 +110,10 @@ namespace Web.Configurations
                     OnChallenge = context =>
                     {
                         if (context.AuthenticateFailure != null)
-                            throw new AppException(
-                                ApiResultStatusCodeType.UnAuthorized,
-                                "Authenticate failure",
-                                HttpStatusCode.Unauthorized,
-                                context.AuthenticateFailure,
-                                null);
-                        
-                        throw new AppException(
-                            ApiResultStatusCodeType.UnAuthorized,
-                            "You are unauthorized to access this resource",
-                            HttpStatusCode.Unauthorized);
+                            throw new UnAuthorizedException("Authenticate failure");
+
+                        throw new UnAuthorizedException(
+                            "You are unauthorized to access this resource");
                     }
                 };
             });

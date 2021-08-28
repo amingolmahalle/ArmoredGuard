@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Common.Exceptions;
 using Entities.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
@@ -31,16 +32,10 @@ namespace Web.Controller
                     User user = await _userService.FindByIdAsync(id.ToString());
 
                     if (user == null)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound();
-                    }
+                        throw new NotFoundException("user not found");
 
                     if (!user.IsActive)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("User is disabled");
-                    }
+                        throw new BadRequestException("User is disabled");
 
                     user.IsActive = false;
 
@@ -49,13 +44,14 @@ namespace Web.Controller
                     await _authService.DeleteAllUserRefreshCodesAsync(user.Id, cancellationToken);
 
                     transactionScope.Complete();
-                    
+
                     return Ok();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }
@@ -67,11 +63,11 @@ namespace Web.Controller
 
             if (user == null)
             {
-                return NotFound();
+                throw new NotFoundException("user not found");
             }
 
             if (user.IsActive)
-                return BadRequest("user is active");
+                throw new BadRequestException("user is active");
 
             user.IsActive = true;
 

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Common.Exceptions;
 using Entities.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -51,28 +52,29 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTokenByUsernameAndPassword(
-            [FromForm] GetTokenByUsernameAndPasswordRequest request, CancellationToken cancellationToken)
+        public async Task<ApiResult<JsonResult>> GetTokenByUsernameAndPassword(
+            [FromForm] GetTokenByUsernameAndPasswordRequest request,
+            CancellationToken cancellationToken)
         {
             int? oAuthClientId =
                 await _oAuthService.GetOAuthClientIdByClientIdAndSecretCodeAsync(request.client_id,
                     Guid.Parse(request.client_secret), cancellationToken);
 
             if (!oAuthClientId.HasValue)
-                return Unauthorized("invalid ClientId Or SecretCode");
+                throw new UnAuthorizedException("invalid ClientId Or SecretCode");
 
             User user = await _userService.FindByNameAsync(request.username);
 
             if (user == null)
-                return NotFound("Invalid Username or Password");
+                throw new NotFoundException("Invalid Username or Password");
 
             if (!user.IsActive)
-                return BadRequest("User is not active");
+                throw new BadRequestException("User is not active");
 
             bool isPasswordValid = await _userService.CheckPasswordAsync(user, request.password);
 
             if (!isPasswordValid)
-                return NotFound("Invalid Username or Password");
+                throw new NotFoundException("Invalid Username or Password");
 
             IList<string> rolesName = (await _userService.GetRolesAsync(user));
 
@@ -101,7 +103,7 @@ namespace Web.Controller
         }
 
         [HttpPost("get-token-by-refresh-code")]
-        public async Task<IActionResult> GetTokenByRefreshCode(
+        public async Task<ApiResult<JsonResult>> GetTokenByRefreshCode(
             GetTokenByRefreshCodeRequest request,
             CancellationToken cancellationToken)
         {
@@ -115,10 +117,7 @@ namespace Web.Controller
                             Guid.Parse(request.client_secret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized("invalid ClientId Or SecretCode");
-                    }
+                        throw new UnAuthorizedException("invalid ClientId Or SecretCode");
 
                     int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
@@ -130,30 +129,18 @@ namespace Web.Controller
                             cancellationToken);
 
                     if (oAuthRefreshToken == null)
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized("invalid refresh code for this user");
-                    }
+                        throw new UnAuthorizedException("invalid refresh code for this user");
 
                     if (oAuthRefreshToken.ExpiresAt <= DateTimeOffset.UtcNow)
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized("refresh token has expired. please get the token again");
-                    }
+                        throw new UnAuthorizedException("refresh token has expired. please get the token again");
 
                     User user = await _userService.FindByIdAsync(userId.ToString());
 
                     if (user == null)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound("invalid username or password");
-                    }
+                        throw new NotFoundException("invalid username or password");
 
                     if (!user.IsActive)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("user is not active");
-                    }
+                        throw new BadRequestException("user is not active");
 
                     IList<string> rolesName = await _userService.GetRolesAsync(user);
 
@@ -183,17 +170,18 @@ namespace Web.Controller
 
                     return new JsonResult(accessToken);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }
 
         [HttpPost("get-token-by-otp")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTokenByOtp(
+        public async Task<ApiResult<JsonResult>> GetTokenByOtp(
             GetTokenByOtpRequest request,
             CancellationToken cancellationToken)
         {
@@ -207,38 +195,24 @@ namespace Web.Controller
                             Guid.Parse(request.client_secret), cancellationToken);
 
                     if (!oAuthClientId.HasValue)
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized("invalid ClientId Or SecretCode");
-                    }
+                        throw new UnAuthorizedException("invalid ClientId Or SecretCode");
 
                     string otpCode = await _redisService.GetAsync<string>(request.phone_number, cancellationToken);
 
                     if (string.IsNullOrEmpty(otpCode))
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized("No otp code found for this phone number");
-                    }
+                        throw new UnAuthorizedException("No otp code found for this phone number");
 
                     if (otpCode != request.otp_code.Trim())
-                    {
-                        transactionScope.Dispose();
-                        return Unauthorized($" otp code {request.otp_code} for this phone number is invalid");
-                    }
+                        throw new UnAuthorizedException(
+                            $" otp code {request.otp_code} for this phone number is invalid");
 
                     User user = await _userService.GetByPhoneNumberAsync(request.phone_number, cancellationToken);
 
                     if (user == null)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound("invalid username or password");
-                    }
+                        throw new NotFoundException("invalid username or password");
 
                     if (!user.IsActive)
-                    {
-                        transactionScope.Dispose();
-                        return BadRequest("user is not active");
-                    }
+                        throw new BadRequestException("user is not active");
 
                     IList<string> rolesName = await _userService.GetRolesAsync(user);
 
@@ -269,10 +243,11 @@ namespace Web.Controller
 
                     return new JsonResult(accessToken);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }
@@ -281,7 +256,7 @@ namespace Web.Controller
         public ApiResult<ClaimsDto> GetClaims()
         {
             if (_httpContextAccessor.HttpContext == null)
-                return BadRequest();
+                throw new BadRequestException("request is invalid");
 
             List<Claim> claims = _httpContextAccessor.HttpContext.User.Claims.ToList();
 
@@ -300,7 +275,7 @@ namespace Web.Controller
         [HttpGet("is-valid-token")]
         public ApiResult<object> IsValidToken()
         {
-            return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
+            return Ok(HttpContext.User.Identity is { IsAuthenticated: true });
         }
 
         [HttpGet("logout")]
@@ -313,23 +288,22 @@ namespace Web.Controller
                     int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     User user = await _userService.FindByIdAsync(userId.ToString());
+
                     if (user == null)
-                    {
-                        transactionScope.Dispose();
-                        return NotFound("user not found");
-                    }
+                        throw new NotFoundException("user not found");
+
                     await _userService.UpdateSecurityStampAsync(user);
                     await _oAuthService.DeleteAllUserRefreshCodesAsync(userId, cancellationToken);
-                    
+
                     transactionScope.Complete();
-                    
+
                     return Ok();
                 }
-
-                catch (Exception e)
+                catch (Exception)
                 {
                     transactionScope.Dispose();
-                    throw new Exception(e.Message, e.InnerException);
+
+                    return null;
                 }
             }
         }
