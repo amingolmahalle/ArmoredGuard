@@ -53,6 +53,10 @@ namespace Entities.Entity
                 .IsUnique();
 
             builder
+                .HasIndex(p => p.Email)
+                .IsUnique();
+
+            builder
                 .HasMany(e => e.OAuthRefreshTokens)
                 .WithOne(e => e.User)
                 .HasForeignKey(f => f.CreatedBy);
