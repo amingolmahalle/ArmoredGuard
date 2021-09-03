@@ -25,8 +25,8 @@ namespace Entities.Entity
                 .IsRequired();
 
             builder
-                .HasIndex(p => new {p.CreatedBy, p.OAuthClientId})
-                .IsUnique();
+                .HasIndex(p => new { p.CreatedBy, p.OAuthClientId });
+            //.IsUnique();
         }
     }
 }
