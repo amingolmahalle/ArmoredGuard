@@ -45,7 +45,7 @@ namespace Web.Middleware
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            string message = "Internal Server Error";
+            string message = ex?.Message ?? "Internal Server Error";
             string response = new ApiResult.ApiResult
             (
                 false, ApiResultStatusCodeType.ServerError, message
