@@ -75,7 +75,17 @@ namespace Web.Controller
                         await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
                     if (isExistUser)
-                        throw new BadRequestException("user already exists");
+                        throw new BadRequestException("mobile already exists");
+
+                    isExistUser = await _userService.IsExistUserByEmailAsync(request.Email, cancellationToken);
+
+                    if (isExistUser)
+                        throw new BadRequestException("email already exists");
+
+                    isExistUser = await _userService.IsExistUserByUsernameAsync(request.UserName, cancellationToken);
+
+                    if (isExistUser)
+                        throw new BadRequestException("username already exists");
 
                     _logger.LogInformation("calling create user endpoint");
 
@@ -113,7 +123,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
@@ -184,7 +194,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
