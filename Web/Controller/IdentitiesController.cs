@@ -52,7 +52,7 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
-        public async Task<ApiResult<JsonResult>> GetTokenByUsernameAndPassword(
+        public async Task<IActionResult> GetTokenByUsernameAndPassword(
             [FromForm] GetTokenByUsernameAndPasswordRequest request,
             CancellationToken cancellationToken)
         {
@@ -103,7 +103,7 @@ namespace Web.Controller
         }
 
         [HttpPost("get-token-by-refresh-code")]
-        public async Task<ApiResult<JsonResult>> GetTokenByRefreshCode(
+        public async Task<IActionResult> GetTokenByRefreshCode(
             GetTokenByRefreshCodeRequest request,
             CancellationToken cancellationToken)
         {
@@ -181,9 +181,7 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-otp")]
         [AllowAnonymous]
-        public async Task<ApiResult<JsonResult>> GetTokenByOtp(
-            GetTokenByOtpRequest request,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetTokenByOtp(GetTokenByOtpRequest request, CancellationToken cancellationToken)
         {
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
