@@ -18,9 +18,9 @@ namespace Web.Controller
             _redisService = redisService;
         }
 
-        [HttpGet("send-otp")]
+        [HttpPost("create-otp")]
         [AllowAnonymous]
-        public async Task<ApiResult.ApiResult> SendOtp(string phoneNumber, CancellationToken cancellationToken)
+        public async Task<ApiResult.ApiResult> CreateOtp(string phoneNumber, CancellationToken cancellationToken)
         {
             bool hasExistOtpCodeForPhoneNumber = await _redisService.TryGetAsync(phoneNumber, cancellationToken);
 
@@ -33,7 +33,7 @@ namespace Web.Controller
 
             //TODO: send message 
 
-            return Content($"otp Code for {phoneNumber} is: {otpCode}");
+            return Content(otpCode);
         }
     }
 }
