@@ -37,6 +37,15 @@ namespace Services.Services
             return _userRepository.IsExistUserByPhoneNumberAsync(phoneNumber, cancellationToken);
         }
 
+        public Task<bool> IsExistUserByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            return _userRepository.IsExistUserByEmailAsync(email, cancellationToken);
+        }
+        public Task<bool> IsExistUserByUsernameAsync(string username, CancellationToken cancellationToken)
+        {
+            return _userRepository.IsExistUserByUsernameAsync(username, cancellationToken);
+        }
+
         public async Task UpdateAsync(User user)
         {
             await _userManager.UpdateAsync(user);

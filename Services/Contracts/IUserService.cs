@@ -11,8 +11,12 @@ namespace Services.Contracts
     {
         Task<bool> IsExistByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken);
 
+        Task<bool> IsExistUserByEmailAsync(string email, CancellationToken cancellationToken);
+
+        Task<bool> IsExistUserByUsernameAsync(string username, CancellationToken cancellationToken);
+
         Task UpdateAsync(User user);
-        
+
         Task UpdateSecurityStampAsync(User user);
 
         Task<User> CreateAsync(CreateUserDto request, CancellationToken cancellationToken);
@@ -23,7 +27,7 @@ namespace Services.Contracts
 
         Task<IList<string>> GetRolesAsync(User user);
 
-        Task AddToRoleAsync(User user,string roleName);
+        Task AddToRoleAsync(User user, string roleName);
 
         Task<bool> CheckPasswordAsync(User user, string password);
 
