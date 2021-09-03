@@ -8,7 +8,7 @@ namespace Web.Swagger
 {
     public static class SwaggerConfigurationExtensions
     {
-            public static void AddCustomSwagger(this IServiceCollection services)
+        public static void AddCustomSwagger(this IServiceCollection services)
         {
             Assert.NotNull(services, nameof(services));
 
@@ -29,11 +29,11 @@ namespace Web.Swagger
                     {
                         Password = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri("/Identity/get-token-by-username-and-password", UriKind.Relative),
-                           
+                            TokenUrl = new Uri("/Identities/get-token-by-username-and-password", UriKind.Relative),
+
                         }
                     }
-                });
+                }); 
             });
         }
     }
