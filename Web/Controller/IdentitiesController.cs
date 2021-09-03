@@ -52,7 +52,7 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
-        public async Task<ApiResult<JsonResult>> GetTokenByUsernameAndPassword(
+        public async Task<AccessTokenDto> GetTokenByUsernameAndPassword(
             [FromForm] GetTokenByUsernameAndPasswordRequest request,
             CancellationToken cancellationToken)
         {
@@ -82,6 +82,9 @@ namespace Web.Controller
             {
                 UserId = user.Id,
                 Username = user.UserName,
+                FirstName = user.FullName,
+                LastName = user.FullName,
+                MobileNumber = user.PhoneNumber,
                 Roles = rolesName,
                 SecurityStamp = user.SecurityStamp
             };
@@ -99,11 +102,11 @@ namespace Web.Controller
 
             await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
 
-            return new JsonResult(accessToken);
+            return accessToken;
         }
 
         [HttpPost("get-token-by-refresh-code")]
-        public async Task<ApiResult<JsonResult>> GetTokenByRefreshCode(
+        public async Task<AccessTokenDto> GetTokenByRefreshCode(
             GetTokenByRefreshCodeRequest request,
             CancellationToken cancellationToken)
         {
@@ -148,6 +151,9 @@ namespace Web.Controller
                     {
                         UserId = user.Id,
                         Username = user.UserName,
+                        FirstName = user.FullName,
+                        LastName = user.FullName,
+                        MobileNumber = user.PhoneNumber,
                         Roles = rolesName,
                         SecurityStamp = user.SecurityStamp
                     };
@@ -168,7 +174,7 @@ namespace Web.Controller
 
                     transactionScope.Complete();
 
-                    return new JsonResult(accessToken);
+                    return accessToken;
                 }
                 catch (Exception)
                 {
@@ -181,7 +187,7 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-otp")]
         [AllowAnonymous]
-        public async Task<ApiResult<JsonResult>> GetTokenByOtp(
+        public async Task<AccessTokenDto> GetTokenByOtp(
             GetTokenByOtpRequest request,
             CancellationToken cancellationToken)
         {
@@ -220,6 +226,9 @@ namespace Web.Controller
                     {
                         UserId = user.Id,
                         Username = user.UserName,
+                        FirstName = user.FullName,
+                        LastName = user.FullName,
+                        MobileNumber = user.PhoneNumber,
                         Roles = rolesName,
                         SecurityStamp = user.SecurityStamp
                     };
@@ -241,7 +250,7 @@ namespace Web.Controller
 
                     transactionScope.Complete();
 
-                    return new JsonResult(accessToken);
+                    return accessToken;
                 }
                 catch (Exception)
                 {
@@ -264,6 +273,9 @@ namespace Web.Controller
             {
                 UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                 Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
+                FirstName = claims.Single(c => c.Type == "FirstName").Value,
+                LastName = claims.Single(c => c.Type == "LastName").Value,
+                MobileNumber = claims.Single(c => c.Type == "MobileNumber").Value,
                 Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
                 SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
                     .Value
