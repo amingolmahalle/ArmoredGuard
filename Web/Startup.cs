@@ -56,6 +56,10 @@ namespace Web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.OAuthClientId("residence");
+                c.OAuthClientSecret("C68AF3AC-640E-40C7-B09E-15BEB138C658");
+                c.OAuthAppName("ArmoredGuard");
+                c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
                 c.RoutePrefix = string.Empty;
             });
 
