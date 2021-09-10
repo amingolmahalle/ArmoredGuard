@@ -54,7 +54,7 @@ namespace Services.Services
                 Audience = _securitySettings.JwtSettings.Audience,
                 IssuedAt = DateTime.Now,
                 NotBefore = DateTime.Now.AddMinutes(_securitySettings.JwtSettings.NotBeforeMinutes),
-                Expires = DateTime.Now.AddHours(_securitySettings.JwtSettings.ExpirationTime),
+                Expires = DateTime.Now.AddHours(_securitySettings.JwtSettings.ExpirationMinutes),
                 SigningCredentials = signingCredentials,
                 EncryptingCredentials = encryptingCredentials,
                 Subject = new ClaimsIdentity(claims)

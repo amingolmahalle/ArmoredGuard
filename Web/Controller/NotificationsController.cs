@@ -33,7 +33,7 @@ namespace Web.Controller
 
             //TODO: send message 
 
-            return Content($"otp Code for {phoneNumber} is: {otpCode}");
+            return Content(otpCode);
         }
     }
 }
