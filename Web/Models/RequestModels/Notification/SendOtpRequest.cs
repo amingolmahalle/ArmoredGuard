@@ -6,16 +6,18 @@ namespace Web.Models.RequestModels.Notification
 {
     public class SendOtpRequest : IValidatableObject
     {
-        public string phoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
+
+        public bool IsRegister { get; set; } = false;
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (phoneNumber is null)
-                yield return new ValidationResult("GrantType is invalid", new[] {nameof(phoneNumber)});
+            if (PhoneNumber is null)
+                yield return new ValidationResult("GrantType is invalid", new[] {nameof(PhoneNumber)});
 
-            if (phoneNumber is not null && !phoneNumber.IsPhoneNumber())
+            if (PhoneNumber is not null && !PhoneNumber.IsPhoneNumber())
             {
-                yield return new ValidationResult("phoneNumber is incorrect", new[] {nameof(phoneNumber)});
+                yield return new ValidationResult("phoneNumber is incorrect", new[] {nameof(PhoneNumber)});
             }
         }
     }

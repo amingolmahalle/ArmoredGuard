@@ -33,24 +33,24 @@ namespace Web.Controller
         [AllowAnonymous]
         public async Task<ApiResult<SendOtpResponse>> SendOtp(SendOtpRequest request, CancellationToken cancellationToken)
         {
-            User user = await _userService.GetByPhoneNumberAsync(request.phoneNumber, cancellationToken);
+            User user = await _userService.GetByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
-            if (user is null)
+            if (user is null && !request.IsRegister)
                 throw new NotFoundException("user not found");
 
-            SendOtpDto getOtpDto = await _redisService.GetAsync<SendOtpDto>(request.phoneNumber, cancellationToken);
+            SendOtpDto getOtpDto = await _redisService.GetAsync<SendOtpDto>(request.PhoneNumber, cancellationToken);
 
             if (getOtpDto is not null)
                 return new SendOtpResponse
                 {
-                    OtpExpireTimeSeconds = (DateTime.Now - getOtpDto.LifeTime).Seconds
+                    OtpExpireTimeSeconds = (int) (DateTime.Now - getOtpDto.LifeTime).TotalSeconds
                 };
 
             string otpCode = RandomGeneratorHelper.GenerateOtpCode();
             short ttl = 2; // minutes
             SendOtpDto newOtpDto = new SendOtpDto {OtpCode = otpCode, LifeTime = DateTime.Now};
 
-            await _redisService.SetAsync(request.phoneNumber, newOtpDto.Serialize(), ttl, cancellationToken);
+            await _redisService.SetAsync(request.PhoneNumber, newOtpDto.Serialize(), ttl, cancellationToken);
 
             Console.WriteLine($@"OtpCode is: {otpCode}");
             //TODO: send message 
