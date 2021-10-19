@@ -8,7 +8,7 @@ namespace Web.Swagger
 {
     public static class SwaggerConfigurationExtensions
     {
-            public static void AddCustomSwagger(this IServiceCollection services)
+        public static void AddCustomSwagger(this IServiceCollection services)
         {
             Assert.NotNull(services, nameof(services));
 
@@ -18,8 +18,10 @@ namespace Web.Swagger
                 options.EnableAnnotations();
 
                 #region Add UnAuthorized to Response
+
                 //Add 401 response and security requirements (Lock icon) to actions that need authorization
                 options.OperationFilter<UnauthorizedResponsesOperationFilter>(true, "OAuth2");
+
                 #endregion
 
                 options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
@@ -29,8 +31,7 @@ namespace Web.Swagger
                     {
                         Password = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri("/Identity/get-token-by-username-and-password", UriKind.Relative),
-                           
+                            TokenUrl = new Uri("/Identities/get-token-by-username-and-password", UriKind.Relative),
                         }
                     }
                 });

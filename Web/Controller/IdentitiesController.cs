@@ -83,7 +83,10 @@ namespace Web.Controller
                 UserId = user.Id,
                 Username = user.UserName,
                 Roles = rolesName,
-                SecurityStamp = user.SecurityStamp
+                SecurityStamp = user.SecurityStamp,
+                FirstName = user.FullName,
+                LastName = user.FullName,
+                MobileNumber = user.PhoneNumber,
             };
 
             AccessTokenDto accessToken = _jwtService.GenerateToken(tokenResult);
@@ -149,7 +152,10 @@ namespace Web.Controller
                         UserId = user.Id,
                         Username = user.UserName,
                         Roles = rolesName,
-                        SecurityStamp = user.SecurityStamp
+                        SecurityStamp = user.SecurityStamp,
+                        FirstName = user.FullName,
+                        LastName = user.FullName,
+                        MobileNumber = user.PhoneNumber,
                     };
 
                     AccessTokenDto accessToken = _jwtService.GenerateToken(tokenResult);
@@ -263,8 +269,10 @@ namespace Web.Controller
                 UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                 Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
                 Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
-                SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
-                    .Value
+                SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType).Value,
+                FirstName = claims.Single(c => c.Type == "FirstName").Value,
+                LastName = claims.Single(c => c.Type == "LastName").Value,
+                MobileNumber = claims.Single(c => c.Type == "MobileNumber").Value
             };
 
             return claimsDto;
@@ -273,7 +281,7 @@ namespace Web.Controller
         [HttpGet("is-valid-token")]
         public ApiResult<object> IsValidToken()
         {
-            return Ok(HttpContext.User.Identity is { IsAuthenticated: true });
+            return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
 
         [HttpGet("logout")]

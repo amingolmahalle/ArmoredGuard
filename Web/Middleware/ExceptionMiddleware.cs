@@ -43,9 +43,9 @@ namespace Web.Middleware
         private Task _unHandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
 
-            string message = "Internal Server Error";
+            string message = ex?.Message ?? "Internal Server Error";
             string response = new ApiResult.ApiResult
             (
                 false, ApiResultStatusCodeType.ServerError, message
@@ -57,7 +57,7 @@ namespace Web.Middleware
         private Task _badRequestExceptionAsync(HttpContext httpContext, Exception ex)
         {
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
 
             string message = $"{ex.Message} - {ex.InnerException}";
             string response = new ApiResult.ApiResult
@@ -71,7 +71,7 @@ namespace Web.Middleware
         private Task _notFoundExceptionAsync(HttpContext httpContext, Exception ex)
         {
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            httpContext.Response.StatusCode = (int) HttpStatusCode.NotFound;
 
             string message = $"{ex.Message} - {ex.InnerException}";
             string response = new ApiResult.ApiResult
@@ -85,7 +85,7 @@ namespace Web.Middleware
         private Task _unAuthorizedExceptionAsync(HttpContext httpContext, Exception ex)
         {
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            httpContext.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
 
             string message = $"{ex.Message} - {ex.InnerException}";
             string response = new ApiResult.ApiResult

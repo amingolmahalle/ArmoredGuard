@@ -32,5 +32,15 @@ namespace Data.Repositories
         {
             return TableNoTracking.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber, cancellationToken);
         }
+        
+        public Task<bool> IsExistUserByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            return TableNoTracking.AnyAsync(u => u.Email == email, cancellationToken);
+        }
+        
+        public Task<bool> IsExistUserByUsernameAsync(string username, CancellationToken cancellationToken)
+        {
+            return TableNoTracking.AnyAsync(u => u.UserName == username, cancellationToken);
+        }
     }
 }

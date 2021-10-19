@@ -26,5 +26,20 @@ namespace Common.Extensions
         {
             roles.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
         }
+
+        public static void AddFirstName(this ICollection<Claim> claims, string firstName)
+        {
+            claims.Add(new Claim("FirstName", firstName ?? ""));
+        }
+
+        public static void AddLastName(this ICollection<Claim> claims, string lastName)
+        {
+            claims.Add(new Claim("LastName", lastName ?? ""));
+        }
+
+        public static void AddMobileNumber(this ICollection<Claim> claims, string mobileNumber)
+        {
+            claims.Add(new Claim("MobileNumber", mobileNumber ?? ""));
+        }
     }
 }

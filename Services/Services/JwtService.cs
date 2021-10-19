@@ -39,7 +39,7 @@ namespace Services.Services
                 _createSecurityTokenDescriptor(signingCredentials, encryptingCredentials, claims);
 
             JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(descriptor);
-            
+
             return new AccessTokenDto(jwtSecurityToken);
         }
 
@@ -54,7 +54,7 @@ namespace Services.Services
                 Audience = _securitySettings.JwtSettings.Audience,
                 IssuedAt = DateTime.Now,
                 NotBefore = DateTime.Now.AddMinutes(_securitySettings.JwtSettings.NotBeforeMinutes),
-                Expires = DateTime.Now.AddHours(_securitySettings.JwtSettings.ExpirationMinutes),
+                Expires = DateTime.Now.AddMinutes(_securitySettings.JwtSettings.ExpirationMinutes),
                 SigningCredentials = signingCredentials,
                 EncryptingCredentials = encryptingCredentials,
                 Subject = new ClaimsIdentity(claims)
@@ -68,6 +68,9 @@ namespace Services.Services
             claims.AddUserId(claimsDto.UserId.ToString());
             claims.AddUserName(claimsDto.Username);
             claims.AddSecurityStamp(claimsDto.SecurityStamp);
+            claims.AddFirstName(claimsDto.FirstName);
+            claims.AddLastName(claimsDto.LastName);
+            claims.AddMobileNumber(claimsDto.MobileNumber);
             claims.AddRoles(claimsDto.Roles.ToArray());
 
             return claims;

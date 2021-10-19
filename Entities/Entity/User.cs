@@ -36,12 +36,12 @@ namespace Entities.Entity
             builder
                 .Property(p => p.FullName)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             builder
                 .Property(p => p.UserName)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             builder
                 .Property(p => p.PhoneNumber)
@@ -50,6 +50,10 @@ namespace Entities.Entity
 
             builder
                 .HasIndex(p => p.PhoneNumber)
+                .IsUnique();
+
+            builder
+                .HasIndex(p => p.Email)
                 .IsUnique();
 
             builder
