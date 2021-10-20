@@ -203,12 +203,12 @@ namespace Web.Controller
                     if (!oAuthClientId.HasValue)
                         throw new UnAuthorizedException("invalid ClientId Or SecretCode");
 
-                    string otpCode = await _redisService.GetAsync<string>(request.phone_number, cancellationToken);
+                    SendOtpDto otpDto = await _redisService.GetAsync<SendOtpDto>(request.phone_number, cancellationToken);
 
-                    if (string.IsNullOrEmpty(otpCode))
+                    if (string.IsNullOrEmpty(otpDto.OtpCode))
                         throw new UnAuthorizedException("No otp code found for this phone number");
 
-                    if (otpCode != request.otp_code.Trim())
+                    if (otpDto.OtpCode != request.otp_code.Trim())
                         throw new UnAuthorizedException(
                             $" otp code {request.otp_code} for this phone number is invalid");
 
@@ -287,7 +287,7 @@ namespace Web.Controller
         [HttpGet("is-valid-token")]
         public ApiResult<object> IsValidToken()
         {
-            return Ok(HttpContext.User.Identity is { IsAuthenticated: true });
+            return Ok(HttpContext.User.Identity is {IsAuthenticated: true});
         }
 
         [HttpGet("logout")]
