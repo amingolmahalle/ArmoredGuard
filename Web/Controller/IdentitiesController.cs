@@ -52,7 +52,7 @@ namespace Web.Controller
 
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTokenByUsernameAndPassword(
+        public async Task<AccessTokenDto> GetTokenByUsernameAndPassword(
             [FromForm] GetTokenByUsernameAndPasswordRequest request,
             CancellationToken cancellationToken)
         {
@@ -82,11 +82,11 @@ namespace Web.Controller
             {
                 UserId = user.Id,
                 Username = user.UserName,
-                Roles = rolesName,
-                SecurityStamp = user.SecurityStamp,
                 FirstName = user.FullName,
                 LastName = user.FullName,
                 MobileNumber = user.PhoneNumber,
+                Roles = rolesName,
+                SecurityStamp = user.SecurityStamp
             };
 
             AccessTokenDto accessToken = _jwtService.GenerateToken(tokenResult);
@@ -102,11 +102,11 @@ namespace Web.Controller
 
             await _oAuthService.AddRefreshTokenAsync(addRefreshTokenDto, cancellationToken);
 
-            return new JsonResult(accessToken);
+            return accessToken;
         }
 
         [HttpPost("get-token-by-refresh-code")]
-        public async Task<IActionResult> GetTokenByRefreshCode(
+        public async Task<AccessTokenDto> GetTokenByRefreshCode(
             GetTokenByRefreshCodeRequest request,
             CancellationToken cancellationToken)
         {
@@ -151,11 +151,11 @@ namespace Web.Controller
                     {
                         UserId = user.Id,
                         Username = user.UserName,
-                        Roles = rolesName,
-                        SecurityStamp = user.SecurityStamp,
                         FirstName = user.FullName,
                         LastName = user.FullName,
                         MobileNumber = user.PhoneNumber,
+                        Roles = rolesName,
+                        SecurityStamp = user.SecurityStamp
                     };
 
                     AccessTokenDto accessToken = _jwtService.GenerateToken(tokenResult);
@@ -174,20 +174,22 @@ namespace Web.Controller
 
                     transactionScope.Complete();
 
-                    return new JsonResult(accessToken);
+                    return accessToken;
                 }
                 catch (Exception)
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
 
         [HttpPost("get-token-by-otp")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetTokenByOtp(GetTokenByOtpRequest request, CancellationToken cancellationToken)
+        public async Task<AccessTokenDto> GetTokenByOtp(
+            GetTokenByOtpRequest request,
+            CancellationToken cancellationToken)
         {
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -201,12 +203,12 @@ namespace Web.Controller
                     if (!oAuthClientId.HasValue)
                         throw new UnAuthorizedException("invalid ClientId Or SecretCode");
 
-                    string otpCode = await _redisService.GetAsync<string>(request.phone_number, cancellationToken);
+                    SendOtpDto otpDto = await _redisService.GetAsync<SendOtpDto>(request.phone_number, cancellationToken);
 
-                    if (string.IsNullOrEmpty(otpCode))
+                    if (string.IsNullOrEmpty(otpDto.OtpCode))
                         throw new UnAuthorizedException("No otp code found for this phone number");
 
-                    if (otpCode != request.otp_code.Trim())
+                    if (otpDto.OtpCode != request.otp_code.Trim())
                         throw new UnAuthorizedException(
                             $" otp code {request.otp_code} for this phone number is invalid");
 
@@ -224,6 +226,9 @@ namespace Web.Controller
                     {
                         UserId = user.Id,
                         Username = user.UserName,
+                        FirstName = user.FullName,
+                        LastName = user.FullName,
+                        MobileNumber = user.PhoneNumber,
                         Roles = rolesName,
                         SecurityStamp = user.SecurityStamp
                     };
@@ -245,13 +250,13 @@ namespace Web.Controller
 
                     transactionScope.Complete();
 
-                    return new JsonResult(accessToken);
+                    return accessToken;
                 }
                 catch (Exception)
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
@@ -268,11 +273,12 @@ namespace Web.Controller
             {
                 UserId = int.Parse(claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                 Username = claims.Single(c => c.Type == ClaimTypes.Name).Value,
-                Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
-                SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType).Value,
                 FirstName = claims.Single(c => c.Type == "FirstName").Value,
                 LastName = claims.Single(c => c.Type == "LastName").Value,
-                MobileNumber = claims.Single(c => c.Type == "MobileNumber").Value
+                MobileNumber = claims.Single(c => c.Type == "MobileNumber").Value,
+                Roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList(),
+                SecurityStamp = claims.Single(c => c.Type == new ClaimsIdentityOptions().SecurityStampClaimType)
+                    .Value
             };
 
             return claimsDto;
@@ -309,7 +315,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
