@@ -180,7 +180,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
@@ -315,7 +315,7 @@ namespace Web.Controller
                 {
                     transactionScope.Dispose();
 
-                    return null;
+                    throw;
                 }
             }
         }
