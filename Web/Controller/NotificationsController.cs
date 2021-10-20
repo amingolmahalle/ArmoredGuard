@@ -38,24 +38,32 @@ namespace Web.Controller
             if (user is null && !request.IsRegister)
                 throw new NotFoundException("user not found");
 
-            SendOtpDto getOtpDto = await _redisService.GetAsync<SendOtpDto>(request.PhoneNumber, cancellationToken);
+            SendOtpDto otpResult = await _redisService.GetAsync<SendOtpDto>(request.PhoneNumber, cancellationToken);
 
-            if (getOtpDto is not null)
+            short ttl = 2; // minutes
+
+            if (otpResult is not null)
+            {
+                DateTime lifeTime = otpResult.LifeTime;
+                int otpExpirationTimeInSeconds = (int) (DateTime.Now - lifeTime).TotalSeconds;
+
                 return new SendOtpResponse
                 {
-                    OtpExpireTimeSeconds = (int) (DateTime.Now - getOtpDto.LifeTime).TotalSeconds
+                    OtpExpirationTimeSeconds = ttl * 60 - otpExpirationTimeInSeconds
                 };
+            }
 
             string otpCode = RandomGeneratorHelper.GenerateOtpCode();
-            short ttl = 2; // minutes
+
             SendOtpDto newOtpDto = new SendOtpDto {OtpCode = otpCode, LifeTime = DateTime.Now};
 
             await _redisService.SetAsync(request.PhoneNumber, newOtpDto.Serialize(), ttl, cancellationToken);
 
             Console.WriteLine($@"OtpCode is: {otpCode}");
+
             //TODO: send message 
 
-            return new SendOtpResponse {OtpExpireTimeSeconds = ttl * 60};
+            return new SendOtpResponse {OtpExpirationTimeSeconds = ttl * 60};
         }
     }
 }
