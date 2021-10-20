@@ -50,6 +50,7 @@ namespace Web.Controller
             _httpContextAccessor = httpContextAccessor;
         }
 
+
         [HttpPost("get-token-by-username-and-password")]
         [AllowAnonymous]
         public async Task<AccessTokenDto> GetTokenByUsernameAndPassword(
