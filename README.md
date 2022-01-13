@@ -1,5 +1,5 @@
 # ArmoredGuard
-Integrate IdentityServer with JWT (Json Web Token) in Asp.Net Core 5
+Integrate IdentityServer with JWT (Json Web Token) in Asp.Net Core 6
 
 
 <b>add migration command cli</b>:
