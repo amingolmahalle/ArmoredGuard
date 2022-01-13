@@ -1,9 +1,8 @@
 using Services.Dtos;
 
-namespace Services.Contracts
+namespace Services.Contracts;
+
+public interface IJwtService
 {
-    public interface IJwtService
-    {
-        AccessTokenDto GenerateToken(ClaimsDto claimsDto);
-    }
+    AccessTokenDto GenerateToken(ClaimsDto claimsDto);
 }

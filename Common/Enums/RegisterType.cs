@@ -1,8 +1,7 @@
-namespace Common.Enums
+namespace Common.Enums;
+
+public enum RegisterType
 {
-    public enum RegisterType
-    {
-        Password,
-        Otp
-    }
+    Password,
+    Otp
 }

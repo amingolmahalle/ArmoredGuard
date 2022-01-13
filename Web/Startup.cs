@@ -8,68 +8,67 @@ using Web.Configurations;
 using Web.Middleware;
 using Web.Swagger;
 
-namespace Web
+namespace Web;
+
+public class Startup
 {
-    public class Startup
+    private readonly SecuritySettings _securitySettings;
+
+    private readonly IConfiguration _configuration;
+
+    public Startup(IConfiguration configuration)
     {
-        private readonly SecuritySettings _securitySettings;
+        _configuration = configuration;
+        _securitySettings = configuration.GetSection(nameof(SecuritySettings)).Get<SecuritySettings>();
+    }
 
-        private readonly IConfiguration _configuration;
-
-        public Startup(IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.Configure<SecuritySettings>(_configuration.GetSection(nameof(SecuritySettings)));
+        services.AddInjectionServices();
+        services.AddDbContext(_configuration);
+        services.AddCustomIdentity(_securitySettings.IdentitySettings);
+        services.AddJwtAuthentication(_securitySettings.JwtSettings);
+        services.AddCustomSwagger();
+        services.AddCors(options =>
         {
-            _configuration = configuration;
-            _securitySettings = configuration.GetSection(nameof(SecuritySettings)).Get<SecuritySettings>();
+            options.AddPolicy("CorsPolicy",
+                builder => builder.WithOrigins("http://localhost:5000", "https://localhost:5001")
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+        });
+        services.AddControllers().AddNewtonsoftJson();
+
+        services.AddStackExchangeRedisCache(options => { options.Configuration = "localhost:6379"; });
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        app.UseMiddleware<ExceptionMiddleware>();
+        app.UseSwagger();
+
+        app.UseSwaggerUI(c =>
         {
-            services.Configure<SecuritySettings>(_configuration.GetSection(nameof(SecuritySettings)));
-            services.AddInjectionServices();
-            services.AddDbContext(_configuration);
-            services.AddCustomIdentity(_securitySettings.IdentitySettings);
-            services.AddJwtAuthentication(_securitySettings.JwtSettings);
-            services.AddCustomSwagger();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:5000", "https://localhost:5001")
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
-            services.AddControllers().AddNewtonsoftJson();
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            c.OAuthClientId("residence");
+            c.OAuthClientSecret("C68AF3AC-640E-40C7-B09E-15BEB138C658");
+            c.OAuthAppName("ArmoredGuard");
+            c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+            c.RoutePrefix = string.Empty;
+        });
 
-            services.AddStackExchangeRedisCache(options => { options.Configuration = "localhost:6379"; });
-        }
+        app.UseRouting();
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+        app.UseCors("CorsPolicy");
 
-            app.UseMiddleware<ExceptionMiddleware>();
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.OAuthClientId("residence");
-                c.OAuthClientSecret("C68AF3AC-640E-40C7-B09E-15BEB138C658");
-                c.OAuthAppName("ArmoredGuard");
-                c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
-                c.RoutePrefix = string.Empty;
-            });
-
-            app.UseRouting();
-
-            app.UseCors("CorsPolicy");
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseEndpoints(config => { config.MapControllers(); });
-        }
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(config => { config.MapControllers(); });
     }
 }

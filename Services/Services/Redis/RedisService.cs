@@ -6,59 +6,58 @@ using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Services.Contracts.Redis;
 
-namespace Services.Services.Redis
+namespace Services.Services.Redis;
+
+public class RedisService : IRedisService
 {
-    public class RedisService : IRedisService
+    private readonly IDistributedCache _distributedCache;
+
+    public RedisService(IDistributedCache distributedCache)
     {
-        private readonly IDistributedCache _distributedCache;
+        _distributedCache = distributedCache;
+    }
 
-        public RedisService(IDistributedCache distributedCache)
+    public async Task<T> GetAsync<T>(string key, CancellationToken cancellationToken) where T : class
+    {
+        T value = default;
+
+        if (string.IsNullOrEmpty(key))
+            throw new Exception("key should not be empty");
+
+        Byte[] encodedValue = await _distributedCache.GetAsync(key, cancellationToken);
+
+        if (encodedValue != null)
         {
-            _distributedCache = distributedCache;
+            string serializedValue = Encoding.UTF8.GetString(encodedValue);
+
+            value = JsonConvert.DeserializeObject<T>(serializedValue);
         }
 
-        public async Task<T> GetAsync<T>(string key, CancellationToken cancellationToken) where T : class
-        {
-            T value = default;
+        return value;
+    }
 
-            if (string.IsNullOrEmpty(key))
-                throw new Exception("key should not be empty");
+    public async Task SetAsync(string key, string value, short ttl, CancellationToken cancellationToken)
+    {
+        Byte[] encodedValue = Encoding.UTF8.GetBytes(value);
 
-            Byte[] encodedValue = await _distributedCache.GetAsync(key, cancellationToken);
+        var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(ttl));
 
-            if (encodedValue != null)
-            {
-                string serializedValue = Encoding.UTF8.GetString(encodedValue);
+        await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
+    }
 
-                value = JsonConvert.DeserializeObject<T>(serializedValue);
-            }
+    public async Task<bool> TryGetAsync(string key, CancellationToken cancellationToken)
+    {
+        bool hasValue = false;
+        Byte[] value = await _distributedCache.GetAsync(key, cancellationToken);
 
-            return value;
-        }
+        if (value != null && value.Length > 0)
+            hasValue = true;
 
-        public async Task SetAsync(string key, string value, short ttl, CancellationToken cancellationToken)
-        {
-            Byte[] encodedValue = Encoding.UTF8.GetBytes(value);
+        return hasValue;
+    }
 
-            var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(ttl));
-
-            await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
-        }
-
-        public async Task<bool> TryGetAsync(string key, CancellationToken cancellationToken)
-        {
-            bool hasValue = false;
-            Byte[] value = await _distributedCache.GetAsync(key, cancellationToken);
-
-            if (value != null && value.Length > 0)
-                hasValue = true;
-
-            return hasValue;
-        }
-
-        public async Task RemoveAsync(string key, CancellationToken cancellationToken)
-        {
-            await _distributedCache.RemoveAsync(key, cancellationToken);
-        }
+    public async Task RemoveAsync(string key, CancellationToken cancellationToken)
+    {
+        await _distributedCache.RemoveAsync(key, cancellationToken);
     }
 }

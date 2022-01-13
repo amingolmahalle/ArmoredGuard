@@ -1,11 +1,10 @@
 using System;
 
-namespace Services.Dtos
+namespace Services.Dtos;
+
+public class SendOtpDto
 {
-    public class SendOtpDto
-    {
-        public string OtpCode { get; set; }
+    public string OtpCode { get; set; }
         
-        public DateTime ExpiresAt { get; set; }
-    }
+    public DateTime ExpiresAt { get; set; }
 }

@@ -4,27 +4,26 @@ using System.ComponentModel.DataAnnotations;
 using Common.Enums;
 using Common.Extensions;
 
-namespace Web.Models.RequestModels.User
+namespace Web.Models.RequestModels.User;
+
+public class UpdateUserProfileRequest : IValidatableObject
 {
-    public class UpdateUserProfileRequest : IValidatableObject
+    public string FullName { get; set; }
+
+    public string Email { get; set; }
+
+    public string PhoneNumber { get; set; }
+
+    public DateTime? BirthDate { get; set; }
+
+    public GenderType? Gender { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        public string FullName { get; set; }
+        if (!string.IsNullOrEmpty(PhoneNumber) && !PhoneNumber.IsPhoneNumber())
+            yield return new ValidationResult("phone number is invalid", new[] {nameof(PhoneNumber)});
 
-        public string Email { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        public DateTime? BirthDate { get; set; }
-
-        public GenderType? Gender { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!string.IsNullOrEmpty(PhoneNumber) && !PhoneNumber.IsPhoneNumber())
-                yield return new ValidationResult("phone number is invalid", new[] {nameof(PhoneNumber)});
-
-            if (!string.IsNullOrEmpty(Email) && !PhoneNumber.IsValidEmail())
-                yield return new ValidationResult("email address is invalid", new[] {nameof(Email)});
-        }
+        if (!string.IsNullOrEmpty(Email) && !PhoneNumber.IsValidEmail())
+            yield return new ValidationResult("email address is invalid", new[] {nameof(Email)});
     }
 }

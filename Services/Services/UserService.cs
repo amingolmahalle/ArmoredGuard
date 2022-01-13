@@ -65,7 +65,7 @@ namespace Services.Services
                         throw new Exception($" otp code {request.OtpCode} for this phone number is invalid");
 
                     if (string.IsNullOrEmpty(request.Password?.Trim()))
-                        request.Password = RandomGeneratorHelper.GeneratePassword();
+                        request.Password = Randomizer.GeneratePassword();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

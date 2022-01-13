@@ -7,63 +7,62 @@ using Common.Helpers;
 using Data.Contracts;
 using Entities.BaseEntity;
 
-namespace Data.Repositories
+namespace Data.Repositories;
+
+public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
+    where TEntity : class, IEntity
 {
-    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
-        where TEntity : class, IEntity
+    protected readonly ApplicationDbContext DbContext;
+
+    public DbSet<TEntity> Entities { get; }
+
+    public virtual IQueryable<TEntity> Table => Entities;
+
+    public virtual IQueryable<TEntity> TableNoTracking => Entities.AsNoTracking();
+
+    public Repository(ApplicationDbContext dbContext)
     {
-        protected readonly ApplicationDbContext DbContext;
+        DbContext = dbContext;
+        Entities = DbContext.Set<TEntity>(); // City => Cities
+    }
 
-        public DbSet<TEntity> Entities { get; }
+    public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
+    {
+        Assert.NotNull(entity, nameof(entity));
+        await Entities.AddAsync(entity, cancellationToken).ConfigureAwait(false);
 
-        public virtual IQueryable<TEntity> Table => Entities;
+        if (saveNow)
+            await DbContext.SaveChangesAsync(cancellationToken);
+    }
 
-        public virtual IQueryable<TEntity> TableNoTracking => Entities.AsNoTracking();
+    public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
+    {
+        Assert.NotNull(entity, nameof(entity));
+        Entities.Update(entity);
 
-        public Repository(ApplicationDbContext dbContext)
-        {
-            DbContext = dbContext;
-            Entities = DbContext.Set<TEntity>(); // City => Cities
-        }
+        if (saveNow)
+            await DbContext.SaveChangesAsync(cancellationToken);
+    }
 
-        public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
-        {
-            Assert.NotNull(entity, nameof(entity));
-            await Entities.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
+    {
+        Assert.NotNull(entity, nameof(entity));
+        Entities.Remove(entity);
 
-            if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken);
-        }
+        if (saveNow)
+            await DbContext.SaveChangesAsync(cancellationToken);
+    }
 
-        public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
-        {
-            Assert.NotNull(entity, nameof(entity));
-            Entities.Update(entity);
+    public virtual async Task DeleteRangeAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken,
+        bool saveNow = true)
+    {
+        Assert.NotNull(entities, nameof(entities));
 
-            if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken);
-        }
+        Entities.RemoveRange(entities);
 
-        public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
-        {
-            Assert.NotNull(entity, nameof(entity));
-            Entities.Remove(entity);
-
-            if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public virtual async Task DeleteRangeAsync(
-            IEnumerable<TEntity> entities,
-            CancellationToken cancellationToken,
-            bool saveNow = true)
-        {
-            Assert.NotNull(entities, nameof(entities));
-
-            Entities.RemoveRange(entities);
-
-            if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken);
-        }
+        if (saveNow)
+            await DbContext.SaveChangesAsync(cancellationToken);
     }
 }

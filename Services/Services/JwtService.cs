@@ -26,12 +26,12 @@ namespace Services.Services
         public AccessTokenDto GenerateToken(ClaimsDto claimsDto)
         {
             // longer that 16 character
-            SecurityKey secretKey = SecurityHelper.CreateSecurityKey(_securitySettings.JwtSettings.SecretKey);
-            SigningCredentials signingCredentials = SecurityHelper.CreateSigningCredentials(secretKey);
+            SecurityKey secretKey = Security.CreateSecurityKey(_securitySettings.JwtSettings.SecretKey);
+            SigningCredentials signingCredentials = Security.CreateSigningCredentials(secretKey);
 
             // must be 16 character
-            SecurityKey encryptionKey = SecurityHelper.CreateEncryptionKey(_securitySettings.JwtSettings.EncryptKey);
-            EncryptingCredentials encryptingCredentials = SecurityHelper.CreateEncryptingCredentials(encryptionKey);
+            SecurityKey encryptionKey = Security.CreateEncryptionKey(_securitySettings.JwtSettings.EncryptKey);
+            EncryptingCredentials encryptingCredentials = Security.CreateEncryptingCredentials(encryptionKey);
 
             IEnumerable<Claim> claims = _setClaims(claimsDto);
 

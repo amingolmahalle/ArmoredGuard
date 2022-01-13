@@ -21,145 +21,144 @@ using Services.Contracts.Redis;
 using Services.Services;
 using Services.Services.Redis;
 
-namespace Web.Configurations
+namespace Web.Configurations;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
     {
-        public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
+        services.AddAuthentication(options =>
         {
-            services.AddAuthentication(options =>
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            SecurityKey secretKey = Security.CreateSecurityKey(jwtSettings.SecretKey);
+            SecurityKey encryptionKey = Security.CreateEncryptionKey(jwtSettings.EncryptKey);
+
+            var validationParameters = new TokenValidationParameters
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+                ClockSkew = TimeSpan.Zero, // default: 5 min
+                RequireSignedTokens = true,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = secretKey,
+
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+
+                ValidateAudience = true, //default : false
+                ValidAudience = jwtSettings.Audience,
+
+                ValidateIssuer = true, //default : false
+                ValidIssuer = jwtSettings.Issuer,
+
+                TokenDecryptionKey = encryptionKey
+            };
+
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = validationParameters;
+            options.Events = new JwtBearerEvents
             {
-                SecurityKey secretKey = SecurityHelper.CreateSecurityKey(jwtSettings.SecretKey);
-                SecurityKey encryptionKey = SecurityHelper.CreateEncryptionKey(jwtSettings.EncryptKey);
-
-                var validationParameters = new TokenValidationParameters
+                OnAuthenticationFailed = context =>
                 {
-                    ClockSkew = TimeSpan.Zero, // default: 5 min
-                    RequireSignedTokens = true,
+                    if (context.Exception != null)
+                        throw new UnAuthorizedException("Authentication failed");
 
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = secretKey,
-
-                    RequireExpirationTime = true,
-                    ValidateLifetime = true,
-
-                    ValidateAudience = true, //default : false
-                    ValidAudience = jwtSettings.Audience,
-
-                    ValidateIssuer = true, //default : false
-                    ValidIssuer = jwtSettings.Issuer,
-
-                    TokenDecryptionKey = encryptionKey
-                };
-
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = validationParameters;
-                options.Events = new JwtBearerEvents
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = async context =>
                 {
-                    OnAuthenticationFailed = context =>
-                    {
-                        if (context.Exception != null)
-                            throw new UnAuthorizedException("Authentication failed");
+                    var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
 
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = async context =>
+                    if (context.Principal != null)
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                        ClaimsIdentity claimsIdentity = context.Principal.Identity as ClaimsIdentity;
 
-                        if (context.Principal != null)
+                        if (claimsIdentity?.Claims.Any() != true)
+                            context.Fail("This token has no claims.");
+
+                        string securityStamp =
+                            claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
+
+                        if (!securityStamp.HasValue())
+                            context.Fail("This token has no security stamp");
+
+                        //Find user and token from database and perform your custom validation
+                        int userId = claimsIdentity.GetUserId<int>();
+                        User user = await userService.FindByIdAsync(userId.ToString());
+
+                        SignInManager<User> signInManager = context.HttpContext.RequestServices
+                            .GetRequiredService<SignInManager<User>>();
+
+                        User validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
+
+                        if (validatedUser == null)
                         {
-                            ClaimsIdentity claimsIdentity = context.Principal.Identity as ClaimsIdentity;
-
-                            if (claimsIdentity?.Claims.Any() != true)
-                                context.Fail("This token has no claims.");
-
-                            string securityStamp =
-                                claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
-
-                            if (!securityStamp.HasValue())
-                                context.Fail("This token has no security stamp");
-
-                            //Find user and token from database and perform your custom validation
-                            int userId = claimsIdentity.GetUserId<int>();
-                            User user = await userService.FindByIdAsync(userId.ToString());
-
-                            SignInManager<User> signInManager = context.HttpContext.RequestServices
-                                .GetRequiredService<SignInManager<User>>();
-
-                            User validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
-
-                            if (validatedUser == null)
-                            {
-                                //UnAuthorized
-                                context.Fail("Token security stamp is not valid.");
-                            }
-
-                            if (!user.IsActive)
-                                context.Fail("User is not active");
-
-                            await userService.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
+                            //UnAuthorized
+                            context.Fail("Token security stamp is not valid.");
                         }
-                    },
-                    OnChallenge = context =>
-                    {
-                        if (context.AuthenticateFailure != null)
-                            throw new UnAuthorizedException("Authenticate failure");
 
-                        throw new UnAuthorizedException(
-                            "You are unauthorized to access this resource");
+                        if (!user.IsActive)
+                            context.Fail("User is not active");
+
+                        await userService.UpdateLastSeenDateAsync(user, context.HttpContext.RequestAborted);
                     }
-                };
-            });
-        }
-
-        public static void AddCustomIdentity(this IServiceCollection services, IdentitySettings settings)
-        {
-            services.AddIdentity<User, Role>(identityOptions =>
+                },
+                OnChallenge = context =>
                 {
-                    //Password Settings
-                    identityOptions.Password.RequireDigit = settings.PasswordRequireDigit;
-                    identityOptions.Password.RequiredLength = settings.PasswordRequiredLength;
-                    identityOptions.Password.RequireNonAlphanumeric = settings.PasswordRequireNonAlphanumeric; //#@!
-                    identityOptions.Password.RequireUppercase = settings.PasswordRequireUppercase;
-                    identityOptions.Password.RequireLowercase = settings.PasswordRequireLowercase;
+                    if (context.AuthenticateFailure != null)
+                        throw new UnAuthorizedException("Authenticate failure");
 
-                    //UserName Settings
-                    identityOptions.User.RequireUniqueEmail = settings.RequireUniqueEmail;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-        }
+                    throw new UnAuthorizedException(
+                        "You are unauthorized to access this resource");
+                }
+            };
+        });
+    }
 
-
-        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
+    public static void AddCustomIdentity(this IServiceCollection services, IdentitySettings settings)
+    {
+        services.AddIdentity<User, Role>(identityOptions =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
-            });
-        }
+                //Password Settings
+                identityOptions.Password.RequireDigit = settings.PasswordRequireDigit;
+                identityOptions.Password.RequiredLength = settings.PasswordRequiredLength;
+                identityOptions.Password.RequireNonAlphanumeric = settings.PasswordRequireNonAlphanumeric; //#@!
+                identityOptions.Password.RequireUppercase = settings.PasswordRequireUppercase;
+                identityOptions.Password.RequireLowercase = settings.PasswordRequireLowercase;
 
-        public static void AddInjectionServices(this IServiceCollection services)
+                //UserName Settings
+                identityOptions.User.RequireUniqueEmail = settings.RequireUniqueEmail;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+    }
+
+
+    public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
-            //Services
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IOAuthService, OAuthService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IRedisService, RedisService>();
+            options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+        });
+    }
 
-            //Repositories
-            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IOAuthClientRepository, OAuthClientRepository>();
-            services.AddScoped<IOAuthRefreshTokenRepository, OAuthRefreshTokenRepository>();
-        }
+    public static void AddInjectionServices(this IServiceCollection services)
+    {
+        //Services
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IOAuthService, OAuthService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IRedisService, RedisService>();
+
+        //Repositories
+        services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IOAuthClientRepository, OAuthClientRepository>();
+        services.AddScoped<IOAuthRefreshTokenRepository, OAuthRefreshTokenRepository>();
     }
 }

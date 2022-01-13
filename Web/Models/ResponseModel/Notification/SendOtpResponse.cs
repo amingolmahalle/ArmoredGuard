@@ -1,8 +1,7 @@
 
-namespace Web.Models.ResponseModel.Notification
+namespace Web.Models.ResponseModel.Notification;
+
+public class SendOtpResponse
 {
-    public class SendOtpResponse
-    {
-        public int OtpExpirationTimeSeconds { get; set; }
-    }
+    public int OtpExpirationTimeSeconds { get; set; }
 }

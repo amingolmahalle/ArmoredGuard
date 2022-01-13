@@ -5,29 +5,28 @@ using Services.Contracts;
 using Web.Controller.Base;
 using Web.Models.RequestModels.Role;
 
-namespace Web.Controller
+namespace Web.Controller;
+
+public class RolesController : BaseController
 {
-    public class RolesController : BaseController
+    private readonly IRoleService _roleService;
+
+    public RolesController(IRoleService roleService)
     {
-        private readonly IRoleService _roleService;
+        _roleService = roleService;
+    }
 
-        public RolesController(IRoleService roleService)
+    [HttpPost("create")]
+    public async Task<ApiResult.ApiResult> Create(CreateRoleRequest request)
+    {
+        var role = new Role
         {
-            _roleService = roleService;
-        }
+            Name = request.RoleName,
+            Description = request.Description ?? request.RoleName.ToLower()
+        };
 
-        [HttpPost("create")]
-        public async Task<ApiResult.ApiResult> Create(CreateRoleRequest request)
-        {
-            var role = new Role
-            {
-                Name = request.RoleName,
-                Description = request.Description ?? request.RoleName.ToLower()
-            };
+        await _roleService.CreateAsync(role);
 
-            await _roleService.CreateAsync(role);
-
-            return Ok();
-        }
+        return Ok();
     }
 }

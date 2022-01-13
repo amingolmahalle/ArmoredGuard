@@ -5,22 +5,21 @@ using System.Threading.Tasks;
 using Entities.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Contracts
+namespace Data.Contracts;
+
+public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity
 {
-    public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity
-    {
-        DbSet<TEntity> Entities { get; }
+    DbSet<TEntity> Entities { get; }
 
-        IQueryable<TEntity> Table { get; }
+    IQueryable<TEntity> Table { get; }
 
-        IQueryable<TEntity> TableNoTracking { get; }
+    IQueryable<TEntity> TableNoTracking { get; }
 
-        Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+    Task AddAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+    Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
+    Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
 
-        Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
-    }
+    Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
 }

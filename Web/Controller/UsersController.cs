@@ -17,185 +17,184 @@ using Web.Controller.Base;
 using Web.Models.RequestModels.User;
 using Web.Models.ResponseModel.User;
 
-namespace Web.Controller
+namespace Web.Controller;
+
+public class UsersController : BaseController
 {
-    public class UsersController : BaseController
+    private readonly IUserService _userService;
+
+    private readonly IOAuthService _oAuthService;
+
+    private readonly ILogger<UsersController> _logger;
+
+    private readonly IRoleService _roleService;
+
+    public UsersController(
+        IUserService userService,
+        ILogger<UsersController> logger,
+        IOAuthService oAuthService,
+        IRoleService roleService)
     {
-        private readonly IUserService _userService;
+        _userService = userService;
+        _logger = logger;
+        _oAuthService = oAuthService;
+        _roleService = roleService;
+    }
 
-        private readonly IOAuthService _oAuthService;
+    [HttpGet("get-by-id/{id:int}")]
+    public async Task<ApiResult<GetByUserIdResponse>> GetById(int id)
+    {
+        User user = await _userService.FindByIdAsync(id.ToString());
 
-        private readonly ILogger<UsersController> _logger;
+        if (user == null)
+            throw new NotFoundException("user not found");
 
-        private readonly IRoleService _roleService;
-
-        public UsersController(
-            IUserService userService,
-            ILogger<UsersController> logger,
-            IOAuthService oAuthService,
-            IRoleService roleService)
+        var getByUserIdResponse = new GetByUserIdResponse
         {
-            _userService = userService;
-            _logger = logger;
-            _oAuthService = oAuthService;
-            _roleService = roleService;
-        }
+            FullName = user.FullName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            BirthDate = user.BirthDate,
+            Gender = user.Gender,
+            UserName = user.UserName,
+            LastLoginDate = user.LastSeenDate.GetValueOrDefault()
+        };
 
-        [HttpGet("get-by-id/{id:int}")]
-        public async Task<ApiResult<GetByUserIdResponse>> GetById(int id)
+        return getByUserIdResponse;
+    }
+
+    [HttpPost("create")]
+    [AllowAnonymous]
+    public async Task<ApiResult.ApiResult> Create(CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-            User user = await _userService.FindByIdAsync(id.ToString());
-
-            if (user == null)
-                throw new NotFoundException("user not found");
-
-            var getByUserIdResponse = new GetByUserIdResponse
+            try
             {
-                FullName = user.FullName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                BirthDate = user.BirthDate,
-                Gender = user.Gender,
-                UserName = user.UserName,
-                LastLoginDate = user.LastSeenDate.GetValueOrDefault()
-            };
+                bool isExistUser =
+                    await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
 
-            return getByUserIdResponse;
-        }
+                if (isExistUser)
+                    throw new BadRequestException("PhoneNumber already exists");
 
-        [HttpPost("create")]
-        [AllowAnonymous]
-        public async Task<ApiResult.ApiResult> Create(CreateUserRequest request, CancellationToken cancellationToken)
-        {
-            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
-                {
-                    bool isExistUser =
-                        await _userService.IsExistByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
+                isExistUser = await _userService.IsExistUserByEmailAsync(request.Email, cancellationToken);
 
-                    if (isExistUser)
-                        throw new BadRequestException("PhoneNumber already exists");
+                if (isExistUser)
+                    throw new BadRequestException("email already exists");
 
-                    isExistUser = await _userService.IsExistUserByEmailAsync(request.Email, cancellationToken);
+                isExistUser = await _userService.IsExistUserByUsernameAsync(request.UserName, cancellationToken);
 
-                    if (isExistUser)
-                        throw new BadRequestException("email already exists");
-
-                    isExistUser = await _userService.IsExistUserByUsernameAsync(request.UserName, cancellationToken);
-
-                    if (isExistUser)
-                        throw new BadRequestException("username already exists");
+                if (isExistUser)
+                    throw new BadRequestException("username already exists");
                     
-                    if (request.RoleId == 0)
-                        throw new BadRequestException("RoleId is Invalid");
+                if (request.RoleId == 0)
+                    throw new BadRequestException("RoleId is Invalid");
 
-                    var role = await _roleService.FindByIdAsync(request.RoleId.ToString());
+                var role = await _roleService.FindByIdAsync(request.RoleId.ToString());
 
-                    if (role == null)
-                        throw new BadRequestException("RoleId is Invalid");
+                if (role == null)
+                    throw new BadRequestException("RoleId is Invalid");
                     
-                    _logger.LogInformation("calling create user endpoint");
+                _logger.LogInformation("calling create user endpoint");
 
-                    var createUserDto = new CreateUserDto
-                    {
-                        UserName = request.UserName,
-                        Email = request.Email.ToFormalEmail(),
-                        PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber(),
-                        Password = request.Password,
-                        OtpCode = request.OtpCode,
-                        FullName = request.FullName,
-                        RegisterType = request.RegisterType,
-                        RoleId = request.RoleId,
-                        BirthDate = request.BirthDate,
-                        Gender = request.Gender
-                    };
-
-                    User user = await _userService.CreateAsync(createUserDto, cancellationToken);
-
-                    await _userService.AddToRoleAsync(user, role.Name);
-
-                    transactionScope.Complete();
-
-                    return Ok();
-                }
-                catch (Exception)
+                var createUserDto = new CreateUserDto
                 {
-                    transactionScope.Dispose();
+                    UserName = request.UserName,
+                    Email = request.Email.ToFormalEmail(),
+                    PhoneNumber = request.PhoneNumber.ToFormalPhoneNumber(),
+                    Password = request.Password,
+                    OtpCode = request.OtpCode,
+                    FullName = request.FullName,
+                    RegisterType = request.RegisterType,
+                    RoleId = request.RoleId,
+                    BirthDate = request.BirthDate,
+                    Gender = request.Gender
+                };
 
-                    throw;
-                }
+                User user = await _userService.CreateAsync(createUserDto, cancellationToken);
+
+                await _userService.AddToRoleAsync(user, role.Name);
+
+                transactionScope.Complete();
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                transactionScope.Dispose();
+
+                throw;
             }
         }
+    }
 
-        [HttpPut("update-profile/{id:int}")]
-        public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request)
+    [HttpPut("update-profile/{id:int}")]
+    public async Task<ApiResult.ApiResult> UpdateProfile([FromRoute] int id, UpdateUserProfileRequest request)
+    {
+        User user = await _userService.FindByIdAsync(id.ToString());
+
+        if (user == null)
+            throw new NotFoundException("user not found");
+
+        if (request?.Email != null)
         {
-            User user = await _userService.FindByIdAsync(id.ToString());
-
-            if (user == null)
-                throw new NotFoundException("user not found");
-
-            if (request?.Email != null)
-            {
-                user.Email = request.Email;
-            }
-
-            if (request?.PhoneNumber != null)
-            {
-                user.PhoneNumber = request.PhoneNumber;
-            }
-
-            if (request?.BirthDate != null)
-            {
-                user.BirthDate = request.BirthDate;
-            }
-
-            if (request?.FullName != null)
-            {
-                user.FullName = request.FullName;
-            }
-
-            if (request?.Gender != null)
-            {
-                user.Gender = request.Gender.GetValueOrDefault();
-            }
-
-            await _userService.UpdateAsync(user);
-
-            return Ok();
+            user.Email = request.Email;
         }
 
-        [HttpPut("change-password/{id:int}")]
-        public async Task<ApiResult.ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
-            CancellationToken cancellationToken)
+        if (request?.PhoneNumber != null)
         {
-            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            user.PhoneNumber = request.PhoneNumber;
+        }
+
+        if (request?.BirthDate != null)
+        {
+            user.BirthDate = request.BirthDate;
+        }
+
+        if (request?.FullName != null)
+        {
+            user.FullName = request.FullName;
+        }
+
+        if (request?.Gender != null)
+        {
+            user.Gender = request.Gender.GetValueOrDefault();
+        }
+
+        await _userService.UpdateAsync(user);
+
+        return Ok();
+    }
+
+    [HttpPut("change-password/{id:int}")]
+    public async Task<ApiResult.ApiResult> ChangePassword([FromRoute] int id, ChangeUserPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            try
             {
-                try
-                {
-                    User user = await _userService.FindByIdAsync(id.ToString());
+                User user = await _userService.FindByIdAsync(id.ToString());
 
-                    if (user == null)
-                        throw new NotFoundException("user not found");
+                if (user == null)
+                    throw new NotFoundException("user not found");
 
-                    IdentityResult result =
-                        await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+                IdentityResult result =
+                    await _userService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-                    if (!result.Succeeded)
-                        throw new NotFoundException(
-                            $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
+                if (!result.Succeeded)
+                    throw new NotFoundException(
+                        $"{result.Errors?.FirstOrDefault()?.Code}, {result.Errors?.FirstOrDefault()?.Description}");
 
-                    await _oAuthService.DeleteAllUserRefreshCodesAsync(user.Id, cancellationToken);
+                await _oAuthService.DeleteAllUserRefreshCodesAsync(user.Id, cancellationToken);
 
-                    return Ok();
-                }
-                catch (Exception)
-                {
-                    transactionScope.Dispose();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                transactionScope.Dispose();
 
-                    throw;
-                }
+                throw;
             }
         }
     }

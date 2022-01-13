@@ -5,26 +5,25 @@ using Data.Contracts;
 using Entities.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Repositories
+namespace Data.Repositories;
+
+public class OAuthClientRepository : Repository<OAuthClient, int>, IOAuthClientRepository
 {
-    public class OAuthClientRepository : Repository<OAuthClient, int>, IOAuthClientRepository
+    public OAuthClientRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        public OAuthClientRepository(ApplicationDbContext dbContext) : base(dbContext)
-        {
-        }
+    }
 
-        public async Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(
-            string clientId,
-            Guid secretCode,
-            CancellationToken cancellationToken)
-        {
-            OAuthClient oAuthClient = await TableNoTracking.SingleOrDefaultAsync(oc =>
-                    oc.Name == clientId &&
-                    oc.SecretCode == secretCode &&
-                    oc.Enabled,
-                cancellationToken);
+    public async Task<int?> GetOAuthClientIdByClientIdAndSecretCodeAsync(
+        string clientId,
+        Guid secretCode,
+        CancellationToken cancellationToken)
+    {
+        OAuthClient oAuthClient = await TableNoTracking.SingleOrDefaultAsync(oc =>
+                oc.Name == clientId &&
+                oc.SecretCode == secretCode &&
+                oc.Enabled,
+            cancellationToken);
 
-            return oAuthClient?.Id;
-        }
+        return oAuthClient?.Id;
     }
 }
