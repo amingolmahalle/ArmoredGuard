@@ -40,7 +40,7 @@ namespace Services.Services.Redis
         {
             Byte[] encodedValue = Encoding.UTF8.GetBytes(value);
 
-            var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(ttl));
+            var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(ttl));
 
             await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
         }

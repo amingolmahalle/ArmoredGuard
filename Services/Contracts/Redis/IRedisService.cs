@@ -7,7 +7,7 @@ namespace Services.Contracts.Redis
     {
         Task<T> GetAsync<T>(string key, CancellationToken cancellationToken) where T : class;
 
-        Task SetAsync(string key, string value, short ttl, CancellationToken cancellationToken);
+        Task SetAsync(string key, string value, short ttlSeconds, CancellationToken cancellationToken);
 
         Task<bool> TryGetAsync(string key, CancellationToken cancellationToken);
 

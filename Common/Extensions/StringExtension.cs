@@ -51,7 +51,7 @@ namespace Common.Extensions
 
         public static string CleanString(this string str)
         {
-            return str.Trim().FixPersianChars().Fa2En().NullIfEmpty();
+            return str?.Trim().FixPersianChars().Fa2En().NullIfEmpty();
         }
 
         public static string NullIfEmpty(this string str)
@@ -68,7 +68,7 @@ namespace Common.Extensions
                 return string.Empty;
             }
 
-            if (input[0] != '0')
+            if (input != null && input[0] != '0')
             {
                 if (input[0] == '+')
                 {

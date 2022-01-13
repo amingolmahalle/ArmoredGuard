@@ -208,7 +208,7 @@ namespace Web.Controller
                     if (string.IsNullOrEmpty(otpDto.OtpCode))
                         throw new UnAuthorizedException("No otp code found for this phone number");
 
-                    if (otpDto.OtpCode != request.otp_code.Trim())
+                    if (otpDto.OtpCode != request.otp_code?.Trim())
                         throw new UnAuthorizedException(
                             $" otp code {request.otp_code} for this phone number is invalid");
 

@@ -40,30 +40,30 @@ namespace Web.Controller
 
             SendOtpDto otpResult = await _redisService.GetAsync<SendOtpDto>(request.PhoneNumber, cancellationToken);
 
-            short ttl = 2; // minutes
-
-            if (otpResult is not null)
+            if (otpResult is not null && otpResult.ExpiresAt > DateTime.Now)
             {
-                DateTime lifeTime = otpResult.LifeTime;
-                int otpExpirationTimeInSeconds = (int) (DateTime.Now - lifeTime).TotalSeconds;
-
                 return new SendOtpResponse
                 {
-                    OtpExpirationTimeSeconds = ttl * 60 - otpExpirationTimeInSeconds
+                    OtpExpirationTimeSeconds = (int) (otpResult.ExpiresAt - DateTime.Now).TotalSeconds,
                 };
             }
 
-            string otpCode = RandomGeneratorHelper.GenerateOtpCode();
+            const short ttlSeconds = 2 * 60;
+            string otpCode = RandomGeneratorHelper.GenerateOtpCode(10000, 99999);
 
-            SendOtpDto newOtpDto = new SendOtpDto {OtpCode = otpCode, LifeTime = DateTime.Now};
+            SendOtpDto newOtpDto = new SendOtpDto
+            {
+                OtpCode = otpCode,
+                ExpiresAt = DateTime.Now.AddSeconds(ttlSeconds)
+            };
 
-            await _redisService.SetAsync(request.PhoneNumber, newOtpDto.Serialize(), ttl, cancellationToken);
+            await _redisService.SetAsync(request.PhoneNumber, newOtpDto.Serialize(), ttlSeconds, cancellationToken);
 
             Console.WriteLine($@"OtpCode is: {otpCode}");
 
             //TODO: send message 
 
-            return new SendOtpResponse {OtpExpirationTimeSeconds = ttl * 60};
+            return new SendOtpResponse {OtpExpirationTimeSeconds = ttlSeconds};
         }
     }
 }

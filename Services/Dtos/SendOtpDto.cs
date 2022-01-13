@@ -6,6 +6,6 @@ namespace Services.Dtos
     {
         public string OtpCode { get; set; }
         
-        public DateTime LifeTime { get; set; }
+        public DateTime ExpiresAt { get; set; }
     }
 }
