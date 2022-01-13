@@ -28,7 +28,7 @@ namespace Data.Repositories
             return TableNoTracking.AnyAsync(u => u.PhoneNumber == phoneNumber, cancellationToken);
         }
 
-        public Task<User> GetUserByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken)
+        public Task<User?> GetUserByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken)
         {
             return TableNoTracking.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber, cancellationToken);
         }

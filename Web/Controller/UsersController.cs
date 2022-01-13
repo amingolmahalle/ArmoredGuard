@@ -86,9 +86,7 @@ namespace Web.Controller
 
                     if (isExistUser)
                         throw new BadRequestException("username already exists");
-
-                    _logger.LogInformation("calling create user endpoint");
-
+                    
                     if (request.RoleId == 0)
                         throw new BadRequestException("RoleId is Invalid");
 
@@ -96,6 +94,8 @@ namespace Web.Controller
 
                     if (role == null)
                         throw new BadRequestException("RoleId is Invalid");
+                    
+                    _logger.LogInformation("calling create user endpoint");
 
                     var createUserDto = new CreateUserDto
                     {
